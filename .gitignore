@@ -2,14 +2,5 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/27ce37fd-0529-4ea0-9cbc-ec0cc10786f2.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/515c53b2-8c69-4b4c-a1c9-a39f00f103e3.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/6851d9a7-bf50-4566-9607-bb690e96ca78.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/33283077-4859-43d1-8a71-0d164bab36ba.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/ec9d28e4-2089-456d-8282-90bc09ad64cf.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/fc7f9467-8dec-4dcb-9348-1de4dfd1db52.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/f912c52f-3b4a-4927-bfcc-34726a9b27ba.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/58e8233f-c71f-4f1f-b26c-4414a1458bdb.vsidx
-/.vs/FISA_A3_GL_AYSE/FileContentIndex/b4c63e8c-27d8-491b-a671-3e952ca4a4ad.vsidx
-*.vsidx
-/.vs/FISA_A3_GL_AYSE/v17/.wsuo
+/.vs/FISA_A3_GL_AYSE/FileContentIndex
+/.vs/slnx.sqlite
