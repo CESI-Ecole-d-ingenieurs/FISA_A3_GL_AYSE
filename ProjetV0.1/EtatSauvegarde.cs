@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace Projet_Génie_Logiciel
+namespace ProjetV0._1
 {
     public class EtatSauvegarde
     {
@@ -94,7 +94,7 @@ namespace Projet_Génie_Logiciel
                     if (etat.NbFilesLeftToDo == 0)
                     {
                         etat.State = "END";
-                        Journalisation.EcrireLog(etat.Name, etat.SourceFilePath, etat.TargetFilePath, etat.TotalFilesSize, 0.0);
+                        Journalisation.Instance.EcrireLog(etat.Name, etat.SourceFilePath, etat.TargetFilePath, etat.TotalFilesSize, 0.0);
                     }
                 }
 
