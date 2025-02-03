@@ -1,11 +1,27 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ProjetV0._1;
 
+using System;
+using interactive_menus;
+using translation;
 
-Console.WriteLine("Hello, World!");
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        List<string> languages = new List<string> { "Français", "English", "Quitter / Exit" };
+        LanguageChoice languages_menu = new LanguageChoice(languages);
+
+        Translation translation = languages_menu.LanguagesMenu();
+
+        ActionChoice actions_menu = new ActionChoice();
+        await actions_menu.ActionsMenu(translation);
+    }
+}
 //GestionnaireDeSauvegarde s= new GestionnaireDeSauvegarde();
 ////s.ExecuterSauvegarde("C:\\Users\\salem\\OneDrive\\Bureau\\Aya", "C:\\Users\\salem\\OneDrive\\Bureau\\SALEM");
 //s.ParseJobIndices("1-4-6");
+
 
 //namespace ProjetV0._1 {
 //class Program
@@ -18,6 +34,7 @@ Console.WriteLine("Hello, World!");
 //        string sourceDirectory = Console.ReadLine();
 //        Console.Write("Entrez le chemin du répertoire cible: ");
 //        string targetDirectory = Console.ReadLine();
+
 
 
 //        //ici simulation de l'avancement de la sauvegarde, pour vraie sauvegarde, enlever le for (le calcul de la progression est faite dans la méthode CalculerEtat)
@@ -44,3 +61,4 @@ Console.WriteLine("Hello, World!");
 //    }
 //}
 //}
+
