@@ -94,7 +94,7 @@ namespace Projet_Génie_Logiciel
                     if (etat.NbFilesLeftToDo == 0)
                     {
                         etat.State = "END";
-                        Journalisation.EcrireLog(etat.Name, etat.SourceFilePath, etat.TargetFilePath, etat.TotalFilesSize, 0.0);
+                        Journalisation.Instance.EcrireLog(etat.Name, etat.SourceFilePath, etat.TargetFilePath, etat.TotalFilesSize, 0.0);
                     }
                 }
 

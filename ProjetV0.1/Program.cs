@@ -2,13 +2,28 @@
 using Projet_Génie_Logiciel;
 using ProjetV0._1;
 
+using System;
+using interactive_menus;
+using translation;
 
-Console.WriteLine("Hello, World!");
+class Program
+{
+    static async Task Main(string[] args)
+    {
+        List<string> languages = new List<string> { "Français", "English", "Quitter / Exit" };
+        LanguageChoice languages_menu = new LanguageChoice(languages);
+
+        Translation translation = languages_menu.LanguagesMenu();
+
+        ActionChoice actions_menu = new ActionChoice();
+        await actions_menu.ActionsMenu(translation);
+    }
+}
 //GestionnaireDeSauvegarde s= new GestionnaireDeSauvegarde();
 ////s.ExecuterSauvegarde("C:\\Users\\salem\\OneDrive\\Bureau\\Aya", "C:\\Users\\salem\\OneDrive\\Bureau\\SALEM");
 //s.ParseJobIndices("1-4-6");
 
-namespace ProjetV0._1 {
+/*namespace ProjetV0._1 {
 class Program
 {
     static void Main()
@@ -44,4 +59,4 @@ class Program
         }
     }
 }
-}
+}*/
