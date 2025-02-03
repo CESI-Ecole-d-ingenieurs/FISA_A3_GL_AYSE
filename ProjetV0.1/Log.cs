@@ -1,12 +1,13 @@
-﻿using System;
+﻿using ProjetV0._1;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 
-namespace Projet_Génie_Logiciel
+namespace ProjetV0._1
 {
-    public class LogEntry
+    internal class LogEntry
     {
         public string Name { get; set; }
         public string FileSource { get; set; }
@@ -16,7 +17,7 @@ namespace Projet_Génie_Logiciel
         public string Time { get; set; }
     }
 
-    public class Journalisation
+    internal class Journalisation
     {
         private static readonly Journalisation instance = new();
         private static readonly object lockObj = new();
@@ -34,7 +35,7 @@ namespace Projet_Génie_Logiciel
         }
         public string filepath = $"{DateTime.Today.ToString()}_backup_log.json";
 
-        public void EcrireLog(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime)
+        public void EcrireLog(Sauvegarde sauvegardelog, long fileSize, double fileTransferTime)
         {
             // Calcule le nom du fichier pour le jour actuel à chaque appel
             string logFile = GetLogFileName();
@@ -57,9 +58,10 @@ namespace Projet_Génie_Logiciel
                 // Ajout d'une nouvelle entrée de log
                 logs.Add(new LogEntry
                 {
-                    Name = name,
-                    FileSource = fileSource,
-                    FileTarget = fileTarget,
+                    //Name = name,
+                    Name= sauvegardelog.Nom,
+                    FileSource = sauvegardelog.Source,
+                    FileTarget = sauvegardelog.Destination,
                     FileSize = fileSize,
                     FileTransferTime = fileTransferTime,
                     Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")

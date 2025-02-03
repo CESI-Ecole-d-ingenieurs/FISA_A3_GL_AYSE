@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
-namespace Projet_Génie_Logiciel
+namespace ProjetV0._1
 {
     public class EtatSauvegarde
     {
