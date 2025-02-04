@@ -17,9 +17,9 @@ namespace ProjetV0._1.Controleur
             _logger = Logger.Instance;
         }
 
-        public void AddLog(Backup backup, long fileSize, double fileTransferTime)
+        public void AddLog(Backup backup, long fileSize, double fileTransferTime, bool isError = false)
         {
-            _logger.WriteLog(backup, fileSize, fileTransferTime);
+            _logger.WriteLog(backup, fileSize, fileTransferTime, isError);
         }
     }
 }

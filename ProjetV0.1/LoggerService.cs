@@ -20,7 +20,7 @@ namespace ProjetV0._1
             return $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
         }
 
-        public void WriteLog(Backup sauvegardelog, long fileSize, double fileTransferTime)
+        public void WriteLog(Backup sauvegardelog, long fileSize, double fileTransferTime, bool isError = false)
         {
             string logFile = GetLogFileName();
             lock (lockObj)
@@ -40,8 +40,8 @@ namespace ProjetV0._1
                     FileSource = sauvegardelog.SourcePath,
                     FileTarget = sauvegardelog.DestinationPath,
                     FileSize = fileSize,
-                    FileTransferTime = fileTransferTime,
-                    Timestamp = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+                    FileTransferTime = isError ? -1 : fileTransferTime,
+                    Date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
                 });
                 string jsonData = JsonSerializer.Serialize(logs, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(logFile, jsonData);
