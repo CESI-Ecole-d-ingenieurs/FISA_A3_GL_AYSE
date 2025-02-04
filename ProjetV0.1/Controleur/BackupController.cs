@@ -44,12 +44,12 @@ namespace ProjetV0._1.Controleur
 
         }
         public async Task CreateBackup()
-        {
+    {
             if (sauvegardeList.Count >= 5)
-            {
+        {
                 Console.WriteLine("Maximum  5 Sauvegarde");
                 return;
-            }
+        }
             BackupModel sauvegarde = await _backupView.UserAsk();
             sauvegardeList.Add(sauvegarde);
             Console.WriteLine($"Sauvegarde'{sauvegarde.Nom}' ajouté.");
@@ -79,7 +79,7 @@ namespace ProjetV0._1.Controleur
                 }
             }
             foreach (int indice in indices)
-            {
+        {
                 Console.WriteLine(indice);
             }
 
