@@ -7,6 +7,7 @@ using translation;
 using ProjetV0._1.Controleur;
 using ProjetV0._1.Modele;
 using ProjetV0._1.Vue;
+using ProjectV0._1.Models;
 
 class Program
 {
@@ -21,7 +22,7 @@ class Program
         await actions_menu.ActionsMenu(translation);
 
         //-------------------------------------------------------------
-        // TEST BACKUPSTATE
+        // TEST BACKUPSTATE (A AJOUTER LORS DE L'EXECUTION DES SAUVEGARDES !!!!!!!!!!!!!!!!!!!!!!!)
         //-------------------------------------------------------------
 
         //// Initialization
@@ -30,7 +31,7 @@ class Program
         //BackupController controller = new BackupController();
 
         //// Creating a backup
-        //var backup = controller.CreateBackup("Backup1", "C:\\Source", "D:\\Backup");
+        //var backup = controller.CreateBackup("Backup1", "C:\\Users\\33637\\OneDrive - Association Cesi Viacesi mail\\Images", "C:\\Users\\33637\\OneDrive - Association Cesi Viacesi mail\\Pièces jointes");
 
         //// Updating progress
         //for (int i = 0; i < backup.TotalFilesToCopy; i++)
@@ -45,25 +46,25 @@ class Program
         // TEST LOG
         //-------------------------------------------------------------
 
-        //LogController logController = new LogController();
-        //    LogView logView = new LogView();
+        LogController logController = new LogController();
+        LogView logView = new LogView();
 
-        //    //Backup backup = new Backup
-        //    //{
-        //    //    Name = "Project Backup",
-        //    //    SourcePath = "C:/Project",
-        //    //    DestinationPath = "D:/Backup"
-        //    //};
+        Backup backup2 = new Backup
+        {
+            Name = "Project Backup",
+            SourcePath = "C:/Project",
+            DestinationPath = "D:/Backup"
+        };
 
-        //    long fileSize = 1048576; // 1MB
-        //    double transferTime = 2.5; // 2.5s
+        long fileSize = 1048576; // 1MB
+        double transferTime = 2.5; // 2.5s
 
-        //    // Add a log entry
-        //    //logController.AddLog(backup, fileSize, transferTime);
+        // Add a log entry
+        logController.AddLog(backup2, fileSize, transferTime);
 
-        //    // Display logs
-        //    string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
-        //    logView.DisplayLog(logFile);
+        // Display logs
+        string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
+        logView.DisplayLog(logFile);
     }
 
 

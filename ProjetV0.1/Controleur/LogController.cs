@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjectV0._1.Models;
 using ProjetV0._1;
 
 namespace ProjetV0._1.Controleur
@@ -16,7 +17,7 @@ namespace ProjetV0._1.Controleur
             _logger = Logger.Instance;
         }
 
-        public void AddLog(Sauvegarde backup, long fileSize, double fileTransferTime)
+        public void AddLog(Backup backup, long fileSize, double fileTransferTime)
         {
             _logger.WriteLog(backup, fileSize, fileTransferTime);
         }
