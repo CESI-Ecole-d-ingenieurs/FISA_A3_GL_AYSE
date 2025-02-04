@@ -97,8 +97,8 @@ namespace interactive_menus
         public async Task<string> ActionsMenu(Translation translation)
         {
             int selectionIndex = 0;
-            
 
+            GestionnaireDeSauvegarde gestionnaireDeSauvegarde = new GestionnaireDeSauvegarde();
             while (!exitt)
             {
                // Console.Clear();
@@ -133,7 +133,7 @@ namespace interactive_menus
 
                     case ConsoleKey.Enter:
                         //Console.Clear();
-                        GestionnaireDeSauvegarde gestionnaireDeSauvegarde = new GestionnaireDeSauvegarde();
+                       
                         switch (selectionIndex)
                         {
                             case 0:
