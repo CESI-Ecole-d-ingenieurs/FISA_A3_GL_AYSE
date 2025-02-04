@@ -30,12 +30,12 @@ namespace ProjetV0._1.Modele
 
             public static BackupState ComputeState(string name, string sourceDirectory, string targetDirectory)
             {
-                if (!Directory.Exists(sourceDirectory))
-                {
-                    throw new DirectoryNotFoundException("Source directory does not exist.");
-                }
+            if (!Directory.Exists(sourceDirectory))
+            {
+                throw new DirectoryNotFoundException("Source directory does not exist.");
+            }
 
-                string[] files = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(sourceDirectory, "*", SearchOption.AllDirectories);
                 int totalFiles = files.Length;
                 long totalSize = 0;
 

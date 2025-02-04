@@ -13,6 +13,6 @@ namespace ProjetV0._1.Modele
         public string FileTarget { get; set; }
         public long FileSize { get; set; }
         public double FileTransferTime { get; set; }
-        public string Timestamp { get; set; }
+        public string Date { get; set; }
     }
 }
