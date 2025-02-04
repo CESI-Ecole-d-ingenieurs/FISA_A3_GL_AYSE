@@ -12,6 +12,18 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        //LanguageModel languageModel = new LanguageModel();
+        //LanguageView view = new LanguageView();
+        //LanguageController languages_menu = new LanguageController(languageModel, view);
+        //languages_menu.NavigateLanguages();
+
+        //MenuModel menuModel = new MenuModel();
+        //MenuView menuView = new MenuView();
+        //MenuController menuController = new MenuController(menuModel, menuView);
+        //await menuController.ManageActions();
+
+        //Men actions_menu = new ActionChoice();
+        //await actions_menu.ActionsMenu(translation);
         LanguageModel languageModel = new LanguageModel();
         LanguageView view = new LanguageView();
         LanguageController languages_menu = new LanguageController(languageModel, view);
@@ -22,8 +34,6 @@ class Program
         MenuController menuController = new MenuController(menuModel, menuView);
         await menuController.ManageActions();
 
-        ActionChoice actions_menu = new ActionChoice();
-        await actions_menu.ActionsMenu(translation);
 
         //-------------------------------------------------------------
         // TEST BACKUPSTATE (A AJOUTER LORS DE L'EXECUTION DES SAUVEGARDES !!!!!!!!!!!!!!!!!!!!!!!)
