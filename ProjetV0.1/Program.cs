@@ -24,46 +24,46 @@ class Program
         // TEST BACKUPSTATE
         //-------------------------------------------------------------
 
-        // Initialization
-        ConsoleView view = new ConsoleView();
-        BackupStateJournal.AddObserver(view);
-        BackupController controller = new BackupController();
+        //// Initialization
+        //ConsoleView view = new ConsoleView();
+        //BackupStateJournal.AddObserver(view);
+        //BackupController controller = new BackupController();
 
-        // Creating a backup
-        var backup = controller.CreateBackup("Backup1", "C:\\Source", "D:\\Backup");
+        //// Creating a backup
+        //var backup = controller.CreateBackup("Backup1", "C:\\Source", "D:\\Backup");
 
-        // Updating progress
-        for (int i = 0; i < backup.TotalFilesToCopy; i++)
-        {
-            controller.UpdateProgress("Backup1");
-            System.Threading.Thread.Sleep(500); // Simulate processing delay
-        }
+        //// Updating progress
+        //for (int i = 0; i < backup.TotalFilesToCopy; i++)
+        //{
+        //    controller.UpdateProgress("Backup1");
+        //    System.Threading.Thread.Sleep(500); // Simulate processing delay
+        //}
 
-        Console.WriteLine("Backup completed.");
+        //Console.WriteLine("Backup completed.");
 
         //-------------------------------------------------------------
         // TEST LOG
         //-------------------------------------------------------------
 
-        LogController logController = new LogController();
-            LogView logView = new LogView();
+        //LogController logController = new LogController();
+        //    LogView logView = new LogView();
 
-            //Backup backup = new Backup
-            //{
-            //    Name = "Project Backup",
-            //    SourcePath = "C:/Project",
-            //    DestinationPath = "D:/Backup"
-            //};
+        //    //Backup backup = new Backup
+        //    //{
+        //    //    Name = "Project Backup",
+        //    //    SourcePath = "C:/Project",
+        //    //    DestinationPath = "D:/Backup"
+        //    //};
 
-            long fileSize = 1048576; // 1MB
-            double transferTime = 2.5; // 2.5s
+        //    long fileSize = 1048576; // 1MB
+        //    double transferTime = 2.5; // 2.5s
 
-            // Add a log entry
-            //logController.AddLog(backup, fileSize, transferTime);
+        //    // Add a log entry
+        //    //logController.AddLog(backup, fileSize, transferTime);
 
-            // Display logs
-            string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
-            logView.DisplayLog(logFile);
+        //    // Display logs
+        //    string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
+        //    logView.DisplayLog(logFile);
     }
 
 
