@@ -9,9 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Modele\" />
-    <Folder Include="Controleur\" />
-    <Folder Include="Vue\" />
+    <None Include="Controleur\TranslateStrategy\TranslateStrategy.cs" />
   </ItemGroup>
 
   <ItemGroup>

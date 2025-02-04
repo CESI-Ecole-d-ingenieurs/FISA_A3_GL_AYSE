@@ -1,39 +1,41 @@
-﻿using System;
+﻿using ProjetV0._1.Controleur;
+using ProjetV0._1.Modele;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using translation;
 
-namespace ProjetV0._1
+namespace ProjetV0._1.Vue
 {
-    internal class Viewsauvegarde
+    internal class BackupView
     {
-        
-        public async Task<Sauvegarde> UserAsk(Translation translation)
+
+        public async Task<BackupModel> UserAsk()
         {
-            
-            Console.WriteLine(await translation.Translate("Entrez le nom de la sauvegarde :"));
+
+            Console.WriteLine(await Translation.Instance.Translate("Entrez le nom de la sauvegarde :"));
             string name = Console.ReadLine();
             Console.Clear();
 
-            Console.WriteLine(await translation.Translate("Entrez la source de la sauvegarde :"));
+            Console.WriteLine(await Translation.Instance.Translate("Entrez la source de la sauvegarde :"));
             string source = Console.ReadLine();
             Console.Clear();
 
-            Console.WriteLine(await translation.Translate("Entrez la destination de la sauvegarde :"));
+            Console.WriteLine(await Translation.Instance.Translate("Entrez la destination de la sauvegarde :"));
             string destination = Console.ReadLine();
             Console.Clear();
 
             string type = "";
-            List<string> types = new List<string> { await translation.Translate("Complète"), await translation.Translate("Différentielle") };
+            List<string> types = new List<string> { await Translation.Instance.Translate("Complète"), await Translation.Instance.Translate("Différentielle") };
             int selectionIndex = 0;
             bool exit = false;
 
             while (!exit)
             {
-               // Console.Clear();
-                Console.WriteLine(await translation.Translate("Choisissez le type de la sauvegarde :"));
+                // Console.Clear();
+                Console.WriteLine(await Translation.Instance.Translate("Choisissez le type de la sauvegarde :"));
 
                 for (int i = 0; i < types.Count(); i++)
                 {
@@ -53,11 +55,11 @@ namespace ProjetV0._1
                 switch (fleche.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        selectionIndex = (selectionIndex == 0) ? types.Count() - 1 : selectionIndex - 1;
+                        selectionIndex = selectionIndex == 0 ? types.Count() - 1 : selectionIndex - 1;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        selectionIndex = (selectionIndex == types.Count() - 1) ? 0 : selectionIndex + 1;
+                        selectionIndex = selectionIndex == types.Count() - 1 ? 0 : selectionIndex + 1;
                         break;
 
                     case ConsoleKey.Enter:
@@ -77,9 +79,9 @@ namespace ProjetV0._1
                         break;
                 }
             }
-            Sauvegarde _sauvegarde =new Sauvegarde(name,source,destination,type);
+            BackupModel _sauvegarde = new BackupModel(name, source, destination, type);
             return _sauvegarde;
         }
-    
-}
+
+    }
 }

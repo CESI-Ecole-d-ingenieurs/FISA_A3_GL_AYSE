@@ -2,22 +2,29 @@
 using ProjetV0._1;
 
 using System;
-using interactive_menus;
 using translation;
+using ProjetV0._1.Controleur;
+using ProjetV0._1.Modele;
+using ProjetV0._1.Vue;
 
 class Program
 {
     static async Task Main(string[] args)
     {
-        List<string> languages = new List<string> { "Français", "English", "Quitter / Exit" };
-        LanguageChoice languages_menu = new LanguageChoice(languages);
+        LanguageModel languageModel = new LanguageModel();
+        LanguageView view = new LanguageView();
+        LanguageController languages_menu = new LanguageController(languageModel, view);
+        languages_menu.NavigateLanguages();
 
-        Translation translation = languages_menu.LanguagesMenu();
+        MenuModel menuModel = new MenuModel();
+        MenuView menuView = new MenuView();
+        MenuController menuController = new MenuController(menuModel, menuView);
+        await menuController.ManageActions();
 
-        ActionChoice actions_menu = new ActionChoice();
-        await actions_menu.ActionsMenu(translation);
-      
+        //ActionChoice actions_menu = new ActionChoice();
+        //await actions_menu.ActionsMenu();
 
+    }
 
         //Console.Write("Entrez le nom de la sauvegarde: ");
         //string name = Console.ReadLine();
@@ -41,7 +48,7 @@ class Program
         //}
     }
 
-}
+
 
 
 //GestionnaireDeSauvegarde s= new GestionnaireDeSauvegarde();

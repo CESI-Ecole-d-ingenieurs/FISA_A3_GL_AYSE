@@ -1,4 +1,4 @@
-﻿using ProjetV0._1;
+﻿using ProjetV0._1.Modele;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,7 +35,7 @@ namespace ProjetV0._1
         }
         public string filepath = $"{DateTime.Today.ToString()}_backup_log.json";
 
-        public void EcrireLog(Sauvegarde sauvegardelog, long fileSize, double fileTransferTime)
+        public void EcrireLog(BackupModel sauvegardelog, long fileSize, double fileTransferTime)
         {
             // Calcule le nom du fichier pour le jour actuel à chaque appel
             string logFile = GetLogFileName();

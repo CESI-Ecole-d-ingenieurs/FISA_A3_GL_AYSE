@@ -8,8 +8,24 @@ namespace translation
 {
     public class Translation
     {
-        public ITranslateStrategy _strategy;
-
+        private static Translation _instance;
+        private static readonly object _lock = new object();
+        public ITranslateStrategy _strategy=new English();
+         
+        public static Translation Instance
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Translation();
+                    }
+                    return _instance;
+                }
+            }
+        }
         public void Set_strategy(ITranslateStrategy strategy)
         {
             _strategy = strategy;

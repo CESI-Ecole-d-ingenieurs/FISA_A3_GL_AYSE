@@ -1,20 +1,26 @@
-﻿using System;
+﻿using ProjetV0._1.Controleur.BackupFactory;
+using ProjetV0._1.Controleur.Strategy;
+using ProjetV0._1.Modele;
+using ProjetV0._1.Vue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetV0._1
+namespace ProjetV0._1.Controleur
 {
-    internal class GestionnaireDeSauvegarde
+    internal class BackupController
     {
-        private List<Sauvegarde> sauvegardeList=new List<Sauvegarde>();
+        private List<BackupModel> sauvegardeList = new List<BackupModel>();
+        private BackupStrategyFactory _BackupStrategyFactory;
+        private BackupView _backupView = new BackupView();
         //private StrategieSauvegarde _StrategieSauvegarde;
         //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
         //{
         //    _StrategieSauvegarde = strategieSauvegarde;
         //}
-        public void ExecuteSauvegarde( string input)
+        public void ExecuteSauvegarde(string input)
         {
             Console.WriteLine("INPUT", input);
             List<int> sauvegardesIndice = ParseJobIndices(input);
@@ -23,28 +29,28 @@ namespace ProjetV0._1
             {
                 if (index - 1 < sauvegardeList.Count && index > 0)
                 {
-                    if(sauvegardeList[index - 1].Type== "Complète")
+                    if (sauvegardeList[index - 1].Type == "Complète")
                     {
-                        StrategieSauvegarde _StrategieSauvegarde = new StrategieSauvegardeComplete();
-                        _StrategieSauvegarde.ExecuterSauvegarde(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                        _BackupStrategyFactory = new CompleteBackupFactory() ;
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
                     }
-                   else
+                    else
                     {
-
-                        StrategieSauvegarde _StrategieSauvegarde = new StrategieSauvegardeDiff();
-                        _StrategieSauvegarde.ExecuterSauvegarde(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                        _BackupStrategyFactory = new DifferentialBackupFactory();
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
                     }
                 }
             }
-                   
+
         }
-        public void AjouterSauvegarde(Sauvegarde sauvegarde)
+        public async Task CreateBackup()
         {
             if (sauvegardeList.Count >= 5)
             {
                 Console.WriteLine("Maximum  5 Sauvegarde");
                 return;
             }
+            BackupModel sauvegarde = await _backupView.UserAsk();
             sauvegardeList.Add(sauvegarde);
             Console.WriteLine($"Sauvegarde'{sauvegarde.Nom}' ajouté.");
         }
@@ -76,7 +82,7 @@ namespace ProjetV0._1
             {
                 Console.WriteLine(indice);
             }
-           
+
             return indices;
         }
     }
