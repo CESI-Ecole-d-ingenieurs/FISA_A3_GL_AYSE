@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace ProjetV0._1
 {
-    internal class Sauvegarde
+    public class Sauvegarde
     {
         public string Nom { get; set; }
         public string Source { get; set; }
