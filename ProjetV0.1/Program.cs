@@ -16,8 +16,34 @@ class Program
 
         ActionChoice actions_menu = new ActionChoice();
         await actions_menu.ActionsMenu(translation);
+      
+
+
+        //Console.Write("Entrez le nom de la sauvegarde: ");
+        //string name = Console.ReadLine();
+        //Console.Write("Entrez le chemin du répertoire source: ");
+        //string sourceDirectory = Console.ReadLine();
+        //Console.Write("Entrez le chemin du répertoire cible: ");
+        //string targetDirectory = Console.ReadLine();
+
+        //    for (int i = 0; i < etat.TotalFilesToCopy; i++)
+        //    {
+        //        EtatSauvegardeJournal.MettreAJourProgression(name);
+        //        //if (etat.NbFilesLeftToDo == 0)
+        //        //{
+        //        //    Journalisation.Instance.EcrireLog(name, sourceDirectory, targetDirectory, etat.TotalFilesSize, 0.0);
+        //        //}
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+        //    Console.WriteLine($"Erreur: {ex.Message}");
+        //}
     }
+
 }
+
+
 //GestionnaireDeSauvegarde s= new GestionnaireDeSauvegarde();
 ////s.ExecuterSauvegarde("C:\\Users\\salem\\OneDrive\\Bureau\\Aya", "C:\\Users\\salem\\OneDrive\\Bureau\\SALEM");
 //s.ParseJobIndices("1-4-6");

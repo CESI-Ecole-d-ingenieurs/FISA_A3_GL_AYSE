@@ -1,4 +1,5 @@
-﻿using translation;
+﻿using ProjetV0._1;
+using translation;
 
 namespace interactive_menus
 {
@@ -10,20 +11,14 @@ namespace interactive_menus
         {
             return languages;
         }
-
-        public void set_languages(List<String> language)
+        public LanguageChoice(List<String> language)
         {
             languages = language;
         }
 
-        public LanguageChoice(List<String> language)
-        {
-            set_languages(language);
-        }
-
         public Translation LanguagesMenu()
         {
-            Translation translation = new Translation();
+            Translation translation = new Translation(); //MIEUX DECLARER UN VARIABLE GLOBAL
             int selectionIndex = 0;
             bool exit = false;
 
@@ -93,7 +88,7 @@ namespace interactive_menus
     public class ActionChoice
     {
         private List<string> actions = new List<string> {"Création de sauvegarde", "Exécution de sauvegarde", "Consulter les logs", "Quitter l'application"};
-
+        public bool exitt = false;
         public List<String> get_actions()
         {
             return actions;
@@ -102,11 +97,11 @@ namespace interactive_menus
         public async Task<string> ActionsMenu(Translation translation)
         {
             int selectionIndex = 0;
-            bool exit = false;
+            
 
-            while (!exit)
+            while (!exitt)
             {
-                Console.Clear();
+               // Console.Clear();
                 Console.WriteLine(await translation.Translate("Veuillez choisir une action :"));
 
                 for (int i = 0; i < actions.Count(); i++)
@@ -137,26 +132,45 @@ namespace interactive_menus
                         break;
 
                     case ConsoleKey.Enter:
-                        Console.Clear();
+                        //Console.Clear();
+                        GestionnaireDeSauvegarde gestionnaireDeSauvegarde = new GestionnaireDeSauvegarde();
                         switch (selectionIndex)
                         {
                             case 0:
-                                Console.WriteLine("créer");
-                                Console.ReadKey();
-                                return "créer";
+                                //Console.WriteLine("créer");
+                                //Console.ReadKey();
+
+                                Viewsauvegarde viewsauvegarde = new Viewsauvegarde();
+                                Sauvegarde sauvegarde = await viewsauvegarde.UserAsk(translation);
+                                StrategieSauvegarde strategieSauvegarde;
+                                if (translation.Translate(sauvegarde.Type) == translation.Translate("Différentielle"))
+                                {
+                                    strategieSauvegarde = new StrategieSauvegardeDiff();
+                                }
+                                else
+                                {
+                                    strategieSauvegarde = new StrategieSauvegardeComplete();
+                                }
+                               
+                                gestionnaireDeSauvegarde.AjouterSauvegarde(sauvegarde);
+                                
+                                break;
 
                             case 1:
-                                Console.WriteLine("exécuter");
-                                Console.ReadKey();
-                                return "exécuter";
+
+                                Console.WriteLine(await translation.Translate("Donnez l'indexe du sauvegarde à executer exemple 1-3 pour exécuter automatiquement les sauvegardes 1 à 3  exemple 2 : 1 ;3 pour exécuter automatiquement les sauvegardes 1 et 3\r\n"));
+                                string indexe = Console.ReadLine();
+                                Console.Clear();
+                                gestionnaireDeSauvegarde.ExecuteSauvegarde(indexe);
+                                break;
 
                             case 2:
                                 Console.WriteLine("consulter");
                                 Console.ReadKey();
-                                return "consulter";
+                                break;
 
                             case 3:
-                                exit = true;
+                                //exit = true;
                                 return null;
                         }
                         break;

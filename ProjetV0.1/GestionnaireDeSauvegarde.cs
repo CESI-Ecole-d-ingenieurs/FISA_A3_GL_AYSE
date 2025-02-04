@@ -9,18 +9,31 @@ namespace ProjetV0._1
     internal class GestionnaireDeSauvegarde
     {
         private List<Sauvegarde> sauvegardeList=new List<Sauvegarde>();
-        private StrategieSauvegarde _StrategieSauvegarde;
-        public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
+        //private StrategieSauvegarde _StrategieSauvegarde;
+        //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
+        //{
+        //    _StrategieSauvegarde = strategieSauvegarde;
+        //}
+        public void ExecuteSauvegarde( string input)
         {
-            _StrategieSauvegarde = strategieSauvegarde;
-        }
-        public void ExecuteSauvegarde(String Source, String Destination, List<int>  sauvegardesIndice)
-        {
+            Console.WriteLine("INPUT", input);
+            List<int> sauvegardesIndice = ParseJobIndices(input);
+            Console.WriteLine("Indice", sauvegardesIndice);
             foreach (var index in sauvegardesIndice)
             {
                 if (index - 1 < sauvegardeList.Count && index > 0)
                 {
-                    _StrategieSauvegarde.ExecuterSauvegarde(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                    if(sauvegardeList[index - 1].Type== "Complète")
+                    {
+                        StrategieSauvegarde _StrategieSauvegarde = new StrategieSauvegardeComplete();
+                        _StrategieSauvegarde.ExecuterSauvegarde(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                    }
+                   else
+                    {
+
+                        StrategieSauvegarde _StrategieSauvegarde = new StrategieSauvegardeDiff();
+                        _StrategieSauvegarde.ExecuterSauvegarde(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                    }
                 }
             }
                    
