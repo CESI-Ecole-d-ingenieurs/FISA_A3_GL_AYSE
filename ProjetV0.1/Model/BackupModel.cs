@@ -5,19 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace ProjetV0._1
+namespace ProjetV0._1.Model
 {
-    internal class Sauvegarde
+    internal class BackupModel
     {
-        public string Nom { get; set; }
+        public string Name { get; set; }
         public string Source { get; set; }
-        public string Destination { get; set; }
+        public string Target { get; set; }
         public string Type { get; set; }
-        public Sauvegarde(string nom, string source, string destination, string type)
+        public BackupModel(string name, string source, string target, string type)
         {
-            Nom = nom;  
+            Name = name;
             Source = source;
-            Destination = destination;
+            Target = target;
             Type = type;
         }
     }
