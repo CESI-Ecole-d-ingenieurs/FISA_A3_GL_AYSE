@@ -10,7 +10,7 @@ namespace ProjetV0._1.Controleur.BackupFactory
     public interface BackupStrategyFactory
     {
         BackupStrategy CreateBackupStrategy();
-    }
+    } 
     public class CompleteBackupFactory : BackupStrategyFactory
     {
         public BackupStrategy CreateBackupStrategy()
