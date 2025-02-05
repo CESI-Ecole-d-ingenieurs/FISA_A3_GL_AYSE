@@ -33,12 +33,12 @@ namespace ProjetV0._1.Controller
                     if (BackupList[index - 1].Type == "Complète")
                     {
                         _BackupStrategyFactory = new CompleteBackupFactory() ;
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].target);
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
                     }
                     else
                     {
                         _BackupStrategyFactory = new DifferentialBackupFactory();
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].target);
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
                     }
                 }
             }

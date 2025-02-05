@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using translation;
 
-namespace ProjetV0._1.Controllers
+namespace ProjetV0._1.Controller
 {
     internal class LanguageController
     {

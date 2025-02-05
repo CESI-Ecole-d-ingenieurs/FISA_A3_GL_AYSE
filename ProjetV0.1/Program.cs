@@ -60,29 +60,29 @@ class Program
         //-------------------------------------------------------------
 
 
-       // aysee
-    //    LogController logController = new LogController();
-    //    LogView logView = new LogView();
+        // aysee
+        //    LogController logController = new LogController();
+        //    LogView logView = new LogView();
 
-    //    Backup backup2 = new Backup
-    //    {
-    //        Name = "Project Backup",
-    //        SourcePath = "C:/Project",
-    //        DestinationPath = "D:/Backup"
-    //    };
+        //    Backup backup2 = new Backup
+        //    {
+        //        Name = "Project Backup",
+        //        SourcePath = "C:/Project",
+        //        DestinationPath = "D:/Backup"
+        //    };
 
-    //    long fileSize = 1048576; // 1MB
-    //    double transferTime = 2.5; // 2.5s
+        //    long fileSize = 1048576; // 1MB
+        //    double transferTime = 2.5; // 2.5s
 
-    //    // Add a log entry
-    //    logController.AddLog(backup2, fileSize, transferTime);
+        //    // Add a log entry
+        //    logController.AddLog(backup2, fileSize, transferTime);
 
-    //    // Display logs
-    //    string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
-    //    logView.DisplayLog(logFile);
-    //}
+        //    // Display logs
+        //    string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
+        //    logView.DisplayLog(logFile);
+        //}
 
-
+    }
 }
 //GestionnaireDeSauvegarde s= new GestionnaireDeSauvegarde();
 ////s.ExecuterSauvegarde("C:\\Users\\salem\\OneDrive\\Bureau\\Aya", "C:\\Users\\salem\\OneDrive\\Bureau\\SALEM");
