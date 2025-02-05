@@ -1,5 +1,5 @@
-﻿using ProjetV0._1.Modele;
-using ProjetV0._1.Vue;
+﻿using ProjetV0._1.Model;
+using ProjetV0._1.View;
 using System;
 using translation;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetV0._1.Controleur
+namespace ProjetV0._1.Controller
 {
     internal class MenuController
     {
@@ -28,8 +28,8 @@ namespace ProjetV0._1.Controleur
             {
                 Console.Clear();
                 await view.DisplayActions(model.Actions, selectionIndex);
-                ConsoleKeyInfo fleche = Console.ReadKey();
-                switch (fleche.Key)
+                ConsoleKeyInfo _key = Console.ReadKey();
+                switch (_key.Key)
                 {
                     case ConsoleKey.UpArrow:
                         selectionIndex = (selectionIndex == 0) ? model.Actions.Count - 1 : selectionIndex - 1;
@@ -76,7 +76,7 @@ namespace ProjetV0._1.Controleur
         {
             view.DisplayInputPrompt(await Translation.Instance.Translate( "Enter the index of the backup to execute, e.g., '1-3' to execute backups 1 to 3 automatically:"));
             string indexes = Console.ReadLine();
-            model._BackupController.ExecuteSauvegarde(indexes);
+            model._BackupController.ExecuteBackup(indexes);
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using ProjetV0._1.Controleur;
+﻿using ProjetV0._1.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using translation;
-namespace ProjetV0._1.Vue
+namespace ProjetV0._1.View
 {
     internal class MenuView
     {

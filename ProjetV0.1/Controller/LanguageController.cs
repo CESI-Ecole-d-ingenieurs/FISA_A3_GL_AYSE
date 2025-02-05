@@ -1,5 +1,5 @@
-﻿using ProjetV0._1.Modele;
-using ProjetV0._1.Vue;
+﻿using ProjetV0._1.Model;
+using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using translation;
 
-namespace ProjetV0._1.Controleur
+namespace ProjetV0._1.Controllers
 {
     internal class LanguageController
     {

@@ -33,7 +33,7 @@ namespace translation
 
         public async Task<string> Translate(string text)
         {
-            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl={_strategy.DestinationLanguage()}&dt=t&q={Uri.EscapeDataString(text)}";
+            string url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl={_strategy.TargetLanguage()}&dt=t&q={Uri.EscapeDataString(text)}";
 
             using (HttpClient client = new HttpClient())
             {

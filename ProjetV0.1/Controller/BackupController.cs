@@ -1,18 +1,19 @@
-﻿using ProjetV0._1.Controleur.BackupFactory;
-using ProjetV0._1.Controleur.Strategy;
-using ProjetV0._1.Modele;
-using ProjetV0._1.Vue;
+﻿using ProjetV0._1.Controller.BackupFactory;
+using ProjetV0._1.Controller.Strategy;
+using ProjetV0._1.Model;
+using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using translation;
 
-namespace ProjetV0._1.Controleur
+namespace ProjetV0._1.Controller
 {
     internal class BackupController
     {
-        private List<BackupModel> sauvegardeList = new List<BackupModel>();
+        private List<BackupModel> BackupList = new List<BackupModel>();
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
         //private StrategieSauvegarde _StrategieSauvegarde;
@@ -20,24 +21,24 @@ namespace ProjetV0._1.Controleur
         //{
         //    _StrategieSauvegarde = strategieSauvegarde;
         //}
-        public void ExecuteSauvegarde(string input)
+        public void ExecuteBackup(string input)
         {
-            Console.WriteLine("INPUT", input);
-            List<int> sauvegardesIndice = ParseJobIndices(input);
-            Console.WriteLine("Indice", sauvegardesIndice);
-            foreach (var index in sauvegardesIndice)
+          
+            List<int> BackupIndex = ParseJobIndex(input);
+            //Console.WriteLine("Indice", sauvegardesIndice);
+            foreach (var index in BackupIndex)
             {
-                if (index - 1 < sauvegardeList.Count && index > 0)
+                if (index - 1 < BackupList.Count && index > 0)
                 {
-                    if (sauvegardeList[index - 1].Type == "Complète")
+                    if (BackupList[index - 1].Type == "Complète")
                     {
                         _BackupStrategyFactory = new CompleteBackupFactory() ;
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].target);
                     }
                     else
                     {
                         _BackupStrategyFactory = new DifferentialBackupFactory();
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(sauvegardeList[index - 1].Source, sauvegardeList[index - 1].Destination);
+                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].target);
                     }
                 }
             }
@@ -45,19 +46,19 @@ namespace ProjetV0._1.Controleur
         }
         public async Task CreateBackup()
     {
-            if (sauvegardeList.Count >= 5)
+            if (BackupList.Count >= 5)
         {
-                Console.WriteLine("Maximum  5 Sauvegarde");
+                Console.WriteLine(await Translation.Instance.Translate("Maximum  5 Sauvegarde"));
                 return;
         }
             BackupModel sauvegarde = await _backupView.UserAsk();
-            sauvegardeList.Add(sauvegarde);
-            Console.WriteLine($"Sauvegarde'{sauvegarde.Nom}' ajouté.");
+            BackupList.Add(sauvegarde);
+            Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
-        public List<int> ParseJobIndices(string input)
+        public List<int> ParseJobIndex(string input)
         {
-            var indices = new List<int>();
+            var Indexes = new List<int>();
             var parts = input.Split(';');
 
             foreach (var part in parts)
@@ -69,21 +70,21 @@ namespace ProjetV0._1.Controleur
                     {
                         for (int i = start; i <= end; i++)
                         {
-                            indices.Add(i);
+                            Indexes.Add(i);
                         }
                     }
                 }
                 else if (int.TryParse(part, out int singleIndex))
                 {
-                    indices.Add(singleIndex);
+                    Indexes.Add(singleIndex);
                 }
             }
-            foreach (int indice in indices)
-        {
-                Console.WriteLine(indice);
-            }
+        //    foreach (int Index in Indexes)
+        //{
+        //        Console.WriteLine(Index);
+        //    }
 
-            return indices;
+            return Indexes;
         }
     }
 }

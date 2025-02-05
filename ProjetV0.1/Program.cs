@@ -3,10 +3,9 @@ using ProjetV0._1;
 
 using System;
 using translation;
-using ProjetV0._1.Controleur;
-using ProjetV0._1.Modele;
-using ProjetV0._1.Vue;
-using ProjectV0._1.Models;
+using ProjetV0._1.Controller;
+using ProjetV0._1.Model;
+using ProjetV0._1.View;
 
 class Program
 {
@@ -60,26 +59,28 @@ class Program
         // TEST LOG
         //-------------------------------------------------------------
 
-        LogController logController = new LogController();
-        LogView logView = new LogView();
 
-        Backup backup2 = new Backup
-        {
-            Name = "Project Backup",
-            SourcePath = "C:/Project",
-            DestinationPath = "D:/Backup"
-        };
+       // aysee
+    //    LogController logController = new LogController();
+    //    LogView logView = new LogView();
 
-        long fileSize = 1048576; // 1MB
-        double transferTime = 2.5; // 2.5s
+    //    Backup backup2 = new Backup
+    //    {
+    //        Name = "Project Backup",
+    //        SourcePath = "C:/Project",
+    //        DestinationPath = "D:/Backup"
+    //    };
 
-        // Add a log entry
-        logController.AddLog(backup2, fileSize, transferTime);
+    //    long fileSize = 1048576; // 1MB
+    //    double transferTime = 2.5; // 2.5s
 
-        // Display logs
-        string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
-        logView.DisplayLog(logFile);
-    }
+    //    // Add a log entry
+    //    logController.AddLog(backup2, fileSize, transferTime);
+
+    //    // Display logs
+    //    string logFile = $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
+    //    logView.DisplayLog(logFile);
+    //}
 
 
 }

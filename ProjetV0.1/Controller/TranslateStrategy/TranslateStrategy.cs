@@ -1,11 +1,11 @@
 ﻿public interface ITranslateStrategy
 {
-    string DestinationLanguage();
+    string TargetLanguage();
 }
 
 class French : ITranslateStrategy
 {
-    public string DestinationLanguage()
+    public string TargetLanguage()
     {
         return "fr";
     }
@@ -13,7 +13,7 @@ class French : ITranslateStrategy
 
 class English : ITranslateStrategy
 {
-    public string DestinationLanguage()
+    public string TargetLanguage()
     {
         return "en";
     }

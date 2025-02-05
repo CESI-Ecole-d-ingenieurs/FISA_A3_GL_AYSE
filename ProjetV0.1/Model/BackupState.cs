@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetV0._1.Modele
+namespace ProjetV0._1.Model
 {
     public class BackupState
     {

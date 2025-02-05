@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetV0._1.Vue
+namespace ProjetV0._1.View
 {
     public class LogView
     {

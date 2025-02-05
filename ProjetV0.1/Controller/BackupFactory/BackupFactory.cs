@@ -1,11 +1,11 @@
-﻿using ProjetV0._1.Controleur.Strategy;
+﻿using ProjetV0._1.Controller.Strategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjetV0._1.Controleur.BackupFactory
+namespace ProjetV0._1.Controller.BackupFactory
 {
     public interface BackupStrategyFactory
     {

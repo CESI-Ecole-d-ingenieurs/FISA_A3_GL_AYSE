@@ -1,6 +1,6 @@
-﻿using ProjectV0._1.Models;
+﻿using ProjectV0._1.Model;
 using ProjetV0._1;
-using ProjetV0._1.Modele;
+using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +38,7 @@ namespace ProjetV0._1
                 {
                     Name = sauvegardelog.Name,
                     FileSource = sauvegardelog.SourcePath,
-                    FileTarget = sauvegardelog.DestinationPath,
+                    FileTarget = sauvegardelog.TargetPath,
                     FileSize = fileSize,
                     FileTransferTime = isError ? -1 : fileTransferTime,
                     Date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")

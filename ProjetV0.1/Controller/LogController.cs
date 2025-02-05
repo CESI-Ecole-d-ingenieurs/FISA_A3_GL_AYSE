@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ProjectV0._1.Models;
+using ProjectV0._1.Model;
 using ProjetV0._1;
 
-namespace ProjetV0._1.Controleur
+namespace ProjetV0._1.Controller
 {
     public class LogController
     {

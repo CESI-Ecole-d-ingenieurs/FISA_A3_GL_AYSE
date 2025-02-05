@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Controleur\TranslateStrategy\TranslateStrategy.cs" />
+    <None Include="Controller\TranslateStrategy\TranslateStrategy.cs" />
   </ItemGroup>
 
   <ItemGroup>
