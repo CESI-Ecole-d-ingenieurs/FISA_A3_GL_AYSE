@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjetV0._1.View
-{
+{ 
     public class LogView
     {
         public void DisplayLog(string filePath)
