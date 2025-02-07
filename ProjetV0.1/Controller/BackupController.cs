@@ -63,7 +63,7 @@ namespace ProjetV0._1.Controller
 
             foreach (var part in parts)
             {
-                if (part.Contains("-"))
+                if (part.Contains("-")) 
                 {
                     var rangeParts = part.Split('-');
                     if (rangeParts.Length == 2 && int.TryParse(rangeParts[0], out int start) && int.TryParse(rangeParts[1], out int end))

@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 using ProjectV0._1.Model;
 using ProjetV0._1;
 
-namespace ProjetV0._1.Controller
-{
-    public class LogController
-    {
-        private readonly Logger _logger;
+//namespace ProjetV0._1.Controller
+//{
+//    public class LogController
+//    {
+//        private readonly Logger _logger;
 
-        public LogController()
-        {
-            _logger = Logger.Instance;
-        }
+//        public LogController()
+//        {
+//            _logger = Logger.Instance;
+//        }
 
-        public void AddLog(Backup backup, long fileSize, double fileTransferTime, bool isError = false)
-        {
-            _logger.WriteLog(backup, fileSize, fileTransferTime, isError);
-        }
-    }
-}
+//        public void AddLog(Backup backup, long fileSize, double fileTransferTime, bool isError = false)
+//        {
+//            _logger.WriteLog(backup, fileSize, fileTransferTime, isError);
+//        }
+//    }
+//}
