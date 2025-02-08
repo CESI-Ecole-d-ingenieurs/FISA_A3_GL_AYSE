@@ -48,7 +48,7 @@ namespace EasySave.Logger
                     FileTransferTime = isError ? -1 : fileTransferTime,
                     Date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
                 };
-              
+               
                 string jsonData = JsonConvert.SerializeObject(LogEntry, Formatting.Indented);
                 //File.AppendAllText(logFile, jsonData + Environment.NewLine);
                 if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
