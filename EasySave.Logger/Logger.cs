@@ -22,13 +22,17 @@ namespace EasySave.Logger
 
         private static object lockObj = new object();
 
-        public Logger(string logFilePath, string stateFilePath)
-        {
-            
-        }
+       
         public string GetLogFileName()
         {
-            return $"backup_log_{DateTime.Today:dd-MM-yyyy}.json";
+            //setx EASYSAVE_LOG_PATH "C:\ProgramData\CESI\EasySave\Logs" 
+            string basePath = Environment.GetEnvironmentVariable("EASYSAVE_LOG_PATH") ??
+                     Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "CESI", "EasySave", "Logs");
+            if (!Directory.Exists(basePath))
+            {
+                Directory.CreateDirectory(basePath);
+            }
+            return Path.Combine(basePath, $"backup_log_{DateTime.Today:dd-MM-yyyy}.json");
         }
         public void WriteLog(String name,String fileSource,String fileTarget, long fileSize, double fileTransferTime, bool isError = false)
         {
@@ -53,8 +57,5 @@ namespace EasySave.Logger
     }
 }
 //joute une référence à la DLL en exécutant :
-//sh
-//Copier
-//dotnet add reference ../EasySave.Logger/EasySave.Logger.csproj
-//(Remplace ../EasySave.Logger/ par le chemin correct vers le projet DLL si nécessaire).
+//dotnet add reference C:\Users\salem\source\repos\Aysee2\FISA_A3_GL_AYSE2\EasySave.Logger/EasySave.Logger.csproj
 

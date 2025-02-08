@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EasySave.Logger;
 
 namespace ProjetV0._1.Controller.Strategy
 {
     public interface BackupStrategy
     {
+        
         public void ExecuteBackup(string Source, string Target);
     }
 

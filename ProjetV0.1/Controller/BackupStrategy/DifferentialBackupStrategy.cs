@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using EasySave.Logger;
+using Newtonsoft.Json.Linq;
+using ProjetV0._1.Controller.BackupStrategy;
 using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
@@ -9,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Controller.Strategy
 {
-    public class DifferentialBackupStrategy : BackupStrategy
+    public class DifferentialBackupStrategy : BaseBackupStrategy
     {
-        public void ExecuteBackup(string Source, string target)
+        
+        public override  void ExecuteBackup(string Source, string target)
         {
             //Console.WriteLine($"Sauvegarde de {Source} à {target}.");
             string logfile = GlobalVariables.LogFile;
@@ -32,7 +35,7 @@ namespace ProjetV0._1.Controller.Strategy
                 var fileInfo = new FileInfo(file);
                 if (fileInfo.LastWriteTimeUtc > TimeOfLastBackup)
                 {
-                    File.Copy(file, targetFile, true);
+                    BackupFile(file, Source, target);
                 }
 
             }
@@ -42,14 +45,7 @@ namespace ProjetV0._1.Controller.Strategy
         }
 
         // Méthode pour s'assurer que le répertoire existe
-        private void DirectoryExist(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-        }
+     
 
 
         private DateTime DateOfLastBackup(string LogFile, string source, string tagret)

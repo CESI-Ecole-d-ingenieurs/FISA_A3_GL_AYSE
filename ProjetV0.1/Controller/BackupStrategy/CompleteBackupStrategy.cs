@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EasySave.Logger;
+using ProjetV0._1.Controller.BackupStrategy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Controller.Strategy
 {
-    internal class CompleteBackupStrategy : BackupStrategy
+    internal class CompleteBackupStrategy : BaseBackupStrategy
     {
-        public void ExecuteBackup(string Source, string Target)
+      
+        public override  void ExecuteBackup(string Source, string Target)
         {
             //Console.WriteLine($"Sauvegarde de {Source} à {Target}.");
 
@@ -25,21 +28,14 @@ namespace ProjetV0._1.Controller.Strategy
             // Puis copiez tous les fichiers
             foreach (var file in Directory.GetFiles(Source, "*.*", SearchOption.AllDirectories))
             {
-                var targetFile = file.Replace(Source, Target);
-                File.Copy(file, targetFile, true);
+                BackupFile(file, Source, Target);
             }
 
            // Console.WriteLine("Sauvegarde Complete reussi");
         }
 
         // Méthode pour s'assurer que le répertoire existe
-        private void DirectoryExist(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-        }
+    
 
     }
 
