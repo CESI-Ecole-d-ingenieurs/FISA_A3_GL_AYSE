@@ -1,6 +1,6 @@
 ﻿using EasySave.Logger;
 using Newtonsoft.Json.Linq;
-using ProjetV0._1.Controller.BackupStrategy;
+using ProjetV0._1.Controller;
 using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace ProjetV0._1.Controller.Strategy
         public override  void ExecuteBackup(string Source, string target)
         {
             //Console.WriteLine($"Sauvegarde de {Source} à {target}.");
-            string logfile = GlobalVariables.LogFile;
+          //  string logfile = GlobalVariables.LogFile;
             // Si destination n'existe pas cette focntion.Net le crée
             DirectoryExist(target);
 
@@ -31,7 +31,7 @@ namespace ProjetV0._1.Controller.Strategy
             foreach (var file in Directory.GetFiles(Source, "*.*", SearchOption.AllDirectories))
             {
                 var targetFile = file.Replace(Source, target);
-                DateTime TimeOfLastBackup = DateOfLastBackup(logfile, targetFile, target);
+                DateTime TimeOfLastBackup = DateOfLastBackup(logger.GetLogFileName(), file, targetFile);
                 var fileInfo = new FileInfo(file);
                 if (fileInfo.LastWriteTimeUtc > TimeOfLastBackup)
                 {
@@ -54,6 +54,7 @@ namespace ProjetV0._1.Controller.Strategy
 
             if (File.Exists(LogFile))
             {
+
                 string jsonLog = File.ReadAllText(LogFile);
                 JArray logs = JArray.Parse(jsonLog);
 
@@ -64,7 +65,7 @@ namespace ProjetV0._1.Controller.Strategy
 
                     if (logSource == source && logDestination == tagret)
                     {
-                        DateTime LogTime = DateTime.Parse((string)log["time"], CultureInfo.InvariantCulture);
+                        DateTime LogTime = DateTime.Parse((string)log["Date"], CultureInfo.InvariantCulture);
 
                         // Update lastBackupTime if the current log's time is later than what was previously found.
                         if (LogTime > LastBackupTime)

@@ -1,5 +1,5 @@
 ﻿using EasySave.Logger;
-using ProjetV0._1.Controller.BackupStrategy;
+using ProjetV0._1.Controller;
 using System;
 using System.Collections.Generic;
 using System.Linq;

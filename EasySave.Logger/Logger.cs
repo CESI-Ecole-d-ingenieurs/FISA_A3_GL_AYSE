@@ -50,7 +50,22 @@ namespace EasySave.Logger
                 };
               
                 string jsonData = JsonConvert.SerializeObject(LogEntry, Formatting.Indented);
-                File.AppendAllText(logFile, jsonData + Environment.NewLine);
+                //File.AppendAllText(logFile, jsonData + Environment.NewLine);
+                if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
+                {
+                    // Initialize file with an empty array if it doesn't exist or is empty
+                    File.WriteAllText(logFile, "[" + jsonData + "]" + Environment.NewLine);
+                }
+                else
+                {
+                    // Read existing content and remove the last bracket
+                    string existingData = File.ReadAllText(logFile);
+                    existingData = existingData.TrimEnd(']', '\r', '\n', ' ');
+
+                    // Append the new log entry with a leading comma and close the array
+                    existingData += "," + Environment.NewLine + jsonData + "]";
+                    File.WriteAllText(logFile, existingData);
+                }
                 Console.Write($"nom: {logFile}");
             }
         }
