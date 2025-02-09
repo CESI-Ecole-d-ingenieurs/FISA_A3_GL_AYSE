@@ -92,11 +92,14 @@ namespace ProjetV0._1.Model
 
                         SaveState(states);
                         NotifyObservers(state);
-                    }
+
+                    Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%"); // Vérification
+                }
                 }
             }
 
-            private static List<BackupState> LoadState()
+
+            public static List<BackupState> LoadState()
             {
                 if (!File.Exists(stateFilePath)) return new List<BackupState>();
 
@@ -109,5 +112,15 @@ namespace ProjetV0._1.Model
                 string jsonData = JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(stateFilePath, jsonData);
             }
+
+        //To get the state of the backup
+        public static List<BackupState> GetState()
+        {
+            lock (lockObj)
+            {
+                return LoadState();
+            }
         }
+
     }
+}

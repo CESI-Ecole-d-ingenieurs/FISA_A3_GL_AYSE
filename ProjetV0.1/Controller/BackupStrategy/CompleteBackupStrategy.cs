@@ -1,5 +1,6 @@
 ﻿using EasySave.Logger;
 using ProjetV0._1.Controller;
+using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,34 +11,25 @@ namespace ProjetV0._1.Controller.Strategy
 {
     internal class CompleteBackupStrategy : BaseBackupStrategy
     {
-      
-        public override  void ExecuteBackup(string Source, string Target)
+        public override void ExecuteBackup(string source, string target)
         {
-            //Console.WriteLine($"Sauvegarde de {Source} à {Target}.");
+            DirectoryExist(target);
 
-            // Si destination n'existe pas cette focntion.Net le crée
-            DirectoryExist(Target);
+            var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
+            backupView.DisplayProgress(new List<BackupState> { state });
 
-            // Copiez tous les répertoires et les sous-répertoires même vides
-            foreach (var directory in Directory.GetDirectories(Source, "*", SearchOption.AllDirectories))
+            foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {
-                var targetDirectory = directory.Replace(Source, Target);
+                var targetDirectory = directory.Replace(source, target);
                 DirectoryExist(targetDirectory);
             }
 
-            // Puis copiez tous les fichiers
-            foreach (var file in Directory.GetFiles(Source, "*.*", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
-                BackupFile(file, Source, Target);
+                BackupFile(file, source, target);
             }
-
-           // Console.WriteLine("Sauvegarde Complete reussi");
         }
 
-        // Méthode pour s'assurer que le répertoire existe
-    
 
     }
-
-
 }

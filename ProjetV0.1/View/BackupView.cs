@@ -11,6 +11,18 @@ namespace ProjetV0._1.View
 {
     internal class BackupView
     {
+        public void DisplayProgress(List<BackupState> states)
+        {
+            Console.Clear();
+            Console.WriteLine("Mise à jour de la progression..."); // Check
+
+            Console.WriteLine("Progression des sauvegardes :");
+            foreach (var state in states)
+            {
+                Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
+            }
+        }
+
 
         public async Task<BackupModel> UserAsk()
         {

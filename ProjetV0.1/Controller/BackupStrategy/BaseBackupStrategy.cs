@@ -1,4 +1,6 @@
 ﻿using EasySave.Logger;
+using ProjetV0._1.Model;
+using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Controller.Strategy
 {
-    public abstract class BaseBackupStrategy: BackupStrategy
+    internal abstract class BaseBackupStrategy : BackupStrategy
     {
         protected Logger logger = new Logger();
+        protected BackupView backupView = new BackupView();
 
         public abstract void ExecuteBackup(string source, string target);
 
@@ -20,10 +23,12 @@ namespace ProjetV0._1.Controller.Strategy
                 Directory.CreateDirectory(path);
             }
         }
-        public void BackupFile(String file,String Source, String Target)
+
+        public void BackupFile(string file, string source, string target)
         {
-            var targetFile = file.Replace(Source, Target);
+            var targetFile = file.Replace(source, target);
             var startTime = DateTime.Now;
+
             try
             {
                 File.Copy(file, targetFile, true);
@@ -31,11 +36,20 @@ namespace ProjetV0._1.Controller.Strategy
                 var duration = (endTime - startTime).TotalMilliseconds;
                 var fileInfo = new FileInfo(file);
                 var fileSize = fileInfo.Length;
+
                 logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration);
+
+                // Real-time status updates
+                BackupStateJournal.UpdateProgress(Path.GetFileName(file));
+
+                // Check
+                Console.WriteLine("Appel de DisplayProgress...");
+
+                // Progress Display
+                backupView.DisplayProgress(BackupStateJournal.GetState());
             }
             catch (Exception ex)
             {
-
                 logger.WriteLog(Path.GetFileName(file), file, targetFile, 0, 0, true);
                 Console.WriteLine($"Error copying file {file}: {ex.Message}");
             }
