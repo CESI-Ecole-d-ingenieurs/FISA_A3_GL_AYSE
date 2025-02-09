@@ -51,13 +51,13 @@ namespace ProjetV0._1.Controller
         {
             switch (index)
             {
-                case 0: // Création de sauvegarde
+                case 0: // Create Backup
                     await HandleBackupCreation();
                     return false;
-                case 1: // Exécution de sauvegarde
+                case 1: // Execute Backup
                     await HandleBackupExecution();
                     return false;
-                case 2: // Consulter les logs
+                case 2: // View Logs
                     try
                     {
                       
@@ -74,7 +74,7 @@ namespace ProjetV0._1.Controller
                     view.DisplayInputPrompt("Consulting logs...");
                     Console.ReadKey();
                     return false;
-                case 3: // Quitter
+                case 3: // Exit
                     return true;
                 default:
                     return false;
