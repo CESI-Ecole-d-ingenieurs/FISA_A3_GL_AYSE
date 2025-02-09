@@ -31,7 +31,7 @@ namespace ProjetV0._1.Controller.Strategy
             foreach (var file in Directory.GetFiles(Source, "*.*", SearchOption.AllDirectories))
             {
                 var targetFile = file.Replace(Source, target);
-                DateTime TimeOfLastBackup = DateOfLastBackup(logger.GetLogFileName(), file, targetFile);
+                DateTime TimeOfLastBackup = DateOfLastBackup(Logger.GetLogFileName(), file, targetFile);
                 var fileInfo = new FileInfo(file);
                 if (fileInfo.LastWriteTimeUtc > TimeOfLastBackup)
                 {
