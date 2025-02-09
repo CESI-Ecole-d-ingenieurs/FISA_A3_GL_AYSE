@@ -16,7 +16,7 @@ namespace ProjetV0._1.Controller.Strategy
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
-            backupView.DisplayProgress(new List<BackupState> { state });
+            backupView.DisplayProgress();
 
             foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {

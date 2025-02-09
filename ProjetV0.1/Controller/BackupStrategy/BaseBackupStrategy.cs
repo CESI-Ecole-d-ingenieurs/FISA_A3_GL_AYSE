@@ -46,7 +46,7 @@ namespace ProjetV0._1.Controller.Strategy
                 Console.WriteLine("Appel de DisplayProgress...");
 
                 // Progress Display
-                backupView.DisplayProgress(BackupStateJournal.GetState());
+                backupView.DisplayProgress();
             }
             catch (Exception ex)
             {

@@ -11,8 +11,9 @@ namespace ProjetV0._1.View
 {
     internal class BackupView
     {
-        public void DisplayProgress(List<BackupState> states)
+        public void DisplayProgress()
         {
+            var states = BackupStateJournal.GetState();
             Console.Clear();
             Console.WriteLine("Mise à jour de la progression..."); // Check
 
@@ -20,7 +21,10 @@ namespace ProjetV0._1.View
             foreach (var state in states)
             {
                 Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
+
+               
             }
+
         }
 
 

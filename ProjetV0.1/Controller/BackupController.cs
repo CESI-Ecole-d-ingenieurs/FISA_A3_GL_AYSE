@@ -23,27 +23,50 @@ namespace ProjetV0._1.Controller
         //}
         public void ExecuteBackup(string input)
         {
-          
             List<int> BackupIndex = ParseJobIndex(input);
-            //Console.WriteLine("Indice", sauvegardesIndice);
+            BackupStateJournal.AddObserver(new ConsoleView()); // 🔹 Ajout de ConsoleView pour afficher la progression
+
             foreach (var index in BackupIndex)
             {
                 if (index - 1 < BackupList.Count && index > 0)
                 {
-                    if (BackupList[index - 1].Type == "Complète")
+                    BackupModel backup = BackupList[index - 1];
+                    _BackupStrategyFactory = backup.Type == "Complète"
+                        ? new CompleteBackupFactory()
+                        : new DifferentialBackupFactory();
+
+                    var strategy = _BackupStrategyFactory.CreateBackupStrategy();
+
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                    BackupStateJournal.UpdateState(state);
+
+                    string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
+                    int totalFiles = files.Length;
+                    int processedFiles = 0;
+
+                    foreach (var file in files)
                     {
-                        _BackupStrategyFactory = new CompleteBackupFactory() ;
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
+                        string destFile = file.Replace(backup.Source, backup.Target);
+                        Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                        File.Copy(file, destFile, true);
+
+                        processedFiles++;
+                        BackupStateJournal.UpdateProgress(backup.Name); // 🔹 Mise à jour en temps réel
+                        Thread.Sleep(500); // 🔹 Ralentissement du programme pour voir la progression
                     }
-                    else
-                    {
-                        _BackupStrategyFactory = new DifferentialBackupFactory();
-                        _BackupStrategyFactory.CreateBackupStrategy().ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
-                    }
+
+                    stopwatch.Stop();
+                    state.Progress = 100;
+                    state.State = "Terminé";
+                    BackupStateJournal.UpdateState(state);
+
+                    Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
             }
-
         }
+
+
         public async Task CreateBackup()
     {
             if (BackupList.Count >= 5)
