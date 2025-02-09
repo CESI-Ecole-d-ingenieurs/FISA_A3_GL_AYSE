@@ -23,23 +23,28 @@ namespace ProjetV0._1.Controller
         public void NavigateLanguages()
         {
             ConsoleKeyInfo key;
+            bool languageSelected = false;
+
+            while (!languageSelected)
+            {
                 view.DisplayLanguages(model.Languages, model.SelectedLanguage);
                 key = Console.ReadKey();
+
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        model.SelectedLanguage = Math.Max(0, model.SelectedLanguage - 1);
+                        model.SelectedLanguage = (model.SelectedLanguage == 0) ? model.Languages.Count - 1 : model.SelectedLanguage - 1;
                         break;
+
                     case ConsoleKey.DownArrow:
-                        model.SelectedLanguage = Math.Min(model.Languages.Count - 1, model.SelectedLanguage + 1);
+                        model.SelectedLanguage = (model.SelectedLanguage == model.Languages.Count - 1) ? 0 : model.SelectedLanguage + 1;
                         break;
+
                     case ConsoleKey.Enter:
-                        ApplyLanguageSelection();
-                        return;
+                        languageSelected = ApplyLanguageSelection(); // Valider le choix
+                        break;
                 }
-        
-            
-            
+            }
         }
 
         private bool ApplyLanguageSelection()
