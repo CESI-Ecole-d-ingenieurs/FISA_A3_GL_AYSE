@@ -1,5 +1,4 @@
-﻿using ProjectV0._1.Model;
-using ProjetV0._1;
+﻿using ProjetV0._1;
 using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
