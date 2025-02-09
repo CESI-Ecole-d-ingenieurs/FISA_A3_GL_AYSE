@@ -15,6 +15,7 @@ namespace ProjetV0._1.View
             //Console.WriteLine($"[Backup: {state.Name}] Progress: {state.Progress}% - State: {state.State}");
             _backupView.DisplayProgress();
 
+            //Barre de pprogression
             Console.Write("[");
             int progressBarWidth = 30;
             int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
