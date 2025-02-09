@@ -89,6 +89,14 @@ namespace ProjetV0._1.Controller
 
         private async Task HandleBackupExecution()
         {
+            model._BackupController.DisplayExistingBackups();
+
+            if (model._BackupController.GetBackupCount() == 0)
+            {
+                Console.WriteLine(await Translation.Instance.Translate("Aucune sauvegarde trouvée. Retour au menu."));
+                Console.ReadKey();
+                return;
+            }
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
             model._BackupController.ExecuteBackup(indexes);
