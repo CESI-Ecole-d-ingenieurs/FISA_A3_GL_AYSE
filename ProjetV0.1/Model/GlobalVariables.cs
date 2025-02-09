@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasySave.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace ProjetV0._1.Model
 {
     internal class GlobalVariables
     {
-        public static string LogFile { get; set; } = "";
+        protected Logger logger = new Logger();
+        public static string LogFilePath { get; set; }=Logger.GetLogFileName();
+    
     }
 }

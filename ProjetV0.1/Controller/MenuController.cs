@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.Metadata;
+using EasySave.Logger;
 
 namespace ProjetV0._1.Controller
 {
@@ -56,6 +58,19 @@ namespace ProjetV0._1.Controller
                     await HandleBackupExecution();
                     return false;
                 case 2: // Consulter les logs
+                    try
+                    {
+                      
+                        string content = File.ReadAllText(GlobalVariables.LogFilePath);
+                        view.DisplayInputPrompt(content);
+                       // Console.WriteLine(content);
+                    }
+                    catch (Exception ex)
+                    {
+                        view.DisplayInputPrompt($"Une erreur est survenue lors de la lecture du fichier:{ex.Message}");
+                     
+                    }
+                    
                     view.DisplayInputPrompt("Consulting logs...");
                     Console.ReadKey();
                     return false;

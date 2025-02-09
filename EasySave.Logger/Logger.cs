@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace EasySave.Logger
 {
@@ -21,9 +22,17 @@ namespace EasySave.Logger
         //}
 
         private static object lockObj = new object();
+        private readonly string logFilePath ;
 
-       
-        public string GetLogFileName()
+        public  Logger()
+        {
+            logFilePath = GetLogFileName();
+        }
+        public string LogFilePath
+        {
+            get { return logFilePath; }
+        }
+        public static string GetLogFileName()
         {
             //setx EASYSAVE_LOG_PATH "C:\ProgramData\CESI\EasySave\Logs" 
             string basePath = Environment.GetEnvironmentVariable("EASYSAVE_LOG_PATH") ??
@@ -36,7 +45,7 @@ namespace EasySave.Logger
         }
         public void WriteLog(String name,String fileSource,String fileTarget, long fileSize, double fileTransferTime, bool isError = false)
         {
-            string logFile = GetLogFileName();
+           // string logFile = logFilePath;
             lock (lockObj)
             {
                 var LogEntry = new
@@ -51,22 +60,22 @@ namespace EasySave.Logger
                
                 string jsonData = JsonConvert.SerializeObject(LogEntry, Formatting.Indented);
                 //File.AppendAllText(logFile, jsonData + Environment.NewLine);
-                if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
+                if (!File.Exists(logFilePath) || new FileInfo(logFilePath).Length == 0)
                 {
                     // Initialize file with an empty array if it doesn't exist or is empty
-                    File.WriteAllText(logFile, "[" + jsonData + "]" + Environment.NewLine);
+                    File.WriteAllText(logFilePath, "[" + jsonData + "]" + Environment.NewLine);
                 }
                 else
                 {
                     // Read existing content and remove the last bracket
-                    string existingData = File.ReadAllText(logFile);
+                    string existingData = File.ReadAllText(logFilePath);
                     existingData = existingData.TrimEnd(']', '\r', '\n', ' ');
 
                     // Append the new log entry with a leading comma and close the array
                     existingData += "," + Environment.NewLine + jsonData + "]";
-                    File.WriteAllText(logFile, existingData);
+                    File.WriteAllText(logFilePath, existingData);
                 }
-                Console.Write($"nom: {logFile}");
+                Console.Write($"nom: {logFilePath}");
             }
         }
     }
