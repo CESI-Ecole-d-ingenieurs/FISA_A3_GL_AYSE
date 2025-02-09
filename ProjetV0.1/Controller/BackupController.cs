@@ -44,28 +44,6 @@ namespace ProjetV0._1.Controller
             }
 
         }
-
-        public void DisplayExistingBackups()
-        {
-            if (BackupList.Count == 0)
-            {
-                Console.WriteLine("Aucune sauvegarde disponible !");
-                return;
-            }
-
-            Console.WriteLine("Sauvegardes disponibles :");
-            for (int i = 0; i < BackupList.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {BackupList[i].Name} ({BackupList[i].Type})");
-            }
-        }
-
-        public int GetBackupCount()
-        {
-            return BackupList.Count;
-        }
-
-
         public async Task CreateBackup()
     {
             if (BackupList.Count >= 5)
