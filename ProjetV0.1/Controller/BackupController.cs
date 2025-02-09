@@ -66,6 +66,19 @@ namespace ProjetV0._1.Controller
             }
         }
 
+        public async Task DisplayExistingBackups()
+        {
+            Console.WriteLine(await Translation.Instance.Translate(" Sauvegardes disponibles :"));
+            for (int i = 0; i < BackupList.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {BackupList[i].Name} ({BackupList[i].Type})");
+            }
+        }
+
+        public int GetBackupCount()
+        {
+            return BackupList.Count;
+        }
 
         public async Task CreateBackup()
     {
