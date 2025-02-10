@@ -16,6 +16,8 @@ namespace ProjetV0._1.Controller
         private List<BackupModel> BackupList = new List<BackupModel>();
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
+        //private string RegisteredBackupsPath = "C:\\Users\\lisaj\\OneDrive - Association Cesi Viacesi mail\\A3\\Génie_logiciel\\Projet\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";
+        private string RegisteredBackupsPath = "..\\RegisteredBackups.txt";
         //private StrategieSauvegarde _StrategieSauvegarde;
         //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
         //{
@@ -68,10 +70,21 @@ namespace ProjetV0._1.Controller
 
         public async Task DisplayExistingBackups()
         {
-            Console.WriteLine(await Translation.Instance.Translate(" Sauvegardes disponibles :"));
-            for (int i = 0; i < BackupList.Count; i++)
+            Console.WriteLine(await Translation.Instance.Translate("Sauvegardes disponibles :"));
+            FileInfo fileinfo = new FileInfo(RegisteredBackupsPath);
+            if (fileinfo.Length > 0)
             {
-                Console.WriteLine($"{i + 1}. {BackupList[i].Name} ({BackupList[i].Type})");
+                int lineNumber = 1;
+                Console.WriteLine(await Translation.Instance.Translate("Nom - Source - Destination - Type"));
+                foreach (string line in File.ReadLines(RegisteredBackupsPath))
+                {
+                    Console.WriteLine($"{lineNumber}. {line}");
+                    lineNumber++;
+                }
+            }
+            else
+            {
+                Console.WriteLine(await Translation.Instance.Translate("Aucune sauvegarde enregistrée."));
             }
         }
 
@@ -89,6 +102,7 @@ namespace ProjetV0._1.Controller
         }
             BackupModel sauvegarde = await _backupView.UserAsk();
             BackupList.Add(sauvegarde);
+            File.AppendAllText(RegisteredBackupsPath, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}");
             Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
