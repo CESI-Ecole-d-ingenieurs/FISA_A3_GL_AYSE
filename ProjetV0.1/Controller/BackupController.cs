@@ -23,11 +23,14 @@ namespace ProjetV0._1.Controller
         //{
         //    _StrategieSauvegarde = strategieSauvegarde; 
         //}
+
+        /// Executes selected backups based on user input.
+        /// It retrieves the backup index, initializes the strategy (complete or differential),
+        /// copies the files, updates the state, and logs the execution time.
         public void ExecuteBackup(string input)
         {
             List<int> BackupIndex = ParseJobIndex(input);
-            BackupStateJournal.AddObserver(new ConsoleView()); // 🔹 Ajout de ConsoleView pour afficher la progression
-
+            BackupStateJournal.AddObserver(new ConsoleView()); // Add observer for real-time progress display
             foreach (var index in BackupIndex)
             {
                 if (index - 1 < BackupList.Count && index > 0)
@@ -54,8 +57,8 @@ namespace ProjetV0._1.Controller
                         File.Copy(file, destFile, true);
 
                         processedFiles++;
-                        BackupStateJournal.UpdateProgress(backup.Name); // Mise à jour en temps réel
-                        Thread.Sleep(500); // Ralentissement du programme pour voir la progression
+                        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
+                        Thread.Sleep(500); // Slow down the process for better visualization
                     }
 
                     stopwatch.Stop();
@@ -68,11 +71,14 @@ namespace ProjetV0._1.Controller
             }
         }
 
+        /// Displays the list of existing backups saved in a file.
+        /// If backups exist, it lists them with their name, source, destination, and type.
+        /// If no backups are found, it notifies the user.
         public async Task DisplayExistingBackups()
         {
             Console.WriteLine(await Translation.Instance.Translate("Sauvegardes disponibles :"));
             FileInfo fileinfo = new FileInfo(RegisteredBackupsPath);
-            if (fileinfo.Length > 0)
+            if (fileinfo.Length > 0) // Check if the file is not empty
             {
                 int lineNumber = 1;
                 Console.WriteLine(await Translation.Instance.Translate("Nom - Source - Destination - Type"));
@@ -88,11 +94,14 @@ namespace ProjetV0._1.Controller
             }
         }
 
+        /// Retrieves the number of backups currently stored in memory.
         public int GetBackupCount()
         {
             return BackupList.Count;
         }
 
+        /// Creates a new backup by asking the user for input.
+        /// The backup details are stored in a file and added to the list.
         public async Task CreateBackup()
     {
             if (BackupList.Count >= 5)
@@ -106,6 +115,9 @@ namespace ProjetV0._1.Controller
             Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
+
+        /// Parses the user input to determine which backup jobs to execute.
+        /// Supports individual and range selections (e.g., "1-3" or "1;3").
         public List<int> ParseJobIndex(string input)
         {
             var Indexes = new List<int>();

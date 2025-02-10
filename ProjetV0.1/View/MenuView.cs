@@ -9,6 +9,7 @@ namespace ProjetV0._1.View
 {
     internal class MenuView
     {
+        /// Displays the available actions in the menu and highlights the selected one.
         public async Task DisplayActions(List<string> actions, int selectedIndex)
         {
             Console.Clear();
@@ -26,12 +27,12 @@ namespace ProjetV0._1.View
                 }
             }
         }
-
+        /// Displays an input prompt message to the user.
         public void DisplayInputPrompt(string message)
         {
             Console.WriteLine(message);
         }
-
+        /// Clears the console screen.
         public void ClearScreen()
         {
             Console.Clear();
