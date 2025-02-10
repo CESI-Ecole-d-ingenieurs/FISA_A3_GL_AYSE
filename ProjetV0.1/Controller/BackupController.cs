@@ -24,14 +24,14 @@ namespace ProjetV0._1.Controller
         public void ExecuteBackup(string input)
         {
             List<int> BackupIndex = ParseJobIndex(input);
-            BackupStateJournal.AddObserver(new ConsoleView()); // 🔹 Ajout de ConsoleView pour afficher la progression
+            BackupStateJournal.AddObserver(new ConsoleView()); // Ajout de ConsoleView pour afficher la progression
 
             foreach (var index in BackupIndex)
             {
                 if (index - 1 < BackupList.Count && index > 0)
                 {
                     BackupModel backup = BackupList[index - 1];
-                    _BackupStrategyFactory = backup.Type == "Complète"
+                    _BackupStrategyFactory = backup.Type == "COMPLETE"
                         ? new CompleteBackupFactory()
                         : new DifferentialBackupFactory();
 
@@ -52,13 +52,13 @@ namespace ProjetV0._1.Controller
                         File.Copy(file, destFile, true);
 
                         processedFiles++;
-                        BackupStateJournal.UpdateProgress(backup.Name); // 🔹 Mise à jour en temps réel
-                        Thread.Sleep(500); // 🔹 Ralentissement du programme pour voir la progression
+                        BackupStateJournal.UpdateProgress(backup.Name); // Mise à jour en temps réel
+                        Thread.Sleep(500); // Ralentissement du programme pour voir la progression
                     }
 
                     stopwatch.Stop();
                     state.Progress = 100;
-                    state.State = "Terminé";
+                    state.State = "END";
                     BackupStateJournal.UpdateState(state);
 
                     Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");

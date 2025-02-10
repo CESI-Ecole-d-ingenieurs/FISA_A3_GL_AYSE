@@ -42,9 +42,6 @@ namespace ProjetV0._1.Controller.Strategy
                 // Real-time status updates
                 BackupStateJournal.UpdateProgress(Path.GetFileName(file));
 
-                // Check
-                Console.WriteLine("Appel de DisplayProgress...");
-
                 // Progress Display
                 backupView.DisplayProgress();
             }

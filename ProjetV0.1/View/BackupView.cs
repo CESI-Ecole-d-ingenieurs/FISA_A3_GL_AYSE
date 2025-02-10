@@ -21,10 +21,7 @@ namespace ProjetV0._1.View
             foreach (var state in states)
             {
                 Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
-
-               
             }
-
         }
 
 

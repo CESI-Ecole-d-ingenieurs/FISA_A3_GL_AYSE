@@ -87,7 +87,7 @@ namespace ProjetV0._1.Model
 
                         if (state.RemainingFiles == 0)
                         {
-                            state.State = "COMPLETED";
+                            state.State = "END";
                         }
 
                         SaveState(states);
