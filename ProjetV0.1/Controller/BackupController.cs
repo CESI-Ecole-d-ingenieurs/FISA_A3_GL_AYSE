@@ -17,7 +17,7 @@ namespace ProjetV0._1.Controller
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
         //private string RegisteredBackupsPath = "C:\\Users\\lisaj\\OneDrive - Association Cesi Viacesi mail\\A3\\Génie_logiciel\\Projet\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";
-        private string RegisteredBackupsPath = "..\\RegisteredBackups.txt";
+        private string RegisteredBackupsPath = "..\\registered_backups.txt";
         //private StrategieSauvegarde _StrategieSauvegarde;
         //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
         //{
