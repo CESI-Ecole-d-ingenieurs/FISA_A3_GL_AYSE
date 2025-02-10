@@ -47,7 +47,7 @@ namespace ProjetV0._1.View
 
             while (!exit)
             {
-                // Console.Clear();
+                Console.Clear();
                 Console.WriteLine(await Translation.Instance.Translate("Choisissez le type de la sauvegarde :"));
 
                 for (int i = 0; i < types.Count(); i++)
