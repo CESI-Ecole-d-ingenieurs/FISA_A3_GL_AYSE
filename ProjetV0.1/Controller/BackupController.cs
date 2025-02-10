@@ -36,7 +36,7 @@ namespace ProjetV0._1.Controller
                         : new DifferentialBackupFactory();
 
                     var strategy = _BackupStrategyFactory.CreateBackupStrategy();
-
+                    strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                     BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
                     BackupStateJournal.UpdateState(state);
