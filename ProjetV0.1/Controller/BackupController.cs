@@ -33,7 +33,7 @@ namespace ProjetV0._1.Controller
                 if (index - 1 < BackupList.Count && index > 0)
                 {
                     BackupModel backup = BackupList[index - 1];
-                    _BackupStrategyFactory = backup.Type == "COMPLETE"
+                    _BackupStrategyFactory = backup.Type == "Complète"
                         ? new CompleteBackupFactory()
                         : new DifferentialBackupFactory();
 
