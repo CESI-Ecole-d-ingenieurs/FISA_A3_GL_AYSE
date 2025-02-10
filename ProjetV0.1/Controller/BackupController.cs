@@ -19,12 +19,12 @@ namespace ProjetV0._1.Controller
         //private StrategieSauvegarde _StrategieSauvegarde;
         //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
         //{
-        //    _StrategieSauvegarde = strategieSauvegarde;
+        //    _StrategieSauvegarde = strategieSauvegarde; 
         //}
         public void ExecuteBackup(string input)
         {
             List<int> BackupIndex = ParseJobIndex(input);
-            BackupStateJournal.AddObserver(new ConsoleView()); // Ajout de ConsoleView pour afficher la progression
+            BackupStateJournal.AddObserver(new ConsoleView()); // 🔹 Ajout de ConsoleView pour afficher la progression
 
             foreach (var index in BackupIndex)
             {
