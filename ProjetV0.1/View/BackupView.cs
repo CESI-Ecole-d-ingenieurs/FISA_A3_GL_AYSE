@@ -9,6 +9,8 @@ using translation;
 
 namespace ProjetV0._1.View
 {
+    /// Displays the progress of the backup process.
+    /// Retrieves the backup states and displays their progress percentage.
     internal class BackupView
     {
         public void DisplayProgress()
@@ -24,7 +26,8 @@ namespace ProjetV0._1.View
             }
         }
 
-
+        /// Asks the user for backup details (name, source, destination, and type).
+        /// Provides an interactive menu to select between "Complete" and "Differential" backup.
         public async Task<BackupModel> UserAsk()
         {
 
@@ -50,6 +53,7 @@ namespace ProjetV0._1.View
                 Console.Clear();
                 Console.WriteLine(await Translation.Instance.Translate("Choisissez le type de la sauvegarde :"));
 
+                // Display the list of backup types with a selection cursor
                 for (int i = 0; i < types.Count(); i++)
                 {
                     if (i == selectionIndex)
@@ -64,6 +68,7 @@ namespace ProjetV0._1.View
                     }
                 }
 
+                // Handle user input for navigating the selection menu
                 ConsoleKeyInfo fleche = Console.ReadKey();
                 switch (fleche.Key)
                 {
@@ -91,7 +96,8 @@ namespace ProjetV0._1.View
                         }
                         break;
                 }
-            } 
+            }
+            // Create and return a BackupModel object with user input
             BackupModel _backup = new BackupModel(name, source, destination, type);
             return _backup;
         } 

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.View
 {
+    /// Manages the display of available languages and allows the user to select a language.
     internal class LanguageView
     {
+        /// Displays the list of available languages and highlights the currently selected option.
         public void DisplayLanguages(List<string> languages, int selectionIndex)
         {
             Console.Clear();
@@ -17,7 +19,7 @@ namespace ProjetV0._1.View
             {
                 if (i == selectionIndex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Green; // Highlight the selected language.
                     Console.WriteLine($"> {languages[i]}");
                     Console.ResetColor();
                 }

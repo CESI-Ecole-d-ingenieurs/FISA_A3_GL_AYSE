@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1
 {
+    /// Defines an observer interface for monitoring backup state changes.
     public interface IObserver
     {
+        /// Updates the observer with the latest backup state.
         void Update(BackupState state);
     }
 }

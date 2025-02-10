@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Model
 {
+    /// Represents the language selection model for the application.
     internal class LanguageModel
     {
+        /// List of available languages for selection.
         public List<string> Languages { get; set; } = new List<string> { "Français", "English", "Quitter / Exit" };
+
+        /// Index of the currently selected language in the list.
         public int SelectedLanguage { get; set; }
     }
 }

@@ -23,15 +23,18 @@ class Program
 
         //Men actions_menu = new ActionChoice();
         //await actions_menu.ActionsMenu(translation);
+
+        // Initialize language selection
         LanguageModel languageModel = new LanguageModel();
         LanguageView view = new LanguageView();
         LanguageController languages_menu = new LanguageController(languageModel, view);
-        languages_menu.NavigateLanguages();
+        languages_menu.NavigateLanguages(); // User selects the language
 
+        // Initialize the menu system
         MenuModel menuModel = new MenuModel();
         MenuView menuView = new MenuView();
         MenuController menuController = new MenuController(menuModel, menuView);
-        await menuController.ManageActions();
+        await menuController.ManageActions(); // Starts the menu loop
 
 
         //-------------------------------------------------------------

@@ -11,6 +11,7 @@ namespace ProjetV0._1.Model
     {
         /// List of available actions in the menu.
         public List<string> Actions { get; } = new List<string> { "Création de sauvegarde", "Exécution de sauvegarde", "Consulter les logs", "Quitter l'application" };
+
         /// BackupController instance to manage backup operations.
         public BackupController _BackupController { get; set; } = new BackupController();
 

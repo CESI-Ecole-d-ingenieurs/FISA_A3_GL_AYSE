@@ -11,8 +11,9 @@ namespace ProjetV0._1.Model
     {
         /// Instance of the Logger class to manage logging operations.
         protected Logger logger = new Logger();
+
         /// Static variable that stores the path of the log file.
-        /// It retrieves the log file name from the Logger class.
+        /// It retrieves the log file name from the Logger class DLL.
         public static string LogFilePath { get; set; }=Logger.GetLogFileName();
     
     }
