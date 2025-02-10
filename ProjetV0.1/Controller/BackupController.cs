@@ -102,7 +102,7 @@ namespace ProjetV0._1.Controller
         }
             BackupModel sauvegarde = await _backupView.UserAsk();
             BackupList.Add(sauvegarde);
-            File.AppendAllText(RegisteredBackupsPath, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}");
+            File.AppendAllText(RegisteredBackupsPath, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}\n");
             Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
