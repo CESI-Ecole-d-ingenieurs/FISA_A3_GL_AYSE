@@ -137,8 +137,8 @@ namespace ProjetV0._1.Controller
     {
             if (BackupList.Count >= 5)
             {
-                Console.WriteLine(await Translation.Instance.Translate("Maximum  5 Sauvegarde"));
-                await Task.Delay(1000);
+                Console.WriteLine(await Translation.Instance.Translate("Vous pouvez enregistrer 5 sauvegades au maximum."));
+                Console.ReadLine();
                 return;
             }
             BackupModel sauvegarde = await _backupView.UserAsk();
