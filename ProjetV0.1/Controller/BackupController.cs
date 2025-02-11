@@ -140,6 +140,11 @@ namespace ProjetV0._1.Controller
             }
             BackupModel sauvegarde = await _backupView.UserAsk();
             BackupList.Add(sauvegarde);
+            if (!Directory.Exists(Path.GetDirectoryName(GlobalVariables.PathBackup)))
+            {
+                // Créer le dossier s'il n'existe pas
+                Directory.CreateDirectory(Path.GetDirectoryName(GlobalVariables.PathBackup));
+            }
             File.AppendAllText(GlobalVariables.PathBackup, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}\n");
             Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
