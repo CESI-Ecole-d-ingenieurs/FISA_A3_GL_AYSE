@@ -47,7 +47,7 @@ namespace ProjetV0._1.Controller
 
 
                             BackupList.Add(sauvegarde);
-                            Console.WriteLine("hu");
+                            //Console.WriteLine("hu");
                         }
                     }
                 }

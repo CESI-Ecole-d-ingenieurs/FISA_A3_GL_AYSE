@@ -10,7 +10,7 @@ namespace ProjetV0._1.Model
     /// Manages backup states, tracks progress, and notifies observers.
     public class BackupStateJournal
     {
-            private static readonly string stateFilePath = "backup_state.json";
+        private static readonly string stateFilePath = GlobalVariables.PathBackup;
             private static readonly object lockObj = new();
             private static List<IObserver> observers = new List<IObserver>();
 
