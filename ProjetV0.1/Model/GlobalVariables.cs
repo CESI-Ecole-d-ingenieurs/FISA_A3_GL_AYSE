@@ -15,6 +15,11 @@ namespace ProjetV0._1.Model
         /// Static variable that stores the path of the log file.
         /// It retrieves the log file name from the Logger class DLL.
         public static string LogFilePath { get; set; }=Logger.GetLogFileName();
-    
+        public static string PathBackup = Path.Combine(Environment.GetEnvironmentVariable("EASYSAVE_Backup_PATH") ??
+                   Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "CESI", "EasySave", "Backup"), "Backup.txt") ;
+       
+
+
+
     }
 }
