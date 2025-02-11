@@ -1,2 +1,5 @@
-test - C:\Users\lisaj\OneDrive - Association Cesi Viacesi mail\A3\Génie_logiciel\Projet\sauvegarde - C:\Users\lisaj\OneDrive - Association Cesi Viacesi mail\A3\Génie_logiciel\Projet\sauvegarde_bis - Complète
-test2 - C:\Users\lisaj\OneDrive - Association Cesi Viacesi mail\A3\Génie_logiciel\Projet\sauvegarde2 - C:\Users\lisaj\OneDrive - Association Cesi Viacesi mail\A3\Génie_logiciel\Projet\sauvegarde2_bis - Complète
+Test - C:\Users\salem\OneDrive\Bureau\Aya - C:\Users\salem\OneDrive\Bureau\AyaSALEM* - Complète
+tt - C:\Users\salem\OneDrive\Bureau\Aya - C:\Users\salem\OneDrive\Bureau\AyaSALEM - Complète
+E - E - E - Différentielle
+F - C:\Users\salem\OneDrive\Bureau\AyaSALEM - C:\Users\salem\OneDrive\Bureau\AyaSALEM - Différentielle
+D - D - D - Complète

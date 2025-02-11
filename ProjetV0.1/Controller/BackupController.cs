@@ -13,7 +13,7 @@ namespace ProjetV0._1.Controller
 {
     internal class BackupController
     {
-        private List<BackupModel> BackupList = new List<BackupModel>();
+        private List<BackupModel> BackupList ;
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
         //private string RegisteredBackupsPath = "C:\\Users\\lisaj\\OneDrive - Association Cesi Viacesi mail\\A3\\Génie_logiciel\\Projet\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";
@@ -27,13 +27,42 @@ namespace ProjetV0._1.Controller
         /// Executes selected backups based on user input.
         /// It retrieves the backup index, initializes the strategy (complete or differential),
         /// copies the files, updates the state, and logs the execution time.
+
+        public BackupController()
+        {
+            string filePath = "C:\\Users\\salem\\source\\repos\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";  // Assurez-vous que le chemin est correct
+            BackupList = new List<BackupModel>();
+
+            try
+            {
+                using (StreamReader sr = new StreamReader(filePath))
+                {
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
+                    {
+                        string[] parts = line.Split(" - ");
+                        if (parts.Length >= 4)
+                        {
+                            BackupModel sauvegarde = new BackupModel(parts[0], parts[1], parts[2], parts[3]);
+
+
+                            BackupList.Add(sauvegarde);
+                            Console.WriteLine("hu");
+                        }
+                    }
+                }
+                Console.WriteLine("hu");
+            }
+            catch { }
+            }
+        
         public void ExecuteBackup(string input)
         {
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(new ConsoleView()); // Add observer for real-time progress display
-            foreach (var index in BackupIndex)
+                    foreach (var index in BackupIndex)
             {
-                if (index - 1 < BackupList.Count && index > 0)
+                if (index - 1 < NumberLinesFile() && index > 0)
                 {
                     BackupModel backup = BackupList[index - 1];
                     _BackupStrategyFactory = backup.Type == "Complète"
@@ -105,10 +134,10 @@ namespace ProjetV0._1.Controller
         public async Task CreateBackup()
     {
             if (BackupList.Count >= 5)
-        {
+            {
                 Console.WriteLine(await Translation.Instance.Translate("Maximum  5 Sauvegarde"));
                 return;
-        }
+            }
             BackupModel sauvegarde = await _backupView.UserAsk();
             BackupList.Add(sauvegarde);
             File.AppendAllText(RegisteredBackupsPath, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}\n");
@@ -148,5 +177,30 @@ namespace ProjetV0._1.Controller
 
             return Indexes;
         }
+    public int NumberLinesFile()
+        {
+            int lineCount = 0;
+
+            try
+            {
+                using (StreamReader sr = new StreamReader("C:\\Users\\salem\\source\\repos\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt"))
+                {
+                    while (sr.ReadLine() != null)
+                    {
+                        lineCount++;
+                    }
+                }
+
+               // Console.WriteLine("Le nombre de lignes dans le fichier est : " + lineCount);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Une erreur s'est produite lors de la lecture du fichier:");
+                Console.WriteLine(e.Message);
+            }
+            return lineCount;
+        }
+    
     }
+
 }
