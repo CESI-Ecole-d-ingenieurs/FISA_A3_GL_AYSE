@@ -30,7 +30,7 @@ namespace ProjetV0._1.Controller
 
         public BackupController()
         {
-            string filePath = "C:\\Users\\salem\\source\\repos\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";  // Assurez-vous que le chemin est correct
+            string filePath = GlobalVariables.PathBackup;  // Assurez-vous que le chemin est correct
             BackupList = new List<BackupModel>();
 
             try
@@ -183,7 +183,7 @@ namespace ProjetV0._1.Controller
 
             try
             {
-                using (StreamReader sr = new StreamReader("C:\\Users\\salem\\source\\repos\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt"))
+                using (StreamReader sr = new StreamReader(GlobalVariables.PathBackup))
                 {
                     while (sr.ReadLine() != null)
                     {

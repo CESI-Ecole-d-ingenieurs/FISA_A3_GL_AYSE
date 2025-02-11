@@ -1,5 +1,2 @@
-Test - C:\Users\salem\OneDrive\Bureau\Aya - C:\Users\salem\OneDrive\Bureau\AyaSALEM* - Complète
-tt - C:\Users\salem\OneDrive\Bureau\Aya - C:\Users\salem\OneDrive\Bureau\AyaSALEM - Complète
-E - E - E - Différentielle
-F - C:\Users\salem\OneDrive\Bureau\AyaSALEM - C:\Users\salem\OneDrive\Bureau\AyaSALEM - Différentielle
-D - D - D - Complète
+A - C:\Users\salem\OneDrive\Bureau\Aya - C:\Users\salem\OneDrive\Bureau\AyaSALEM - Complète
+AYA - C:\Users\salem\OneDrive\Bureau\AyaSALEM - C:\Users\salem\OneDrive\Bureau\AyaS - Complète
