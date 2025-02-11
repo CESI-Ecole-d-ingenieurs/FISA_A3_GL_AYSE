@@ -20,9 +20,4 @@
     <ProjectReference Include="..\EasySave.Logger\EasySave.Logger.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Documentations\" />
-    <Folder Include="Annexes\" />
-  </ItemGroup>
-
 </Project>
