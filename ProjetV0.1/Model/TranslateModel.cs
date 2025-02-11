@@ -8,18 +8,15 @@ using translation;
 namespace ProjetV0._1.Model
 {
     /// This class is responsible for managing translation settings in the application.
-    /// It uses the Singleton pattern to ensure a single instance of the translation service.
     internal class TranslateModel
     {
-        /// Singleton instance of the Translation class.
         /// Ensures only one instance is used throughout the application.
         private static Translation _instance;
 
         /// Lock object for thread safety in a multi-threaded environment.
         public static readonly object _lock = new object();
 
-        /// Default translation strategy set to English.
-        /// Can be changed dynamically during runtime.
+        /// Default translation strategy set to English. Can be changed dynamically during runtime.
         public ITranslateStrategy _strategy = new English();
 
     }

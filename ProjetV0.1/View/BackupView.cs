@@ -9,10 +9,11 @@ using translation;
 
 namespace ProjetV0._1.View
 {
-    /// Displays the progress of the backup process.
-    /// Retrieves the backup states and displays their progress percentage.
+
     internal class BackupView
     {
+        /// Displays the progress of the backup process.
+        /// Retrieves the backup states and displays their progress percentage.
         public void DisplayProgress()
         {
             var states = BackupStateJournal.GetState();
@@ -27,7 +28,6 @@ namespace ProjetV0._1.View
         }
 
         /// Asks the user for backup details (name, source, destination, and type).
-        /// Provides an interactive menu to select between "Complete" and "Differential" backup.
         public async Task<BackupModel> UserAsk()
         {
 
@@ -68,7 +68,6 @@ namespace ProjetV0._1.View
                     }
                 }
 
-                // Handle user input for navigating the selection menu
                 ConsoleKeyInfo fleche = Console.ReadKey();
                 switch (fleche.Key)
                 {
@@ -97,7 +96,6 @@ namespace ProjetV0._1.View
                         break;
                 }
             }
-            // Create and return a BackupModel object with user input
             BackupModel _backup = new BackupModel(name, source, destination, type);
             return _backup;
         } 

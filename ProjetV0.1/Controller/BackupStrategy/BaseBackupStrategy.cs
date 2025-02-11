@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Controller.Strategy
 {
-    /// Base class for backup strategies.
     /// Implements common methods for backup operations and logging.
     internal abstract class BaseBackupStrategy : BackupStrategy
     {
@@ -18,8 +17,7 @@ namespace ProjetV0._1.Controller.Strategy
         /// BackupView instance for displaying backup progress.
         protected BackupView backupView = new BackupView();
 
-        /// Abstract method that must be implemented by derived classes
-        /// to execute a specific backup strategy.
+        /// Abstract method that must be implemented by derived classes to execute a specific backup strategy.
         public abstract void ExecuteBackup(string source, string target);
         /// Ensures that a directory exists. If not, it creates the directory.
         protected void DirectoryExist(string path)
@@ -30,8 +28,7 @@ namespace ProjetV0._1.Controller.Strategy
             }
         }
 
-        /// Copies a file from the source directory to the target directory,
-        /// logs the operation, and updates real-time progress.
+        /// Copies a file from the source directory to the target directory, logs the operation, and updates real-time progress.
         public void BackupFile(string file, string source, string target)
         {
             var targetFile = file.Replace(source, target);
@@ -50,9 +47,6 @@ namespace ProjetV0._1.Controller.Strategy
 
                 // Real-time status updates
                 BackupStateJournal.UpdateProgress(Path.GetFileName(file));
-
-                // Check
-                Console.WriteLine("Appel de DisplayProgress...");
 
                 // Progress Display
                 backupView.DisplayProgress();

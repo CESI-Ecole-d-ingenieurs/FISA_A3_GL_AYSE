@@ -9,8 +9,6 @@ using translation;
 
 namespace ProjetV0._1.Controller
 {
-    /// Controls language selection in the application.
-    /// Manages user interactions for choosing a language.
     internal class LanguageController
     {
         private LanguageModel model;
@@ -38,17 +36,14 @@ namespace ProjetV0._1.Controller
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        // Moves up in the language selection list
                         model.SelectedLanguage = (model.SelectedLanguage == 0) ? model.Languages.Count - 1 : model.SelectedLanguage - 1;
                         break;
 
                     case ConsoleKey.DownArrow:
-                        // Moves down in the language selection list
                         model.SelectedLanguage = (model.SelectedLanguage == model.Languages.Count - 1) ? 0 : model.SelectedLanguage + 1;
                         break;
 
                     case ConsoleKey.Enter:
-                        // Confirms the language selection
                         languageSelected = ApplyLanguageSelection();
                         break;
                 }
@@ -62,7 +57,6 @@ namespace ProjetV0._1.Controller
             switch (model.Languages[model.SelectedLanguage])
             {
                 case "Français":
-                    // Sets translation strategy to French
                     Translation.Instance.Set_strategy(new French());
                     //Console.WriteLine(await traduction.Traduire(texte));
                     //await menu_actions.MenuActions();
@@ -71,7 +65,6 @@ namespace ProjetV0._1.Controller
                 //break;
 
                 case "English":
-                    // Sets translation strategy to English
                     Translation.Instance.Set_strategy(new English());
                     //Console.WriteLine(await traduction.Traduire(texte));
                     //await menu_actions.MenuActions();

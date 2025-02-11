@@ -16,19 +16,15 @@ namespace ProjetV0._1.View
         /// Displays both a textual and graphical progress representation.
         public void Update(BackupState state)
         {
-            // Displays the backup progress using the BackupView.
             //Console.WriteLine($"[Backup: {state.Name}] Progress: {state.Progress}% - State: {state.State}");
             _backupView.DisplayProgress();
 
             // Progress bar visualization in the console.
             Console.Write("[");
-            int progressBarWidth = 30; // Defines the total width of the progress bar.
+            int progressBarWidth = 30;
             int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
-            // Fill completed progress blocks.
             Console.Write(new string('█', progressBlocks));
-            // Fill remaining blocks with placeholders.
             Console.Write(new string('-', progressBarWidth - progressBlocks));
-            // Display progress percentage.
             Console.Write($"] {state.Progress}%");
             Console.WriteLine();
             // Brief delay to make updates visible.

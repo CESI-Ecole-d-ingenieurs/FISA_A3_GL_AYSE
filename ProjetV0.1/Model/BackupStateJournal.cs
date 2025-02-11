@@ -101,7 +101,7 @@ namespace ProjetV0._1.Model
                         SaveState(states);
                         NotifyObservers(state);
 
-                    Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%"); // Vérification
+                    Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%"); 
                 }
                 }
             }

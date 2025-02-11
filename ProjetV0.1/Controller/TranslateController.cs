@@ -6,15 +6,13 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace translation
 {
-    /// Singleton class responsible for handling translations using Google Translate API.
     public class Translation
     {
         private static Translation _instance;
         private static readonly object _lock = new object();
         public ITranslateStrategy _strategy=new English(); // Default translation strategy set to English
 
-        /// Provides a single instance of the Translation class (Singleton Pattern).
-        /// Ensures thread safety.
+        /// Provides a single instance of the Translation class
         public static Translation Instance
         {
             get

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.View
 {
-    /// Manages the display of available languages and allows the user to select a language.
     internal class LanguageView
     {
         /// Displays the list of available languages and highlights the currently selected option.

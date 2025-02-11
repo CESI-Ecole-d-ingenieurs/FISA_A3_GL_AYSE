@@ -15,22 +15,19 @@ namespace ProjetV0._1.Controller.BackupFactory
         BackupStrategy CreateBackupStrategy();
     }
 
-    /// Factory class responsible for creating complete backup strategies.
+
     /// Implements the BackupStrategyFactory interface.
     public class CompleteBackupFactory : BackupStrategyFactory
     {
-        /// Creates and returns a new instance of the CompleteBackupStrategy.
         public BackupStrategy CreateBackupStrategy()
         {
             return new CompleteBackupStrategy();
         }
     }
 
-    /// Factory class responsible for creating differential backup strategies.
     /// Implements the BackupStrategyFactory interface.
     public class DifferentialBackupFactory : BackupStrategyFactory
     {
-        /// Creates and returns a new instance of the DifferentialBackupStrategy.
         public BackupStrategy CreateBackupStrategy()
         {
             return new DifferentialBackupStrategy();
