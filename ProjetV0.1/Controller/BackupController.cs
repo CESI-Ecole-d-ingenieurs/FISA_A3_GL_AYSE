@@ -64,6 +64,8 @@ namespace ProjetV0._1.Controller
             {
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
+                    
+                    
                     BackupModel backup = BackupList[index - 1];
                     _BackupStrategyFactory = backup.Type == "Complète"
                         ? new CompleteBackupFactory()

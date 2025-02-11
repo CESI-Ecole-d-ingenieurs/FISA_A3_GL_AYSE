@@ -19,7 +19,8 @@ namespace ProjetV0._1.Model
         private static String BasePath = Environment.GetEnvironmentVariable("EASYSAVE_Backup_PATH") ??
                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "CESI", "EasySave", "Backup");
         public static string PathBackup = Path.Combine(BasePath, "Backup.txt") ;
-       
+        public static string PathTempsReel = Path.Combine(BasePath, "backup_state.json");
+
 
 
 

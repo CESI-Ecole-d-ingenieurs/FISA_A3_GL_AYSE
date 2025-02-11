@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Model
 {
-    /// Manages backup states, tracks progress, and notifies observers.  
+    /// Manages backup states, tracks progress, and notifies observers.
     public class BackupStateJournal
     {
-        private static readonly string stateFilePath = GlobalVariables.PathBackup;
+            private static readonly string stateFilePath = GlobalVariables.PathTempsReel;
             private static readonly object lockObj = new();
             private static List<IObserver> observers = new List<IObserver>();
 
