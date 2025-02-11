@@ -106,12 +106,12 @@ namespace ProjetV0._1.Controller
         public async Task DisplayExistingBackups()
         {
             Console.WriteLine(await Translation.Instance.Translate("Sauvegardes disponibles :"));
-            FileInfo fileinfo = new FileInfo(RegisteredBackupsPath);
+            FileInfo fileinfo = new FileInfo(GlobalVariables.PathBackup);
             if (fileinfo.Length > 0) // Check if the file is not empty
             {
                 int lineNumber = 1;
                 Console.WriteLine(await Translation.Instance.Translate("Nom - Source - Destination - Type"));
-                foreach (string line in File.ReadLines(RegisteredBackupsPath))
+                foreach (string line in File.ReadLines(GlobalVariables.PathBackup))
                 {
                     Console.WriteLine($"{lineNumber}. {line}");
                     lineNumber++;
