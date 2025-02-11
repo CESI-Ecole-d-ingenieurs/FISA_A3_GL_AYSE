@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Model
 {
+    /// Represents the state of a backup operation, tracking progress and metadata.
     public class BackupState
     {
         public string Name { get; set; }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using EasySave.Logger;
+using Newtonsoft.Json.Linq;
+using ProjetV0._1.Controller;
 using ProjetV0._1.Model;
 using System;
 using System.Collections.Generic;
@@ -9,77 +11,65 @@ using System.Threading.Tasks;
 
 namespace ProjetV0._1.Controller.Strategy
 {
-    public class DifferentialBackupStrategy : BackupStrategy
+    internal class DifferentialBackupStrategy : BaseBackupStrategy
     {
-        public void ExecuteBackup(string Source, string target)
+        /// Executes a differential backup by copying only modified files since the last backup.
+        public override void ExecuteBackup(string source, string target)
         {
-            //Console.WriteLine($"Sauvegarde de {Source} à {target}.");
-            string logfile = GlobalVariables.LogFile;
-            // Si destination n'existe pas cette focntion.Net le crée
             DirectoryExist(target);
 
-            // Copiez tous les répertoires et les sous-répertoires même vides
-            foreach (var directory in Directory.GetDirectories(Source, "*", SearchOption.AllDirectories))
+            var state = BackupStateJournal.ComputeState("DifferentialBackup", source, target);
+
+            backupView.DisplayProgress();
+
+            foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {
-                var targetDirectory = directory.Replace(Source, target);
+                var targetDirectory = directory.Replace(source, target);
                 DirectoryExist(targetDirectory);
             }
 
-            foreach (var file in Directory.GetFiles(Source, "*.*", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
-                var targetFile = file.Replace(Source, target);
-                DateTime TimeOfLastBackup = DateOfLastBackup(logfile, targetFile, target);
+                var targetFile = file.Replace(source, target);
+
+                DateTime lastBackupTime = DateOfLastBackup(Logger.GetLogFileName(), file, targetFile);
                 var fileInfo = new FileInfo(file);
-                if (fileInfo.LastWriteTimeUtc > TimeOfLastBackup)
+
+                if (fileInfo.LastWriteTimeUtc > lastBackupTime)
                 {
-                    File.Copy(file, targetFile, true);
+                    BackupFile(file, source, target);
                 }
-
             }
-
-
-            Console.WriteLine("Sauvegarde Diff reussi");
         }
 
-        // Méthode pour s'assurer que le répertoire existe
-        private void DirectoryExist(string path)
+        /// Determines the last backup date of a given file based on the log history.
+        /// It searches the log file to find the most recent backup date of the given file.
+        private DateTime DateOfLastBackup(string logFile, string source, string target)
         {
-            if (!Directory.Exists(path))
+            DateTime lastBackupTime = DateTime.MinValue;
+
+            if (File.Exists(logFile))
             {
-                Directory.CreateDirectory(path);
-            }
+                string jsonLog = File.ReadAllText(logFile);
+                var logs = Newtonsoft.Json.Linq.JArray.Parse(jsonLog);
 
-        }
-
-
-        private DateTime DateOfLastBackup(string LogFile, string source, string tagret)
-        {
-            DateTime LastBackupTime = DateTime.MinValue;
-
-            if (File.Exists(LogFile))
-            {
-                string jsonLog = File.ReadAllText(LogFile);
-                JArray logs = JArray.Parse(jsonLog);
-
-                foreach (JObject log in logs)
+                foreach (var log in logs)
                 {
                     string logSource = (string)log["FileSource"];
                     string logDestination = (string)log["FileTarget"];
 
-                    if (logSource == source && logDestination == tagret)
+                    if (logSource == source && logDestination == target)
                     {
-                        DateTime LogTime = DateTime.Parse((string)log["time"], CultureInfo.InvariantCulture);
-
-                        // Update lastBackupTime if the current log's time is later than what was previously found.
-                        if (LogTime > LastBackupTime)
+                        DateTime logTime = DateTime.Parse((string)log["Date"], System.Globalization.CultureInfo.InvariantCulture);
+                        if (logTime > lastBackupTime)
                         {
-                            LastBackupTime = LogTime;
+                            lastBackupTime = logTime;
                         }
                     }
                 }
             }
-
-            return LastBackupTime;
+            return lastBackupTime;
         }
     }
 }
+

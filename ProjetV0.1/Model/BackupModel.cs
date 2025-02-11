@@ -7,6 +7,7 @@ using System.Xml.Linq;
 
 namespace ProjetV0._1.Model
 {
+    /// Represents a backup job with its properties such as name, source, target, and type.
     internal class BackupModel
     {
         public string Name { get; set; }

@@ -9,6 +9,7 @@ namespace ProjetV0._1
 {
     public interface IObserver
     {
+        /// Updates the observer with the latest backup state.
         void Update(BackupState state);
     }
 }

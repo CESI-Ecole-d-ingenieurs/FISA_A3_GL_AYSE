@@ -10,6 +10,8 @@ namespace ProjetV0._1.Model
     internal class MenuModel
     {
         public List<string> Actions { get; } = new List<string> { "Création de sauvegarde", "Exécution de sauvegarde", "Consulter les logs", "Quitter l'application" };
+
+        /// BackupController instance to manage backup operations.
         public BackupController _BackupController { get; set; } = new BackupController();
 
     }

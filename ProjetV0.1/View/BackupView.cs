@@ -9,9 +9,25 @@ using translation;
 
 namespace ProjetV0._1.View
 {
+
     internal class BackupView
     {
+        /// Displays the progress of the backup process.
+        /// Retrieves the backup states and displays their progress percentage.
+        public void DisplayProgress()
+        {
+            var states = BackupStateJournal.GetState();
+            Console.Clear();
+            Console.WriteLine("Mise à jour de la progression..."); // Check
 
+            Console.WriteLine("Progression des sauvegardes :");
+            foreach (var state in states)
+            {
+                Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
+            }
+        }
+
+        /// Asks the user for backup details (name, source, destination, and type).
         public async Task<BackupModel> UserAsk()
         {
 
@@ -34,9 +50,10 @@ namespace ProjetV0._1.View
 
             while (!exit)
             {
-                // Console.Clear();
+                Console.Clear();
                 Console.WriteLine(await Translation.Instance.Translate("Choisissez le type de la sauvegarde :"));
 
+                // Display the list of backup types with a selection cursor
                 for (int i = 0; i < types.Count(); i++)
                 {
                     if (i == selectionIndex)
@@ -78,7 +95,7 @@ namespace ProjetV0._1.View
                         }
                         break;
                 }
-            } 
+            }
             BackupModel _backup = new BackupModel(name, source, destination, type);
             return _backup;
         } 
