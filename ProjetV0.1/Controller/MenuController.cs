@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Metadata;
 using EasySave.Logger;
+using System.Reflection;
 
 namespace ProjetV0._1.Controller
 {
@@ -45,6 +46,30 @@ namespace ProjetV0._1.Controller
                     case ConsoleKey.Enter:
                         Console.Clear();
                         exit = await ExecuteAction(selectionIndex); // Execute the selected action
+                        break;
+                }
+            }
+        }
+        public async Task ChoisirFroamtLog()
+        {
+            bool exit = false;
+            while (!exit)
+            {
+                Console.Clear();
+                await view.DisplayActions(model.LogFormats, selectionIndex);// Display available menu actions
+                ConsoleKeyInfo _key = Console.ReadKey();
+                // Handle user key input for navigation
+                switch (_key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        selectionIndex = (selectionIndex == 0) ? model.LogFormats.Count - 1 : selectionIndex - 1;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        selectionIndex = (selectionIndex == model.LogFormats.Count - 1) ? 0 : selectionIndex + 1;
+                        break;
+                    case ConsoleKey.Enter:
+                        Console.Clear();
+                        exit = await HandleLogFormat(selectionIndex); // Execute the selected action
                         break;
                 }
             }
@@ -95,10 +120,37 @@ namespace ProjetV0._1.Controller
         /// Handles the backup execution process by displaying available backups and executing the selected one.
         private async Task HandleBackupExecution()
         {
+            view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));
+            await ChoisirFroamtLog();
             model._BackupController.DisplayExistingBackups(); // Show available backups to the user
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
             model._BackupController.ExecuteBackup(indexes); // Execute the selected backup
         }
+
+        private async Task<bool> HandleLogFormat(int index)
+        {
+            switch (index)
+            {
+                case 0: //JSON
+                     await AddBackupExtension(".json");
+                    return true;
+                case 1: // XML
+                     await AddBackupExtension(".xml");
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        private async Task AddBackupExtension(String ext)
+        {
+            GlobalVariables.LogFilePath=Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
+            GlobalVariables.PathTempsReel= Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
+            //GlobalVariables.PathTempsReel= GlobalVariables.PathTempsReel+ext;
+        }
+
+
+
+
     }
 }

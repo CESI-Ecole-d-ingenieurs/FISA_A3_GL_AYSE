@@ -6,24 +6,15 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using System.Dynamic;
+using System.Xml.Linq;
 
 namespace EasySave.Logger
 {
     public class Logger
     {
-        //public class LogEntry
-        //{
-        //    public string Name { get; set; }
-        //    public string FileSource { get; set; }
-        //    public string FileTarget { get; set; }
-        //    public long FileSize { get; set; }
-        //    public double FileTransferTime { get; set; }
-        //    public string Date { get; set; }
-        //}
-
         // Synchronization object to ensure thread safety during file writing
         private static object lockObj = new object();
-        private readonly string logFilePath; // Stores the path of the log file
+        private static string logFilePath; // Stores the path of the log file
 
         /// Constructor initializes the log file path.
         public Logger()
@@ -35,6 +26,7 @@ namespace EasySave.Logger
         public string LogFilePath
         {
             get { return logFilePath; }
+            set { logFilePath = value; }
         }
 
         /// Generates the log file name based on the current date and stores logs in a specific directory.
@@ -52,15 +44,15 @@ namespace EasySave.Logger
         }
 
         /// Writes a log entry for a backup operation.
-        public void WriteLog(String name,String fileSource,String fileTarget, long fileSize, double fileTransferTime, bool isError = false)
+        public void WriteLog(String name, String fileSource, String fileTarget, long fileSize, double fileTransferTime, bool isError = false)
         {
-           // string logFile = logFilePath;
+            // string logFile = logFilePath;
             lock (lockObj) // Ensures thread safety while writing to the log file
             {
                 var LogEntry = new
                 {
                     Name = name,
-                    FileSource =  fileSource,
+                    FileSource = fileSource,
                     FileTarget = fileTarget,
                     FileSize = fileSize,
                     FileTransferTime = isError ? -1 : fileTransferTime,
@@ -69,7 +61,7 @@ namespace EasySave.Logger
 
                 // Convert log entry to JSON format
                 string jsonData = JsonConvert.SerializeObject(LogEntry, Formatting.Indented);
-                //File.AppendAllText(logFile, jsonData + Environment.NewLine);
+
                 // Check if the file exists and is not empty
                 if (!File.Exists(logFilePath) || new FileInfo(logFilePath).Length == 0)
                 {
@@ -88,6 +80,38 @@ namespace EasySave.Logger
                     File.WriteAllText(logFilePath, existingData);
                 }
                 Console.Write($"nom: {logFilePath}");
+            }
+        }
+        public void WriteLogXML(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime, bool isError = false)
+        {
+            this.LogFilePath= Path.ChangeExtension(LogFilePath, ".xml");
+            lock (lockObj) // Ensures thread safety while writing to the log file
+            {
+                XElement logEntry = new XElement("LogEntry",
+                    new XElement("Name", name),
+                    new XElement("FileSource", fileSource),
+                    new XElement("FileTarget", fileTarget),
+                    new XElement("FileSize", fileSize),
+                    new XElement("FileTransferTime", isError ? -1 : fileTransferTime),
+                    new XElement("Date", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"))
+                );
+
+                // Check if the log file exists
+                if (!File.Exists(logFilePath))
+                {
+                    // Create a new XML document with a root element
+                    XDocument doc = new XDocument(
+                        new XElement("Logs", logEntry) // The root element
+                    );
+                    doc.Save(logFilePath);
+                }
+                else
+                {
+                    // Load the existing XML document
+                    XDocument doc = XDocument.Load(logFilePath);
+                    doc.Root.Add(logEntry);
+                    doc.Save(logFilePath);
+                }
             }
         }
     }

@@ -43,7 +43,16 @@ namespace ProjetV0._1.Controller.Strategy
                 var fileInfo = new FileInfo(file);
                 var fileSize = fileInfo.Length;
                 // Log the backup operation
-                logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration);
+                if (CheckFileExtension(GlobalVariables.LogFilePath, ".xml"))
+                {
+                    logger.WriteLogXML(Path.GetFileName(file), file, targetFile, fileSize, duration);
+                   
+                }
+                else
+                {
+                    logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration);
+                }
+                  
 
                 // Real-time status updates
                 BackupStateJournal.UpdateProgress(Path.GetFileName(file));
@@ -57,6 +66,10 @@ namespace ProjetV0._1.Controller.Strategy
                 logger.WriteLog(Path.GetFileName(file), file, targetFile, 0, 0, true);
                 Console.WriteLine($"Error copying file {file}: {ex.Message}");
             }
+        }
+        public static bool CheckFileExtension(string fileName, string extension)
+        {
+            return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

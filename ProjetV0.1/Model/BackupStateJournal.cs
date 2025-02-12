@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace ProjetV0._1.Model
 {
@@ -112,14 +115,41 @@ namespace ProjetV0._1.Model
                 if (!File.Exists(stateFilePath)) return new List<BackupState>();
 
                 string existingData = File.ReadAllText(stateFilePath);
-                return string.IsNullOrEmpty(existingData) ? new List<BackupState>() : JsonSerializer.Deserialize<List<BackupState>>(existingData) ?? new List<BackupState>();
+            //return string.IsNullOrEmpty(existingData) ? new List<BackupState>() : JsonSerializer.Deserialize<List<BackupState>>(existingData) ?? new List<BackupState>();
+            if(string.IsNullOrEmpty(existingData)) return new List<BackupState>();
+
+            if (CheckFileExtension(stateFilePath, ".xml"))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(List<BackupState>), new XmlRootAttribute("Root")); // Remplacez "Root" par le nom de l'élément racine approprié dans votre XML
+
+                using (StreamReader reader = new StreamReader(stateFilePath))
+                {
+                    return (List<BackupState>)serializer.Deserialize(reader) ?? new List<BackupState>();
+                }
+            }
+            else
+            {
+                // Deserialize JSON
+                return JsonConvert.DeserializeObject<List<BackupState>>(existingData) ?? new List<BackupState>();
+            }
+        
             }
             
             /// Saves the backup states to the JSON file.
             private static void SaveState(List<BackupState> states)
             {
-                string jsonData = JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true });
+            // string jsonData = JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true });
+            string jsonData = JsonConvert.SerializeObject(states, Formatting.Indented);
+
+            if (CheckFileExtension(stateFilePath, ".xml"))
+            {
+                var xmlDoc = JsonConvert.DeserializeXNode($"{{'Root':{jsonData}}}", "Root");
+                xmlDoc.Save(stateFilePath);
+            }
+            else
+            {
                 File.WriteAllText(stateFilePath, jsonData);
+            }
             }
 
         ///To get the state of the backup
@@ -130,6 +160,9 @@ namespace ProjetV0._1.Model
                 return LoadState();
             }
         }
-
+        public static bool CheckFileExtension(string fileName, string extension)
+        {
+            return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

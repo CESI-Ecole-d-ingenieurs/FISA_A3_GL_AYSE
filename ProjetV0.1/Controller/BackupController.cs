@@ -16,13 +16,7 @@ namespace ProjetV0._1.Controller
         private List<BackupModel> BackupList ;
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
-        //private string RegisteredBackupsPath = "C:\\Users\\lisaj\\OneDrive - Association Cesi Viacesi mail\\A3\\Génie_logiciel\\Projet\\FISA_A3_GL_AYSE\\ProjetV0.1\\RegisteredBackups.txt";
         
-        //private StrategieSauvegarde _StrategieSauvegarde;
-        //public GestionnaireDeSauvegarde(StrategieSauvegarde strategieSauvegarde)
-        //{
-        //    _StrategieSauvegarde = strategieSauvegarde; 
-        //}
 
         /// Executes selected backups based on user input.
         /// It retrieves the backup index, initializes the strategy (complete or differential),
@@ -58,14 +52,13 @@ namespace ProjetV0._1.Controller
         
         public void ExecuteBackup(string input)
         {
+
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(new ConsoleView()); // Add observer for real-time progress display
                     foreach (var index in BackupIndex)
             {
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
-                    
-                    
                     BackupModel backup = BackupList[index - 1];
                     _BackupStrategyFactory = backup.Type == "Complète"
                         ? new CompleteBackupFactory()
@@ -132,7 +125,7 @@ namespace ProjetV0._1.Controller
         }
 
         /// Creates a new backup by asking the user for input.
-        /// The backup details are stored in a file and added to the list.
+        /// The backup details are stored in a file and added to the list. 
         public async Task CreateBackup()
     {
             if (BackupList.Count >= 5)
