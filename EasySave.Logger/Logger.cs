@@ -44,7 +44,7 @@ namespace EasySave.Logger
         }
 
         /// Writes a log entry for a backup operation.
-        public void WriteLog(String name, String fileSource, String fileTarget, long fileSize, double fileTransferTime, bool isError = false)
+        public void WriteLog(String name, String fileSource, String fileTarget, long fileSize, double fileTransferTime, int encryptionTime = 0, bool isError = false)
         {
             // string logFile = logFilePath;
             lock (lockObj) // Ensures thread safety while writing to the log file
@@ -56,7 +56,8 @@ namespace EasySave.Logger
                     FileTarget = fileTarget,
                     FileSize = fileSize,
                     FileTransferTime = isError ? -1 : fileTransferTime,
-                    Date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
+                    Date = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"),
+                    EncryptionTime= encryptionTime
                 };
 
                 // Convert log entry to JSON format
@@ -82,7 +83,7 @@ namespace EasySave.Logger
                 Console.Write($"nom: {logFilePath}");
             }
         }
-        public void WriteLogXML(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime, bool isError = false)
+        public void WriteLogXML(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime, int encryptionTime = 0, bool isError = false)
         {
             this.LogFilePath= Path.ChangeExtension(LogFilePath, ".xml");
             lock (lockObj) // Ensures thread safety while writing to the log file
@@ -93,7 +94,9 @@ namespace EasySave.Logger
                     new XElement("FileTarget", fileTarget),
                     new XElement("FileSize", fileSize),
                     new XElement("FileTransferTime", isError ? -1 : fileTransferTime),
-                    new XElement("Date", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"))
+                    new XElement("Date", DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")),
+                    new XElement("EncryptionTime", encryptionTime)
+                   
                 );
 
                 // Check if the log file exists

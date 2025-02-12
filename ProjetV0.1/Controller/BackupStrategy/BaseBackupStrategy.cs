@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CryptoSoft;
 
 namespace ProjetV0._1.Controller.Strategy
 {
@@ -36,6 +37,8 @@ namespace ProjetV0._1.Controller.Strategy
 
             try
             {
+                var fileManager = new FileManager(file, GlobalVariables.Key);
+                int ElapsedTime = fileManager.TransformFile();
                 // Copy the file to the target location
                 File.Copy(file, targetFile, true);
                 var endTime = DateTime.Now;
@@ -45,12 +48,12 @@ namespace ProjetV0._1.Controller.Strategy
                 // Log the backup operation
                 if (CheckFileExtension(GlobalVariables.LogFilePath, ".xml"))
                 {
-                    logger.WriteLogXML(Path.GetFileName(file), file, targetFile, fileSize, duration);
+                    logger.WriteLogXML(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
                    
                 }
                 else
                 {
-                    logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration);
+                    logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
                 }
                   
 
@@ -63,7 +66,7 @@ namespace ProjetV0._1.Controller.Strategy
             catch (Exception ex)
             {
                 // Log the error if file copy fails
-                logger.WriteLog(Path.GetFileName(file), file, targetFile, 0, 0, true);
+                logger.WriteLog(Path.GetFileName(file), file, targetFile, 0, 0, 0,true);
                 Console.WriteLine($"Error copying file {file}: {ex.Message}");
             }
         }
