@@ -145,7 +145,6 @@ namespace ProjetV0._1.Controller
         private async Task AddBackupExtension(String ext)
         {
             GlobalVariables.LogFilePath=Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
-            
             GlobalVariables.PathTempsReel= Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
             //GlobalVariables.PathTempsReel= GlobalVariables.PathTempsReel+ext;
         }

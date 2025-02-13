@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjetV0.1", "ProjetV0.1\Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.Logger", "EasySave.Logger\EasySave.Logger.csproj", "{03172461-7BF1-4561-992A-4C32C4D31237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoSoft", "EasySave.CryptoSoft\CryptoSoft.csproj", "{A477EDB7-1522-4406-A69B-D197FC0B3C10}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{03172461-7BF1-4561-992A-4C32C4D31237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03172461-7BF1-4561-992A-4C32C4D31237}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03172461-7BF1-4561-992A-4C32C4D31237}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A477EDB7-1522-4406-A69B-D197FC0B3C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A477EDB7-1522-4406-A69B-D197FC0B3C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A477EDB7-1522-4406-A69B-D197FC0B3C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A477EDB7-1522-4406-A69B-D197FC0B3C10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
