@@ -17,7 +17,7 @@ namespace CryptoSoft
 
         public FileManager(string filePath, string key)
         {
-            FilePath = filePath;
+            FilePath = filePath; 
             Key = key;
         }
         /// <summary>
