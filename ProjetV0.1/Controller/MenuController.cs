@@ -89,17 +89,17 @@ namespace ProjetV0._1.Controller
                 case 2: // View Logs
                     try
                     {
-                      
+
                         string content = File.ReadAllText(GlobalVariables.LogFilePath); // Retrieve log content
                         view.DisplayInputPrompt(content); // Display logs to the user
-                     // Console.WriteLine(content);
+                                                          // Console.WriteLine(content);
                     }
                     catch (Exception ex)
                     {
                         view.DisplayInputPrompt($"Une erreur est survenue lors de la lecture du fichier:{ex.Message}");
-                     
+
                     }
-                    
+
                     view.DisplayInputPrompt("Consulting logs...");
                     Console.ReadKey();
                     return false;
@@ -113,8 +113,8 @@ namespace ProjetV0._1.Controller
         /// Handles the backup creation process by invoking the BackupController.
         private async Task HandleBackupCreation()
         {
-           
-             await model._BackupController.CreateBackup();
+
+            await model._BackupController.CreateBackup();
         }
 
         /// Handles the backup execution process by displaying available backups and executing the selected one.
@@ -125,18 +125,25 @@ namespace ProjetV0._1.Controller
             model._BackupController.DisplayExistingBackups(); // Show available backups to the user
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
+            GlobalVariables.CryptedFileExt = CryptedFileFormat();
             model._BackupController.ExecuteBackup(indexes); // Execute the selected backup
         }
-
+        private string[] CryptedFileFormat()
+        {
+            Console.WriteLine("Entrez les extensions de fichiers à sauvegarder (séparées par une virgule):");
+            string input = Console.ReadLine();
+            string[] extensions = input.Split(',');
+            return extensions;
+        }
         private async Task<bool> HandleLogFormat(int index)
         {
             switch (index)
             {
                 case 0: //JSON
-                     await AddBackupExtension(".json");
+                    await AddBackupExtension(".json");
                     return true;
                 case 1: // XML
-                     await AddBackupExtension(".xml");
+                    await AddBackupExtension(".xml");
                     return true;
                 default:
                     return false;
@@ -144,8 +151,8 @@ namespace ProjetV0._1.Controller
         }
         private async Task AddBackupExtension(String ext)
         {
-            GlobalVariables.LogFilePath=Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
-            GlobalVariables.PathTempsReel= Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
+            GlobalVariables.LogFilePath = Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
+            GlobalVariables.PathTempsReel = Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
             //GlobalVariables.PathTempsReel= GlobalVariables.PathTempsReel+ext;
         }
 

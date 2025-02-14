@@ -13,10 +13,10 @@ namespace ProjetV0._1.Controller
 {
     internal class BackupController
     {
-        private List<BackupModel> BackupList ;
+        private List<BackupModel> BackupList;
         private BackupStrategyFactory _BackupStrategyFactory;
         private BackupView _backupView = new BackupView();
-        
+
 
         /// Executes selected backups based on user input.
         /// It retrieves the backup index, initializes the strategy (complete or differential),
@@ -48,14 +48,14 @@ namespace ProjetV0._1.Controller
                 Console.WriteLine("hu");
             }
             catch { }
-            }
-        
+        }
+
         public void ExecuteBackup(string input)
         {
 
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(new ConsoleView()); // Add observer for real-time progress display
-                    foreach (var index in BackupIndex)
+            foreach (var index in BackupIndex)
             {
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
@@ -93,6 +93,7 @@ namespace ProjetV0._1.Controller
                     Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
             }
+            GlobalVariables.CryptedFileExt = [""];
         }
 
         /// Displays the list of existing backups saved in a file.
@@ -127,7 +128,7 @@ namespace ProjetV0._1.Controller
         /// Creates a new backup by asking the user for input.
         /// The backup details are stored in a file and added to the list. 
         public async Task CreateBackup()
-    {
+        {
             if (BackupList.Count >= 5)
             {
                 Console.WriteLine(await Translation.Instance.Translate("Vous pouvez enregistrer 5 sauvegades au maximum."));
@@ -155,7 +156,7 @@ namespace ProjetV0._1.Controller
 
             foreach (var part in parts)
             {
-                if (part.Contains("-")) 
+                if (part.Contains("-"))
                 {
                     var rangeParts = part.Split('-');
                     if (rangeParts.Length == 2 && int.TryParse(rangeParts[0], out int start) && int.TryParse(rangeParts[1], out int end))
@@ -171,14 +172,14 @@ namespace ProjetV0._1.Controller
                     Indexes.Add(singleIndex);
                 }
             }
-        //    foreach (int Index in Indexes)
-        //{
-        //        Console.WriteLine(Index);
-        //    }
+            //    foreach (int Index in Indexes)
+            //{
+            //        Console.WriteLine(Index);
+            //    }
 
             return Indexes;
         }
-    public int NumberLinesFile()
+        public int NumberLinesFile()
         {
             int lineCount = 0;
 
@@ -192,7 +193,7 @@ namespace ProjetV0._1.Controller
                     }
                 }
 
-               // Console.WriteLine("Le nombre de lignes dans le fichier est : " + lineCount);
+                // Console.WriteLine("Le nombre de lignes dans le fichier est : " + lineCount);
             }
             catch (Exception e)
             {
@@ -201,7 +202,7 @@ namespace ProjetV0._1.Controller
             }
             return lineCount;
         }
-    
+
     }
 
 }

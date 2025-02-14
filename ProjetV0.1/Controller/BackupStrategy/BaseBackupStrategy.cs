@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CryptoSoft;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjetV0._1.Controller.Strategy
 {
@@ -34,13 +35,26 @@ namespace ProjetV0._1.Controller.Strategy
         {
             var targetFile = file.Replace(source, target);
             var startTime = DateTime.Now;
+            int ElapsedTime = 0;
+            String test = Path.GetExtension(file);
+            String f = file;
+            string TR = targetFile;
+            String edx = Path.GetExtension(targetFile);
+            String[] testing = GlobalVariables.CryptedFileExt.Where(ext => ("." + ext.Trim()).Equals(".txt")).ToArray();
 
+            bool m = GlobalVariables.CryptedFileExt.Any(ext => edx.Equals("." + ext.Trim(), StringComparison.OrdinalIgnoreCase));
+            int r = 0;
             try
             {
-                var fileManager = new FileManager(file, GlobalVariables.Key);
-                int ElapsedTime = fileManager.TransformFile();
-                // Copy the file to the target location
                 File.Copy(file, targetFile, true);
+                if (GlobalVariables.CryptedFileExt.Any(ext => Path.GetExtension(targetFile).Equals("." + ext.Trim(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    var fileManager = new FileManager(targetFile, GlobalVariables.Key);
+                    ElapsedTime = fileManager.TransformFile();
+                }
+
+
+                // Copy the file to the target location
                 var endTime = DateTime.Now;
                 var duration = (endTime - startTime).TotalMilliseconds;
                 var fileInfo = new FileInfo(file);
@@ -69,6 +83,7 @@ namespace ProjetV0._1.Controller.Strategy
                 logger.WriteLog(Path.GetFileName(file), file, targetFile, 0, 0, 0, true);
                 Console.WriteLine($"Error copying file {file}: {ex.Message}");
             }
+
         }
         public static bool CheckFileExtension(string fileName, string extension)
         {
