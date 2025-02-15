@@ -48,7 +48,7 @@ namespace ProjetV0._1.Controller.Strategy
             String[] testing = GlobalVariables.CryptedFileExt.Where(ext => ("." + ext.Trim()).Equals(".txt")).ToArray();
 
             bool m = GlobalVariables.CryptedFileExt.Any(ext => edx.Equals("." + ext.Trim(), StringComparison.OrdinalIgnoreCase));
-            int r = 0;
+           
             try
             {
                 File.Copy(file, targetFile, true);

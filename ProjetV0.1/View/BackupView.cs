@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using translation;
-using EasySave.IviewLib;
 
+using EasySave.IviewLib;
+using EasySave.ControllerLib;
 namespace ProjetV0._1.View
 {
     //public interface IBackupView

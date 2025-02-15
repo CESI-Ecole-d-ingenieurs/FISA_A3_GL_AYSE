@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using translation;
+//using translation;
+using EasySave.ControllerLib;
 using EasySave.IviewLib;
 namespace ProjetV0._1.View
 {
