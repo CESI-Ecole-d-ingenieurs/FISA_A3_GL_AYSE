@@ -134,12 +134,12 @@ namespace EasySave.ControllerLib
         /// The backup details are stored in a file and added to the list. 
         public async Task CreateBackup()
         {
-            if (BackupList.Count >= 5)
-            {
-                Console.WriteLine(await Translation.Instance.Translate("Vous pouvez enregistrer 5 sauvegades au maximum."));
-                Console.ReadLine();
-                return;
-            }
+            //if (BackupList.Count >= 5)
+            //{
+            //    Console.WriteLine(await Translation.Instance.Translate("Vous pouvez enregistrer 5 sauvegades au maximum."));
+            //    Console.ReadLine();
+            //    return;
+            //}
             BackupModel sauvegarde = await backupview.UserAsk();
             BackupList.Add(sauvegarde);
             if (!Directory.Exists(Path.GetDirectoryName(GlobalVariables.PathBackup)))
