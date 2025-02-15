@@ -1,6 +1,6 @@
 ﻿using ProjetV0._1.Controller.BackupFactory;
 using ProjetV0._1.Controller.Strategy;
-using ProjetV0._1.Model;
+using EasySave.ModelLib;
 using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
@@ -8,22 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using translation;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.Controller
 {
     internal class BackupController
     {
         private List<BackupModel> BackupList;
         private BackupStrategyFactory _BackupStrategyFactory;
-        private BackupView _backupView = new BackupView();
+        private IBackupView _backupView;
 
 
         /// Executes selected backups based on user input.
         /// It retrieves the backup index, initializes the strategy (complete or differential),
         /// copies the files, updates the state, and logs the execution time.
 
-        public BackupController()
+        public BackupController(IBackupView backupView)
         {
+            _backupView= backupView;
             string filePath = GlobalVariables.PathBackup;  // Assurez-vous que le chemin est correct
             BackupList = new List<BackupModel>();
 
@@ -63,8 +64,8 @@ namespace ProjetV0._1.Controller
                     _BackupStrategyFactory = backup.Type == "Complète"
                         ? new CompleteBackupFactory()
                         : new DifferentialBackupFactory();
-
-                    var strategy = _BackupStrategyFactory.CreateBackupStrategy();
+                    IBackupView backupview=new  BackupView();
+                    var strategy = _BackupStrategyFactory.CreateBackupStrategy( backupview);
                     strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                     BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);

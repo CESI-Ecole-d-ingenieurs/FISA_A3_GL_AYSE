@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.View
 {
-    internal class LanguageView
+    //public interface ILanguageView
+    //{
+    //    public void DisplayLanguages(List<string> languages, int selectionIndex);
+    //}
+    internal class LanguageView: ILanguageView
     {
         /// Displays the list of available languages and highlights the currently selected option.
         public void DisplayLanguages(List<string> languages, int selectionIndex)

@@ -1,4 +1,4 @@
-﻿using ProjetV0._1.Model;
+﻿using EasySave.ModelLib;
 using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using translation;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.Controller
 {
     internal class LanguageController
     {
         private LanguageModel model;
-        private LanguageView view;
+        private ILanguageView view;
 
         /// Initializes the LanguageController with the model and view.
-        public LanguageController(LanguageModel model, LanguageView view)
+        public LanguageController(LanguageModel model, ILanguageView view)
         {
             this.model = model;
             this.view = view;

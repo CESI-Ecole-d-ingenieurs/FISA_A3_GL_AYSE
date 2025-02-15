@@ -1,16 +1,21 @@
 ﻿using ProjetV0._1.Controller;
-using ProjetV0._1.Model;
+using EasySave.ModelLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using translation;
+using EasySave.IviewLib;
 
 namespace ProjetV0._1.View
 {
-
-    internal class BackupView
+    //public interface IBackupView
+    //{
+    //    public void DisplayProgress();
+    //    public  Task<BackupModel> UserAsk();
+    //}
+    internal class BackupView: IBackupView
     {
         /// Displays the progress of the backup process.
         /// Retrieves the backup states and displays their progress percentage.

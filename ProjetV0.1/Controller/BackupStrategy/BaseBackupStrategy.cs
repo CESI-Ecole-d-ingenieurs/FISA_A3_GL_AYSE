@@ -1,5 +1,6 @@
 ﻿using EasySave.Logger;
-using ProjetV0._1.Model;
+//using ProjetV0._1.Model;
+using EasySave.ModelLib;
 using ProjetV0._1.View;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CryptoSoft;
 using static System.Net.Mime.MediaTypeNames;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.Controller.Strategy
 {
     /// Implements common methods for backup operations and logging.
@@ -17,8 +18,12 @@ namespace ProjetV0._1.Controller.Strategy
         /// Logger instance for recording backup logs.
         protected Logger logger = new Logger();
         /// BackupView instance for displaying backup progress.
-        protected BackupView backupView = new BackupView();
+        protected IBackupView backupView ;
 
+        public  BaseBackupStrategy(IBackupView backupview)
+        {
+            backupView = backupview;
+        }
         /// Abstract method that must be implemented by derived classes to execute a specific backup strategy.
         public abstract void ExecuteBackup(string source, string target);
         /// Ensures that a directory exists. If not, it creates the directory.

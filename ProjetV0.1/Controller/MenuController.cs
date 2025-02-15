@@ -1,4 +1,4 @@
-﻿using ProjetV0._1.Model;
+﻿using EasySave.ModelLib;
 using ProjetV0._1.View;
 using System;
 using translation;
@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 using System.Reflection.Metadata;
 using EasySave.Logger;
 using System.Reflection;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.Controller
 {
     internal class MenuController
     {
         private MenuModel model;  // Stores the menu model containing available actions
-        private MenuView view;    // Handles user interface interactions
+        private IMenuView view;    // Handles user interface interactions
         private int selectionIndex = 0;  // Keeps track of the current selected action
 
         /// Constructor to initialize the menu controller with a model and view.
-        public MenuController(MenuModel model, MenuView view)
+        public MenuController(MenuModel model, IMenuView view)
         {
             this.model = model;
             this.view = view;
@@ -113,20 +113,23 @@ namespace ProjetV0._1.Controller
         /// Handles the backup creation process by invoking the BackupController.
         private async Task HandleBackupCreation()
         {
-
-            await model._BackupController.CreateBackup();
+            BackupView backupView = new BackupView();
+            BackupController backupController = new BackupController(backupView);
+            await backupController.CreateBackup();
         }
 
         /// Handles the backup execution process by displaying available backups and executing the selected one.
         private async Task HandleBackupExecution()
         {
+            BackupView backupView = new BackupView();
+            BackupController backupController = new BackupController(backupView);
             view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));
             await ChoisirFroamtLog();
-            model._BackupController.DisplayExistingBackups(); // Show available backups to the user
+            backupController.DisplayExistingBackups(); // Show available backups to the user
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
             GlobalVariables.CryptedFileExt = CryptedFileFormat();
-            model._BackupController.ExecuteBackup(indexes); // Execute the selected backup
+            backupController.ExecuteBackup(indexes); // Execute the selected backup
         }
         private string[] CryptedFileFormat()
         {

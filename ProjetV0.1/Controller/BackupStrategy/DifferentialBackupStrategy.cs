@@ -1,19 +1,24 @@
 ﻿using EasySave.Logger;
 using Newtonsoft.Json.Linq;
 using ProjetV0._1.Controller;
-using ProjetV0._1.Model;
+using EasySave.ModelLib;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ProjetV0._1.View;
+using EasySave.IviewLib;
 namespace ProjetV0._1.Controller.Strategy
 {
     internal class DifferentialBackupStrategy : BaseBackupStrategy
     {
         /// Executes a differential backup by copying only modified files since the last backup.
+        public DifferentialBackupStrategy(IBackupView backupview) : base(backupview)
+        {
+
+        }
         public override void ExecuteBackup(string source, string target)
         {
             DirectoryExist(target);

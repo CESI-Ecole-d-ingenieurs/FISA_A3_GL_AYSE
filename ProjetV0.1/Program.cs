@@ -4,8 +4,9 @@ using ProjetV0._1;
 using System;
 using translation;
 using ProjetV0._1.Controller;
-using ProjetV0._1.Model;
+using EasySave.ModelLib;
 using ProjetV0._1.View;
+using EasySave.IviewLib;
 
 class Program
 {
@@ -26,13 +27,13 @@ class Program
 
         // Initialize language selection
         LanguageModel languageModel = new LanguageModel();
-        LanguageView view = new LanguageView();
+        ILanguageView view = new LanguageView();
         LanguageController languages_menu = new LanguageController(languageModel, view);
         languages_menu.NavigateLanguages(); // User selects the language
 
         // Initialize the menu system
         MenuModel menuModel = new MenuModel();
-        MenuView menuView = new MenuView();
+        IMenuView menuView = new MenuView();
         MenuController menuController = new MenuController(menuModel, menuView);
         await menuController.ManageActions(); // Starts the menu loop
 

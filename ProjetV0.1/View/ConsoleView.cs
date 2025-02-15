@@ -1,14 +1,14 @@
-﻿using ProjetV0._1.Model;
+﻿using EasySave.ModelLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using EasySave.IviewLib;
 namespace ProjetV0._1.View
 {
     /// ConsoleView class implementing the IObserver interface to display real-time backup progress.
-    public class ConsoleView : IObserver
+    public class ConsoleView : EasySave.ModelLib.IObserver
     {
         private BackupView _backupView = new BackupView();
 
