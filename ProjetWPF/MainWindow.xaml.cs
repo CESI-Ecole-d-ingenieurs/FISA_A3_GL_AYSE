@@ -25,6 +25,8 @@ namespace ProjetWPF
         MenuModel menuModel = new MenuModel();
         Format format = new Format();
 
+        Backup backup = new Backup();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -132,6 +134,13 @@ namespace ProjetWPF
             MenuController menuController = new MenuController(menuModel, format);
 
             await menuController.HandleLogFormat(Format_list.SelectedIndex);
+        }
+
+        private async void BackupCreation(object sender, EventArgs e)
+        {
+            BackupController backupController = new BackupController(backup);
+
+            await backupController.CreateBackup();
         }
     }
 }

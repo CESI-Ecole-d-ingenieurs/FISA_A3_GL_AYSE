@@ -47,7 +47,7 @@ namespace EasySave.ControllerLib
                         }
                     }
                 }
-                Console.WriteLine("hu");
+                //Console.WriteLine("hu");
             }
             catch { }
         }
@@ -141,6 +141,7 @@ namespace EasySave.ControllerLib
             //    return;
             //}
             BackupModel sauvegarde = await backupview.UserAsk();
+
             BackupList.Add(sauvegarde);
             if (!Directory.Exists(Path.GetDirectoryName(GlobalVariables.PathBackup)))
             {
@@ -148,7 +149,7 @@ namespace EasySave.ControllerLib
                 Directory.CreateDirectory(Path.GetDirectoryName(GlobalVariables.PathBackup));
             }
             File.AppendAllText(GlobalVariables.PathBackup, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}\n");
-            Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
+            //Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
 
