@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CryptoSoft\EasySave.CryptoSoft.csproj" />
     <ProjectReference Include="..\EasySave.ControllerLib\EasySave.ControllerLib.csproj" />
     <ProjectReference Include="..\EasySave.IviewLib\EasySave.IviewLib.csproj" />

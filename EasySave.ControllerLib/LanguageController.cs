@@ -52,7 +52,7 @@ namespace EasySave.ControllerLib
 
         /// Applies the selected language setting.
         /// Updates the translation strategy based on user selection.
-        private bool ApplyLanguageSelection()
+        public bool ApplyLanguageSelection()
         {
             switch (model.Languages[model.SelectedLanguage])
             {

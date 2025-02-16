@@ -8,6 +8,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EasySave.ControllerLib;
+using EasySave.IviewLib;
+using EasySave.ModelLib;
 
 namespace ProjetWPF
 {
@@ -16,6 +19,9 @@ namespace ProjetWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        LanguageModel languageModel = new LanguageModel();
+        LanguagesView languageView = new LanguagesView();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -42,6 +48,8 @@ namespace ProjetWPF
 
         private void ShowLanguages(object sender, RoutedEventArgs e)
         {
+            languageView.DisplayLanguages(languageModel.Languages, 0);
+            
             Languages.Visibility = Visibility.Visible;
             Settings.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
@@ -79,6 +87,38 @@ namespace ProjetWPF
         private void Exit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private async void LanguageChange(object sender, EventArgs e)
+        {
+            languageModel.SelectedLanguage = Language.SelectedIndex;
+
+            LanguageController languageController = new LanguageController(languageModel, languageView);
+
+            languageController.ApplyLanguageSelection();
+
+            Exit_b.Content = await Translation.Instance.Translate("Quitter");
+
+            Settings_b.Content = await Translation.Instance.Translate("Paramètrage");
+            Format.Text = await Translation.Instance.Translate("Format de l’historique :");
+            Crypt.Text = await Translation.Instance.Translate("Fichiers à crypter :");
+            Software.Text = await Translation.Instance.Translate("Logiciels métier :");
+
+            Create_b.Content = await Translation.Instance.Translate("Créer une sauvegarde");
+            Name.Text = await Translation.Instance.Translate("Nom :");
+            Source.Text = await Translation.Instance.Translate("Source :");
+            Destination.Text = await Translation.Instance.Translate("Destination :");
+            Type.Text = await Translation.Instance.Translate("Type :");
+            Complete.Content = await Translation.Instance.Translate("Complète");
+            Differential.Content = await Translation.Instance.Translate("Différentielle");
+
+            Execute_b.Text = (await Translation.Instance.Translate("Exécuter une / plusieurs sauvegardes")).ToString();
+            Available.Text = await Translation.Instance.Translate("Sauvegardes disponibles :");
+            ToDo.Text = await Translation.Instance.Translate("Sauvegardes à effectuer :");
+            State.Text = await Translation.Instance.Translate("Etat en temps réel :");
+
+            Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
+            History.Text = await Translation.Instance.Translate("Historique :");
         }
     }
 }
