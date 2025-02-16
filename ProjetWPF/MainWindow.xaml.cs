@@ -24,7 +24,7 @@ namespace ProjetWPF
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
             Settings.Visibility = Visibility.Visible;
-            Language.Visibility = Visibility.Collapsed;
+            Languages.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
             Execution.Visibility = Visibility.Collapsed;
             Logs.Visibility = Visibility.Collapsed;
@@ -40,9 +40,9 @@ namespace ProjetWPF
             BusinessSoftwarePlaceholder.Visibility = string.IsNullOrWhiteSpace(BusinessSoftwareTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
         }*/
 
-        private void ShowLanguage(object sender, RoutedEventArgs e)
+        private void ShowLanguages(object sender, RoutedEventArgs e)
         {
-            Language.Visibility = Visibility.Visible;
+            Languages.Visibility = Visibility.Visible;
             Settings.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
             Execution.Visibility = Visibility.Collapsed;
@@ -53,7 +53,7 @@ namespace ProjetWPF
         {
             Creation.Visibility = Visibility.Visible;
             Settings.Visibility = Visibility.Collapsed;
-            Language.Visibility = Visibility.Collapsed;
+            Languages.Visibility = Visibility.Collapsed;
             Execution.Visibility = Visibility.Collapsed;
             Logs.Visibility = Visibility.Collapsed;
         }
@@ -63,7 +63,7 @@ namespace ProjetWPF
             Execution.Visibility = Visibility.Visible;
             Creation.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
-            Language.Visibility = Visibility.Collapsed;
+            Languages.Visibility = Visibility.Collapsed;
             Logs.Visibility = Visibility.Collapsed;
         }
 
@@ -73,7 +73,7 @@ namespace ProjetWPF
             Execution.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
-            Language.Visibility = Visibility.Collapsed;
+            Languages.Visibility = Visibility.Collapsed;
         }
 
         private void Exit(object sender, RoutedEventArgs e)
