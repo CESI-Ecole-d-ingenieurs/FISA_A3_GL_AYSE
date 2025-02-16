@@ -26,6 +26,7 @@ namespace ProjetWPF
         Format format = new Format();
 
         Backup backup = new Backup();
+        ControllerBackup controllerBackup = new ControllerBackup();
 
         public MainWindow()
         {
@@ -74,8 +75,10 @@ namespace ProjetWPF
             Logs.Visibility = Visibility.Collapsed;
         }
 
-        private void ShowExecution(object sender, RoutedEventArgs e)
+        private async void ShowExecution(object sender, RoutedEventArgs e)
         {
+            await controllerBackup.DisplayBackups();
+
             Execution.Visibility = Visibility.Visible;
             Creation.Visibility = Visibility.Collapsed;
             Settings.Visibility = Visibility.Collapsed;
@@ -141,6 +144,11 @@ namespace ProjetWPF
             BackupController backupController = new BackupController(backup);
 
             await backupController.CreateBackup();
+        }
+
+        private void BackupExecution(object sender, EventArgs e)
+        {
+            
         }
     }
 }
