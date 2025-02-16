@@ -105,7 +105,7 @@ namespace EasySave.ModelLib
                     SaveState(states);
                     NotifyObservers(state);
 
-                    Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%");
+                    //Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%");
                 }
             }
         }

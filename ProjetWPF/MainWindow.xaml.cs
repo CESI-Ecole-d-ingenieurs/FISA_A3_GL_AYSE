@@ -148,7 +148,10 @@ namespace ProjetWPF
 
         private void BackupExecution(object sender, EventArgs e)
         {
-            
+            BackupController backupController = new BackupController(backup);
+            RealTimeState realTimeState = new RealTimeState();
+
+            backupController.ExecuteBackup(ToDo_t.Text, realTimeState);
         }
     }
 }

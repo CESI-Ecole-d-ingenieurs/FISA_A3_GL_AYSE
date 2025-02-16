@@ -95,7 +95,7 @@ namespace EasySave.ControllerLib
                     state.State = "END";
                     BackupStateJournal.UpdateState(state);
 
-                    Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
+                    //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
             }
             GlobalVariables.CryptedFileExt = new string[] { "" };
