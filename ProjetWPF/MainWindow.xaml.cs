@@ -19,6 +19,8 @@ namespace ProjetWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        Visible visible = new Visible();
+
         LanguageModel languageModel = new LanguageModel();
         LanguagesView languageView = new LanguagesView();
 
@@ -40,63 +42,33 @@ namespace ProjetWPF
             format.ClearScreen();
             format.DisplayActions(menuModel.LogFormats, 0);
 
-            Settings.Visibility = Visibility.Visible;
-            Languages.Visibility = Visibility.Collapsed;
-            Creation.Visibility = Visibility.Collapsed;
-            Execution.Visibility = Visibility.Collapsed;
-            Logs.Visibility = Visibility.Collapsed;
+            visible.Show("Settings");
         }
-
-        /*private void FileEncryptTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            FileEncryptPlaceholder.Visibility = string.IsNullOrWhiteSpace(FileEncryptTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void BusinessSoftwareTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            BusinessSoftwarePlaceholder.Visibility = string.IsNullOrWhiteSpace(BusinessSoftwareTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
-        }*/
 
         private void ShowLanguages(object sender, RoutedEventArgs e)
         {
             languageView.DisplayLanguages(languageModel.Languages, 0);
-            
-            Languages.Visibility = Visibility.Visible;
-            Settings.Visibility = Visibility.Collapsed;
-            Creation.Visibility = Visibility.Collapsed;
-            Execution.Visibility = Visibility.Collapsed;
-            Logs.Visibility = Visibility.Collapsed;
+
+            visible.Show("Languages");
         }
 
         private void ShowCreation(object sender, RoutedEventArgs e)
         {
-            Creation.Visibility = Visibility.Visible;
-            Settings.Visibility = Visibility.Collapsed;
-            Languages.Visibility = Visibility.Collapsed;
-            Execution.Visibility = Visibility.Collapsed;
-            Logs.Visibility = Visibility.Collapsed;
+            visible.Show("Creation");
         }
 
         private async void ShowExecution(object sender, RoutedEventArgs e)
         {
             await controllerBackup.DisplayBackups();
 
-            Execution.Visibility = Visibility.Visible;
-            Creation.Visibility = Visibility.Collapsed;
-            Settings.Visibility = Visibility.Collapsed;
-            Languages.Visibility = Visibility.Collapsed;
-            Logs.Visibility = Visibility.Collapsed;
+            visible.Show("Execution");
         }
 
         private async void ShowLogs(object sender, RoutedEventArgs e)
         {
             await logs.DisplayLogs();
 
-            Logs.Visibility = Visibility.Visible;
-            Execution.Visibility = Visibility.Collapsed;
-            Creation.Visibility = Visibility.Collapsed;
-            Settings.Visibility = Visibility.Collapsed;
-            Languages.Visibility = Visibility.Collapsed;
+            visible.Show("Logs");
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -106,6 +78,8 @@ namespace ProjetWPF
 
         private async void LanguageChange(object sender, EventArgs e)
         {
+            Language_OK.Text = await Translation.Instance.Translate("Traduction en cours...");
+
             languageModel.SelectedLanguage = Language.SelectedIndex;
 
             LanguageController languageController = new LanguageController(languageModel, languageView);
@@ -115,11 +89,11 @@ namespace ProjetWPF
             Exit_b.Content = await Translation.Instance.Translate("Quitter");
 
             Settings_b.Content = await Translation.Instance.Translate("Paramètrage");
-            Format.Text = await Translation.Instance.Translate("Format de l’historique :");
+            Format.Text = await Translation.Instance.Translate("Format d'historique :");
             Crypt.Text = await Translation.Instance.Translate("Fichiers à crypter :");
             Software.Text = await Translation.Instance.Translate("Logiciels métier :");
 
-            Create_b.Content = await Translation.Instance.Translate("Créer une sauvegarde");
+            Create_b.Content = await Translation.Instance.Translate("Création de sauvegarde");
             Name.Text = await Translation.Instance.Translate("Nom :");
             Source.Text = await Translation.Instance.Translate("Source :");
             Destination.Text = await Translation.Instance.Translate("Destination :");
@@ -129,11 +103,13 @@ namespace ProjetWPF
 
             Execute_b.Text = (await Translation.Instance.Translate("Exécuter une / plusieurs sauvegardes")).ToString();
             Available.Text = await Translation.Instance.Translate("Sauvegardes disponibles :");
-            ToDo.Text = await Translation.Instance.Translate("Sauvegardes à effectuer :");
+            ToDo.Text = await Translation.Instance.Translate("Sauvegardes à faire :");
             State.Text = await Translation.Instance.Translate("Etat en temps réel :");
 
             Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
             History.Text = await Translation.Instance.Translate("Historique :");
+
+            Language_OK.Text = await Translation.Instance.Translate("La langue a été modifiée avec succès");
         }
 
         private async void SettingsChange(object sender, EventArgs e)
@@ -141,6 +117,8 @@ namespace ProjetWPF
             MenuController menuController = new MenuController(menuModel, format);
 
             await menuController.HandleLogFormat(Format_list.SelectedIndex);
+
+            Settings_OK.Text = await Translation.Instance.Translate("Les paramètres ont été modifiés avec succès.");
         }
 
         private async void BackupCreation(object sender, EventArgs e)
@@ -148,6 +126,8 @@ namespace ProjetWPF
             BackupController backupController = new BackupController(backup);
 
             await backupController.CreateBackup();
+
+            Creation_OK.Text = await Translation.Instance.Translate("La sauvegarde a été créer avec succès.");
         }
 
         private void BackupExecution(object sender, EventArgs e)

@@ -29,6 +29,10 @@ namespace ProjetWPF
 
             BackupModel backupModel = new BackupModel(name.Text.ToString(), source.Text.ToString(), target.Text.ToString(), type);
 
+            name.Clear();
+            source.Clear();
+            target.Clear();
+
             return backupModel;
         }
     }
