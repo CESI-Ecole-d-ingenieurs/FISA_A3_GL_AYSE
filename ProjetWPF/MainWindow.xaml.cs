@@ -28,6 +28,8 @@ namespace ProjetWPF
         Backup backup = new Backup();
         ControllerBackup controllerBackup = new ControllerBackup();
 
+        Logs logs = new Logs();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -86,8 +88,10 @@ namespace ProjetWPF
             Logs.Visibility = Visibility.Collapsed;
         }
 
-        private void ShowLogs(object sender, RoutedEventArgs e)
+        private async void ShowLogs(object sender, RoutedEventArgs e)
         {
+            await logs.DisplayLogs();
+
             Logs.Visibility = Visibility.Visible;
             Execution.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
