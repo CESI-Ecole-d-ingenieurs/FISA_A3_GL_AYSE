@@ -18,6 +18,7 @@ namespace ProjetWPF
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             var list = (ComboBox)mainWindow.FindName("Language");
 
+            list.Items.Clear();
             for (int i = 0; i < languages.Count - 1; i++)
             {
                 list.Items.Add(languages[i]);

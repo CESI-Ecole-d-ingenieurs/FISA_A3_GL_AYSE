@@ -140,7 +140,7 @@ namespace EasySave.ControllerLib
             string[] extensions = input.Split(',');
             return extensions;
         }
-        private async Task<bool> HandleLogFormat(int index)
+        public async Task<bool> HandleLogFormat(int index)
         {
             switch (index)
             {

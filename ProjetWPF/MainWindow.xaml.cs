@@ -22,6 +22,9 @@ namespace ProjetWPF
         LanguageModel languageModel = new LanguageModel();
         LanguagesView languageView = new LanguagesView();
 
+        MenuModel menuModel = new MenuModel();
+        Format format = new Format();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,6 +32,9 @@ namespace ProjetWPF
 
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
+            format.ClearScreen();
+            format.DisplayActions(menuModel.LogFormats, 0);
+
             Settings.Visibility = Visibility.Visible;
             Languages.Visibility = Visibility.Collapsed;
             Creation.Visibility = Visibility.Collapsed;
@@ -119,6 +125,13 @@ namespace ProjetWPF
 
             Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
             History.Text = await Translation.Instance.Translate("Historique :");
+        }
+
+        private async void SettingsChange(object sender, EventArgs e)
+        {
+            MenuController menuController = new MenuController(menuModel, format);
+
+            await menuController.HandleLogFormat(Format_list.SelectedIndex);
         }
     }
 }
