@@ -32,6 +32,8 @@ namespace ProjetWPF
 
         Logs logs = new Logs();
 
+        ExtensionController extensionController = new ExtensionController();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -117,6 +119,7 @@ namespace ProjetWPF
             MenuController menuController = new MenuController(menuModel, format);
 
             await menuController.HandleLogFormat(Format_list.SelectedIndex);
+            extensionController.ExtensionsChange();
 
             Settings_OK.Text = await Translation.Instance.Translate("Les paramètres ont été modifiés avec succès.");
         }

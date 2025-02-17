@@ -98,7 +98,7 @@ namespace EasySave.ControllerLib
                     //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
             }
-            GlobalVariables.CryptedFileExt = new string[] { "" };
+            //GlobalVariables.CryptedFileExt = new string[] { "" };
         }
 
         /// Displays the list of existing backups saved in a file.
