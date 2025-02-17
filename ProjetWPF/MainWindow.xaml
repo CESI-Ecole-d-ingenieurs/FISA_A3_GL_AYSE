@@ -18,7 +18,7 @@
             <Button Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowExecution" >
                 <TextBlock Name="Execute_b" Text="Execute one / several backups" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
-            <Button Name="Consult_b" Content="Consult the hystory" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowLogs"/>
+            <Button Name="Consult_b" Content="Consult the history" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowLogs"/>
         </StackPanel>
 
         <Grid  Name="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,150,100,0" Visibility="Collapsed">
