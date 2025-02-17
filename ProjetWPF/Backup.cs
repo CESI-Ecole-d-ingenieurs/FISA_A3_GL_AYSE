@@ -25,7 +25,22 @@ namespace ProjetWPF
             var source = (TextBox)mainWindow.FindName("Source_t");
             var target = (TextBox)mainWindow.FindName("Destination_t");
             var listType = (ComboBox)mainWindow.FindName("Type_t");
-            string type = await Translation.Instance.Translate(((ComboBoxItem)listType.SelectedItem).Content.ToString());
+            //string type = await Translation.Instance.Translate(((ComboBoxItem)listType.SelectedItem).Content.ToString());
+            string type;
+            switch (listType.SelectedIndex)
+            {
+                case 0:
+                    type = "Complète";
+                    break;
+
+                case 1:
+                    type = "Différentielle";
+                    break;
+
+                default:
+                    type = "Inconnu";
+                    break;
+            }
 
             BackupModel backupModel = new BackupModel(name.Text.ToString(), source.Text.ToString(), target.Text.ToString(), type);
 
