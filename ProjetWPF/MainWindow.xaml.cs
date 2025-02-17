@@ -37,6 +37,18 @@ namespace ProjetWPF
         public MainWindow()
         {
             InitializeComponent();
+
+            Exit_b.Click += Exit;
+            Settings_b.Click += ShowSettings;
+            Language_b.Click += ShowLanguages;
+            Create_b.Click += ShowCreation;
+            Execution_b.Click += ShowExecution;
+            Consult_b.Click += ShowLogs;
+
+            OK_settings.Click += SettingsChange;
+            OK_languages.Click += LanguageChange;
+            OK_creation.Click += BackupCreation;
+            OK_execution.Click += BackupExecution;
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e)
