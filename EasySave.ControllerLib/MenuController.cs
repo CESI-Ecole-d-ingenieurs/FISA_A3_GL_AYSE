@@ -122,7 +122,7 @@ namespace EasySave.ControllerLib
         /// Handles the backup execution process by displaying available backups and executing the selected one.
         private async Task HandleBackupExecution(IBackupView backupView, EasySave.ModelLib.IObserver consoleView)
         {
-           
+
             //IBackupView backupView = new IBackupView();
             BackupController backupController = new BackupController(backupView);
             view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));

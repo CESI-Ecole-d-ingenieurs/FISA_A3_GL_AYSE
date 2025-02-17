@@ -111,7 +111,7 @@ namespace EasySave.ControllerLib
             if (fileinfo.Length > 0) // Check if the file is not empty
             {
                 int lineNumber = 1;
-                Console.WriteLine(await Translation.Instance.Translate("Nom - Source - Destination - Type"));
+                Console.WriteLine(await Translation.Instance.Translate("Nom-Source-Destination-Type"));
                 foreach (string line in File.ReadLines(GlobalVariables.PathBackup))
                 {
                     Console.WriteLine($"{lineNumber}. {line}");
@@ -148,7 +148,7 @@ namespace EasySave.ControllerLib
 
                 Directory.CreateDirectory(Path.GetDirectoryName(GlobalVariables.PathBackup));
             }
-            File.AppendAllText(GlobalVariables.PathBackup, $"{sauvegarde.Name} - {sauvegarde.Source} - {sauvegarde.Target} - {sauvegarde.Type}\n");
+            File.AppendAllText(GlobalVariables.PathBackup, $"{sauvegarde.Name}-{sauvegarde.Source}-{sauvegarde.Target}-{sauvegarde.Type}\n");
             //Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
         //focntion indice 
