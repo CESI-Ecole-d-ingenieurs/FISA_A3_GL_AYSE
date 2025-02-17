@@ -42,11 +42,13 @@ namespace CryptoSoft
             Stopwatch stopwatch = Stopwatch.StartNew();
             var fileBytes = File.ReadAllBytes(FilePath);
             //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
+            //Debug.WriteLine("ICI " + FilePath + System.Text.Encoding.UTF8.GetString(fileBytes));
             var keyBytes = ConvertToByte(Key);
             fileBytes = XorMethod(fileBytes, keyBytes);
             File.WriteAllBytes(FilePath, fileBytes);
             //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
             //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(File.ReadAllBytes(FilePath)));
+            //Debug.WriteLine("ICI " + FilePath + System.Text.Encoding.UTF8.GetString(File.ReadAllBytes(FilePath)));
             stopwatch.Stop();
             return (int)stopwatch.ElapsedMilliseconds;
         }
