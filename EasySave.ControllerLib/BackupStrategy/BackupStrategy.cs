@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EasySave.ControllerLib.BackupStrategy
 {
@@ -10,6 +11,6 @@ namespace EasySave.ControllerLib.BackupStrategy
     public interface BackupStrategy
     {
         /// Implementations of this method define the specific backup logic.
-         void ExecuteBackup(string Source, string Target);
+         void ExecuteBackup(string Source, string Target,String nameBackup);
     }
 }

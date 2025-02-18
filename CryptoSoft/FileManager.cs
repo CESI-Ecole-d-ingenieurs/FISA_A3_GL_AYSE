@@ -29,7 +29,7 @@ namespace CryptoSoft
                 return true;
 
             Console.WriteLine("File not found.");
-            Thread.Sleep(1000);
+           Thread.Sleep(1000);
             return false;
         }
 
@@ -38,17 +38,25 @@ namespace CryptoSoft
         /// </summary>
         public int TransformFile()
         {
-            if (!CheckFile()) return -1;
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            var fileBytes = File.ReadAllBytes(FilePath);
-            //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
-            var keyBytes = ConvertToByte(Key);
-            fileBytes = XorMethod(fileBytes, keyBytes);
-            File.WriteAllBytes(FilePath, fileBytes);
-            //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
-            //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(File.ReadAllBytes(FilePath)));
-            stopwatch.Stop();
-            return (int)stopwatch.ElapsedMilliseconds;
+            try
+            {
+                if (!CheckFile()) return -1;
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                var fileBytes = File.ReadAllBytes(FilePath);
+                //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
+                var keyBytes = ConvertToByte(Key);
+                fileBytes = XorMethod(fileBytes, keyBytes);
+                File.WriteAllBytes(FilePath, fileBytes);
+                //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(fileBytes));
+                //Debug.WriteLine("ICI" + FilePath + BitConverter.ToString(File.ReadAllBytes(FilePath)));
+                stopwatch.Stop();
+                return (int)stopwatch.ElapsedMilliseconds;
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("An IO exception occurred: " + ex.Message);
+                return -1;
+            }
         }
 
         /// <summary>

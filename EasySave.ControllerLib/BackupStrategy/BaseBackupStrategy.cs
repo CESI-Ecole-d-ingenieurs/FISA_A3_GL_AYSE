@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EasySave.Logger;
+using System.Threading;
 namespace EasySave.ControllerLib.BackupStrategy
 {
 
@@ -24,7 +25,7 @@ namespace EasySave.ControllerLib.BackupStrategy
             backupView = backupview;
         }
         /// Abstract method that must be implemented by derived classes to execute a specific backup strategy.
-        public abstract void ExecuteBackup(string source, string target);
+        public abstract void ExecuteBackup(string source, string target, String nameBackup);
         /// Ensures that a directory exists. If not, it creates the directory.
         protected void DirectoryExist(string path)
         {
@@ -51,35 +52,37 @@ namespace EasySave.ControllerLib.BackupStrategy
             try
             {
                 File.Copy(file, targetFile, true);
+
                 if (GlobalVariables.CryptedFileExt.Any(ext => Path.GetExtension(targetFile).Equals("." + ext.Trim(), StringComparison.OrdinalIgnoreCase)))
-                {
-                    var fileManager = new FileManager(targetFile, GlobalVariables.Key);
-                    ElapsedTime = fileManager.TransformFile();
-                }
+                    {
+                        var fileManager = new FileManager(targetFile, GlobalVariables.Key);
+                        ElapsedTime = fileManager.TransformFile();
+                    }
 
 
-                // Copy the file to the target location
-                var endTime = DateTime.Now;
-                var duration = (endTime - startTime).TotalMilliseconds;
-                var fileInfo = new FileInfo(file);
-                var fileSize = fileInfo.Length;
-                // Log the backup operation
-                if (CheckFileExtension(GlobalVariables.LogFilePath, ".xml"))
-                {
-                    logger.WriteLogXML(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
+                    // Copy the file to the target location
+                    var endTime = DateTime.Now;
+                    var duration = (endTime - startTime).TotalMilliseconds;
+                    var fileInfo = new FileInfo(file);
+                    var fileSize = fileInfo.Length;
+                    // Log the backup operation
+                    if (CheckFileExtension(GlobalVariables.LogFilePath, ".xml"))
+                    {
+                        logger.WriteLogXML(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
 
-                }
-                else
-                {
-                    logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
-                }
+                    }
+                    else
+                    {
+                        logger.WriteLog(Path.GetFileName(file), file, targetFile, fileSize, duration, ElapsedTime);
+                    }
 
 
-                // Real-time status updates
-                BackupStateJournal.UpdateProgress(Path.GetFileName(file));
+                    // Real-time status updates
+                    BackupStateJournal.UpdateProgress(Path.GetFileName(file));
 
-                // Progress Display
-                backupView.DisplayProgress();
+                    // Progress Display
+                    backupView.DisplayProgress();
+                
             }
             catch (Exception ex)
             {

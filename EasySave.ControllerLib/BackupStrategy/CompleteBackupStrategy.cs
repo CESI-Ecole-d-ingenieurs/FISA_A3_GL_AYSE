@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EasySave.ControllerLib.BackupStrategy
@@ -20,7 +21,7 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
-        public override void ExecuteBackup(string source, string target)
+        public override void ExecuteBackup(string source, string target,String nameBackup)
         {
             DirectoryExist(target);
 
@@ -36,6 +37,9 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
+                BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+
+                Thread.Sleep(500); // Slow down the process for better visualization
                 BackupFile(file, source, target);
             }
         }

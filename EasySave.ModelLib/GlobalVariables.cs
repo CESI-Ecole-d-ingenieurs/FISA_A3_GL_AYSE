@@ -12,7 +12,7 @@ namespace EasySave.ModelLib
     {
         /// Instance of the Logger class to manage logging operations.
         protected EasySave.Logger.Logger logger = new EasySave.Logger.Logger();
-        public static String Key = "5";
+        public static String Key = "7";
         public static string[] CryptedFileExt = { "" };
         /// Static variable that stores the path of the log file.
         /// It retrieves the log file name from the Logger class DLL.

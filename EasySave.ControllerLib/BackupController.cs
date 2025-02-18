@@ -76,16 +76,12 @@ namespace EasySave.ControllerLib
                 File.AppendAllText("log.txt", $"[{DateTime.Now}] Sauvegarde annulée : Un logiciel métier est actif.\n");
                 return;
             }
-
-
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
             foreach (var index in BackupIndex)
             {
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
-                   
-
 
                     BackupModel backup = BackupList[index - 1];
                       _BackupStrategyFactory = backup.Type == "Complète"
@@ -93,7 +89,7 @@ namespace EasySave.ControllerLib
                         : (BackupStrategyFactory)new DifferentialBackupFactory();
                  
                     var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-                    strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target);
+                    strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                     BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
                     BackupStateJournal.UpdateState(state);
@@ -102,18 +98,18 @@ namespace EasySave.ControllerLib
                     int totalFiles = files.Length;
                     int processedFiles = 0;
 
-                    await Task.Run(() =>
-                    {
-                        foreach (var file in files)
-                        {
-                            string destFile = file.Replace(backup.Source, backup.Target);
-                            Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                            File.Copy(file, destFile, true);
-                            BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
+                    //await Task.Run(() =>
+                    //{
+                    //    foreach (var file in files)
+                    //    {
+                    //    //    string destFile = file.Replace(backup.Source, backup.Target);
+                    //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                    //    //    File.Copy(file, destFile, true);
+                    //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
 
-                            Thread.Sleep(500); // Slow down the process for better visualization
-                        }
-                    });
+                    //        Thread.Sleep(500); // Slow down the process for better visualization
+                    //    }
+                    //});
 
 
                     stopwatch.Stop();

@@ -19,7 +19,7 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
-        public override void ExecuteBackup(string source, string target)
+        public override void ExecuteBackup(string source, string target, String nameBackup)
         {
             DirectoryExist(target);
 
