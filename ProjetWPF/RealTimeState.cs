@@ -18,7 +18,7 @@ namespace ProjetWPF
             var realTimeState = (TextBox)mainWindow.FindName("State_t");
 
             realTimeState.Text += "[";
-            int progressBarWidth = 30;
+            int progressBarWidth = 20;
             int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
             realTimeState.Text += new string('█', progressBlocks);
             realTimeState.Text += new string('-', progressBarWidth - progressBlocks);
