@@ -277,8 +277,7 @@ namespace ProjetWPF
         {
             BackupController backupController = new BackupController(backup);
             RealTimeState realTimeState = new RealTimeState();
-
-            backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
+            backupController.ExecuteBackup(ToDo_t.Text, realTimeState);
         }
 
         private void Language_b_Click(object sender, RoutedEventArgs e)

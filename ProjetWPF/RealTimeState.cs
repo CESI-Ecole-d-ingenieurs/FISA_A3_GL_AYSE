@@ -7,6 +7,7 @@ using EasySave.ControllerLib;
 using EasySave.ModelLib;
 using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace ProjetWPF
 {
