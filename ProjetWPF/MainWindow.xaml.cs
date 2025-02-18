@@ -197,7 +197,7 @@ namespace ProjetWPF
 
         private async void LanguageChange(object sender, EventArgs e)
         {
-            Language_OK.Text = await Translation.Instance.Translate("Traduction en cours...");
+            //Language_OK.Text = await Translation.Instance.Translate("Traduction en cours...");
 
             languageModel.SelectedLanguage = Language.SelectedIndex;
 
@@ -228,7 +228,7 @@ namespace ProjetWPF
             Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
             History.Text = await Translation.Instance.Translate("Historique :");
 
-            Language_OK.Text = await Translation.Instance.Translate("La langue a été modifiée avec succès");
+            //Language_OK.Text = await Translation.Instance.Translate("La langue a été modifiée avec succès");
         }
 
         private async void SettingsChange(object sender, EventArgs e)

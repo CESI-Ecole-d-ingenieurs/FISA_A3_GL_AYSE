@@ -25,7 +25,7 @@ namespace ProjetWPF
             var logs = (Grid)mainWindow.FindName("Logs");
 
             settings.Visibility = Visibility.Collapsed;
-            languages.Visibility = Visibility.Collapsed;
+            //languages.Visibility = Visibility.Collapsed;
             creation.Visibility = Visibility.Collapsed;
             execution.Visibility = Visibility.Collapsed;
             logs.Visibility = Visibility.Collapsed;

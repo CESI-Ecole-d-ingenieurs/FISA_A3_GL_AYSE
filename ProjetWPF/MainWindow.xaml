@@ -77,6 +77,8 @@
         <TextBlock Text="EasySave" FontSize="100" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Grid.Column="1"/>
 
         <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
+        <ComboBox Name="Language" Width="169" Height="50" Background="White" SelectionChanged="LanguageChange"  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,200,0"  Visibility="Visible"  />
+           
         <Button Name="Settings_b" Content="Setting" Width="169" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings"/>
 
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,30,0,0" Grid.Column="1" Grid.Row="1">
@@ -112,10 +114,7 @@
             <TextBlock Name="Settings_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,396,0,-98" Grid.ColumnSpan="2"/>
         </Grid>
 
-        <Grid Name="Languages" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,29,201,0">
-            <ComboBox Name="Language" Width="200" Height="30" Background="White" SelectionChanged="LanguageChange" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-            <TextBlock x:Name="Language_OK" Text="Select Language" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="Pink" Padding="30" Margin="0,35,0,0" Visibility="Collapsed"/>
-        </Grid>
+      
 
 
         <Grid Name="Creation" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
