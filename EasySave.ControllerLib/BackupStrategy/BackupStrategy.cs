@@ -11,6 +11,6 @@ namespace EasySave.ControllerLib.BackupStrategy
     public interface BackupStrategy
     {
         /// Implementations of this method define the specific backup logic.
-         void ExecuteBackup(string Source, string Target,String nameBackup);
+         Task ExecuteBackup(string Source, string Target,String nameBackup);
     }
 }

@@ -21,7 +21,7 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
-        public override void ExecuteBackup(string source, string target,String nameBackup)
+        public override async Task ExecuteBackup(string source, string target,String nameBackup)
         {
             DirectoryExist(target);
 
@@ -37,10 +37,14 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
-                BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+                await Task.Run(() =>
+                {
+                    BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
 
-                Thread.Sleep(500); // Slow down the process for better visualization
-                BackupFile(file, source, target);
+                    Thread.Sleep(500); // Slow down the process for better visualization
+                }
+                    );
+            BackupFile(file, source, target);
             }
         }
 

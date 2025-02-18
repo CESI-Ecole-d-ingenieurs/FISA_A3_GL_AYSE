@@ -89,7 +89,7 @@ namespace EasySave.ControllerLib
                         : (BackupStrategyFactory)new DifferentialBackupFactory();
                  
                     var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-                    strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
+                    await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                     BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
                     BackupStateJournal.UpdateState(state);
