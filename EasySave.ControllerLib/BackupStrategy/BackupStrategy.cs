@@ -13,3 +13,4 @@ namespace EasySave.ControllerLib.BackupStrategy
          void ExecuteBackup(string Source, string Target);
     }
 }
+
