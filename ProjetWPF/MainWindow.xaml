@@ -150,7 +150,6 @@
 
     <Grid>
         <TextBlock Text="EasySave" FontSize="100" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Grid.Column="1"/>
-        <TextBox Name="Test" Text="" Width="NaN" Height="NaN" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="806,808,20,32"/>
 
         <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
         <ComboBox Name="Language" Width="169" Height="50" SelectionChanged="LanguageChange"  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,200,0"  Visibility="Visible"  />
@@ -228,10 +227,6 @@
                 <TextBlock Name="ToDo" Text="Backups to do:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="ToDo_t" Text="" Width="400" Height="50" Margin="0, 10, 0, 30"/>
             </StackPanel>
-            <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10, 0, 0, 0" >
-                <TextBlock Name="State" Text="Real-time state:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
-                <TextBox Name="State_t"  Width="400" Height="300" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 10, 0, 30"/>
-                <Button Content="OK" Width="300" Height="100" FontSize="20" Background="#F0F0F2" Margin="0, 0, 0, 0" Click="BackupExecution" />
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10, 0, 0, 0">
                 <TextBlock Name="State" Text="Real-time state:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="State_t" Text="" Width="430" Height="300" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 10, 0, 30"/>
