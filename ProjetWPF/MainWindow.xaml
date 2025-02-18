@@ -76,14 +76,13 @@
     <Grid>
         <TextBlock Text="EasySave" FontSize="100" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Grid.Column="1"/>
 
-        <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
-        <Button Name="Settings_b" Content="Setting" Width="150" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings" Grid.Column="1"/>
+        <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
+        <Button Name="Settings_b" Content="Setting" Width="169" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings"/>
 
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,30,0,0" Grid.Column="1" Grid.Row="1">
-
-            <Button Name="Language_b" Content="Langue / language" Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowLanguages"/>
-            <Button Name="Create_b" Content="Backup creation" Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowCreation"/>
-            <Button Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowExecution">
+            <Button Name="Language_b" Content="Langue / language" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" />
+            <Button Name="Create_b" Content="Backup creation" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowCreation"/>
+            <Button Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowExecution" >
                 <TextBlock Name="Execute_b" Text="Execute one / several backups" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
             <Button Name="Consult_b" Content="Consult the history" Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowLogs"/>
@@ -114,13 +113,11 @@
             <TextBlock Name="Settings_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,396,0,-98" Grid.ColumnSpan="2"/>
         </Grid>
 
-        <Grid Name="Languages" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,150,100,0" Visibility="Collapsed">
-            <TextBlock Text="Choisissez une langue / Choose a language :" FontSize="20" FontWeight="Bold" Width="500" TextAlignment="Center" Background="#F0F0F2" Padding="30" Margin="0,0,0,293"/>
-            <ComboBox Name="Language" Width="500" Height="30" Background="White" Margin="0,92,0,252">
-            </ComboBox>
-            <TextBlock x:Name="Language_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" RenderTransformOrigin="0.484,-0.632" Margin="0,274,0,0"/>
-            <Button Content="OK" Width="300" Height="100" FontSize="20" Background="#F0F0F2" Margin="100,151,100,123" Click="LanguageChange"/>
+        <Grid Name="Languages" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,29,201,0">
+            <ComboBox Name="Language" Width="200" Height="30" Background="White" SelectionChanged="LanguageChange" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <TextBlock x:Name="Language_OK" Text="Select Language" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="Pink" Padding="30" Margin="0,35,0,0" Visibility="Collapsed"/>
         </Grid>
+
 
         <Grid Name="Creation" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>

@@ -44,6 +44,7 @@ namespace ProjetWPF
         public MainWindow()
         {
             InitializeComponent();
+            ShowLanguages();
             StartMonitoringBusinessSoftware();
             LoadAvailableSoftware();
         }
@@ -163,11 +164,11 @@ namespace ProjetWPF
             visible.Show("Settings");
         }
 
-        private void ShowLanguages(object sender, RoutedEventArgs e)
+        private void ShowLanguages()
         {
             languageView.DisplayLanguages(languageModel.Languages, 0);
 
-            visible.Show("Languages");
+           // visible.Show("Languages");
         }
 
         private void ShowCreation(object sender, RoutedEventArgs e)
