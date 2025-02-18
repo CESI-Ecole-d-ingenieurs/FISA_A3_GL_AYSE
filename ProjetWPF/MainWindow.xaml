@@ -150,14 +150,14 @@
     <Grid>
         <TextBlock Text="EasySave" FontSize="100" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Grid.Column="1"/>
 
-        <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
+        <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
         <ComboBox Name="Language" Width="169" Height="50" SelectionChanged="LanguageChange"  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,200,0"  Visibility="Visible"  />
-           
-        <Button Name="Settings_b" Content="Setting" Width="169" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings"/>
+
+        <Button Name="Settings_b" Content="Setting" Width="169" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings"/>
 
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,30,0,0" Grid.Column="1" Grid.Row="1">
-            <Button Name="Create_b" Content="Backup creation" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowCreation"/>
-            <Button Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowExecution" >
+            <Button Name="Create_b" Content="Backup creation" Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowCreation"/>
+            <Button Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowExecution" >
                 <TextBlock Name="Execute_b" Text="Execute one / several backups" TextWrapping="Wrap" TextAlignment="Center"/>
             </Button>
             <Button Name="Consult_b" Content="Consult the history" Width="300" Height="100" Background="#F0F0F2" FontSize="20" Margin="5,15,5,15" Click="ShowLogs"/>
@@ -171,19 +171,19 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Margin="0, 0, 10, 0">
-                <TextBlock Name="Format" Text="History format:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Format" Text="History format:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <ComboBox Name="Format_list" Width="400" Height="50" FontSize="20" Margin="0, 10, 0, 50">
                 </ComboBox>
-                <TextBlock Name="Crypt" Text="Files to encrypt:" FontSize="20" FontWeight="Bold" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Crypt" Text="Files to encrypt:" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
                 <TextBox Name="Extensions_t" Width="400" Height="50" Margin="0, 10, 0, 50"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="10, 0, 0, 0">
-                <TextBlock Name="Software" Text="Business software:" FontSize="20" FontWeight="Bold" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Software" Text="Business software:" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
                 <TextBox Name="BusinessSoftwareTextBox" Width="400" Height="50" Margin="0, 10, 0, 50"/>
-                <ComboBox Name="ProcessComboBox" Width="400" Height="50" Background="White" Margin="0, 10, 0, 50"
+                <ComboBox Name="ProcessComboBox" Width="400" Height="50" Background="White" Margin="0, 35, 0, 50"
           SelectionChanged="ProcessComboBox_SelectionChanged"/>
 
-                <Button Content="OK" Width="100" Height="50" FontSize="16" Background="#F0F0F2" Margin="0, 0, 0, 0" Click="SettingsChange"/>
+                <Button Content="OK" Width="100" Height="50" FontSize="16" Background="#F0F0F2" Margin="-50, 0, 350, 0" Click="SettingsChange"/>
             </StackPanel>
             <TextBlock Name="Settings_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,396,0,-98" Grid.ColumnSpan="2"/>
         </Grid>
@@ -191,26 +191,26 @@
       
 
 
-        <Grid Name="Creation" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
+        <Grid Name="Creation" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 200, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Margin="0, 0, 10, 0">
-                <TextBlock Name="Name" Text="Name:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Name" Text="Name:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" />
                 <TextBox Name="Name_t" Text="" Width="400" Height="50" Margin="0, 10, 0, 30"/>
-                <TextBlock Name="Source" Text="Source:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Source" Text="Source:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" />
                 <TextBox Name="Source_t" Text="" Width="400" Height="50" Margin="0, 10, 0, 30"/>
-                <TextBlock Name="Destination" Text="Destination:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Destination" Text="Destination:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="Destination_t" Text="" Width="400" Height="50" Margin="0, 10, 0, 30"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10, 0, 0, 0">
-                <TextBlock Name="Type" Text="Type:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Type" Text="Type:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <ComboBox Name="Type_t" Width="400" Height="50" Margin="0, 10, 0, 30">
                     <ComboBoxItem Name="Complete" Content="Complete"/>
                     <ComboBoxItem Name="Differential" Content="Differential"/>
                 </ComboBox>
-                <Button Content="OK" Width="100" Height="50" FontSize="20" Background="#F0F0F2" Margin="0, 0, 0, 0" Click="BackupCreation"/>
+                <Button Content="OK" Width="100" Height="50" FontSize="20" Background="#F0F0F2" Margin="50, 75, 0, 0" Click="BackupCreation"/>
             </StackPanel>
             <TextBlock Name="Creation_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,535,0,-96" Grid.ColumnSpan="2"/>
         </Grid>
@@ -221,15 +221,15 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Margin="0, 0, 10, 0">
-                <TextBlock Name="Available" Text="Available backups:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="Available" Text="Available backups:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" />
                 <TextBox Name="Available_t" Text="" Width="400" Height="300" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 10, 0, 30"/>
-                <TextBlock Name="ToDo" Text="Backups to do:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="ToDo" Text="Backups to do:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="ToDo_t" Text="" Width="400" Height="50" Margin="0, 10, 0, 30"/>
             </StackPanel>
             <StackPanel Grid.Column="1" HorizontalAlignment="Right" Margin="10, 0, 0, 0">
-                <TextBlock Name="State" Text="Real-time state:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center" Background="#F0F0F2" Padding="30"/>
+                <TextBlock Name="State" Text="Real-time state:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="State_t" Text="" Width="400" Height="300" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 10, 0, 30"/>
-                <Button Content="OK" Width="100" Height="50" FontSize="20" Background="#F0F0F2" Margin="0, 0, 0, 0" Click="BackupExecution"/>
+                <Button Content="OK" Width="100" Height="50" FontSize="20" Background="#F0F0F2" Margin="20, 40, 0, 0" Click="BackupExecution"/>
             </StackPanel>
         </Grid>
 
@@ -238,7 +238,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Margin="0, 0, 10, 0">
-                <TextBlock Name="History" Text="History:" FontSize="20" FontWeight="Bold" Width="500" Height="80" TextAlignment="Center" Background="#F0F0F2" Padding="30" Margin="0,0,0,30"/>
+                <TextBlock Name="History" Text="History:" FontSize="20" FontWeight="Bold" Width="500" Height="30" TextAlignment="Center" Margin="0,0,0,30"/>
                 <TextBox Name="History_t" Text="" Width="800" Height="500" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 0, 0, 0"/>
             </StackPanel>
         </Grid>
