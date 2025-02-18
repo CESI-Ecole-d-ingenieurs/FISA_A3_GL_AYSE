@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EasySave.ControllerLib.BackupFactory;
+using System.Diagnostics;
 namespace EasySave.ControllerLib
 {
 
@@ -16,6 +17,21 @@ namespace EasySave.ControllerLib
         private List<BackupModel> BackupList;
         private BackupStrategyFactory _BackupStrategyFactory;
         private IBackupView backupview;
+
+        public bool IsBusinessSoftwareRunning()
+        {
+            if (!File.Exists("config.txt"))
+                return false;
+
+            var businessSoftwareList = File.ReadAllLines("config.txt")
+                                           .Select(s => s.Trim().ToLower())
+                                           .Where(s => !string.IsNullOrEmpty(s))
+                                           .ToList();
+
+            return businessSoftwareList.Any(software => Process.GetProcesses()
+                                                                .Any(p => p.ProcessName.ToLower().Contains(software)));
+        }
+
 
 
         /// Executes selected backups based on user input.
@@ -54,6 +70,13 @@ namespace EasySave.ControllerLib
 
         public void ExecuteBackup(string input, EasySave.ModelLib.IObserver consoleView)
         {
+            if (IsBusinessSoftwareRunning())
+            {
+                Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                File.AppendAllText("log.txt", $"[{DateTime.Now}] Sauvegarde annulée : Un logiciel métier est actif.\n");
+                return;
+            }
+
 
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display

@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -11,6 +13,7 @@ using System.Windows.Shapes;
 using EasySave.ControllerLib;
 using EasySave.IviewLib;
 using EasySave.ModelLib;
+using Microsoft.Win32;
 
 namespace ProjetWPF
 {
@@ -34,9 +37,122 @@ namespace ProjetWPF
 
         ExtensionController extensionController = new ExtensionController();
 
+        private Thread monitoringThread;
+        private bool isMonitoring = true;
+        private bool alertShown = false;
+
         public MainWindow()
         {
             InitializeComponent();
+            StartMonitoringBusinessSoftware();
+            LoadAvailableSoftware();
+        }
+
+        private void StartMonitoringBusinessSoftware()
+        {
+            monitoringThread = new Thread(() =>
+            {
+                while (isMonitoring)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (File.Exists("config.txt"))
+                        {
+                            var businessSoftwareList = File.ReadAllLines("config.txt")
+                                                           .Select(s => s.Trim().ToLower())
+                                                           .Where(s => !string.IsNullOrEmpty(s))
+                                                           .ToList();
+
+                            bool softwareRunning = businessSoftwareList.Any(software => Process.GetProcesses()
+                                                                                      .Any(p => p.ProcessName.ToLower().Contains(software)));
+
+                            if (softwareRunning && !alertShown)
+                            {
+                                alertShown = true;
+                                MessageBox.Show("Un ou plusieurs logiciels métiers sont en cours d'exécution. Les sauvegardes sont bloquées.", "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
+                            else if (!softwareRunning)
+                            {
+                                alertShown = false;
+                            }
+                        }
+                    });
+                    Thread.Sleep(5000);
+                }
+            });
+            monitoringThread.IsBackground = true;
+            monitoringThread.Start();
+        }
+
+        public bool IsBusinessSoftwareRunning()
+        {
+            if (!File.Exists("config.txt"))
+                return false;
+
+            var businessSoftwareList = File.ReadAllLines("config.txt")
+                                           .Select(s => s.Trim().ToLower())
+                                           .Where(s => !string.IsNullOrEmpty(s))
+                                           .ToList();
+
+            return businessSoftwareList.Any(software => Process.GetProcesses()
+                                                                .Any(p => p.ProcessName.ToLower().Contains(software)));
+        }
+
+        private void LoadAvailableSoftware()
+        {
+            var softwareList = new List<string>();
+
+            // Récupérer tous les logiciels installés depuis le registre Windows
+            string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
+            {
+                if (key != null)
+                {
+                    foreach (string subkeyName in key.GetSubKeyNames())
+                    {
+                        using (RegistryKey subkey = key.OpenSubKey(subkeyName))
+                        {
+                            var displayName = subkey?.GetValue("DisplayName") as string;
+                            if (!string.IsNullOrEmpty(displayName))
+                            {
+                                softwareList.Add(displayName);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Ajouter les processus actuellement en cours d'exécution
+            var runningProcesses = Process.GetProcesses()
+                                          .Select(p => p.ProcessName)
+                                          .Distinct()
+                                          .OrderBy(p => p)
+                                          .ToList();
+            softwareList.AddRange(runningProcesses);
+            softwareList = softwareList.Distinct().OrderBy(p => p).ToList();
+
+            // Afficher dans la ComboBox
+            ProcessComboBox.ItemsSource = softwareList;
+        }
+
+        private void ProcessComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (ProcessComboBox.SelectedItem != null)
+            {
+                if (!string.IsNullOrEmpty(BusinessSoftwareTextBox.Text))
+                {
+                    BusinessSoftwareTextBox.Text += ", " + ProcessComboBox.SelectedItem.ToString();
+                }
+                else
+                {
+                    BusinessSoftwareTextBox.Text = ProcessComboBox.SelectedItem.ToString();
+                }
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            isMonitoring = false;
         }
 
         private void ShowSettings(object sender, RoutedEventArgs e)
@@ -122,6 +238,29 @@ namespace ProjetWPF
             extensionController.ExtensionsChange();
 
             Settings_OK.Text = await Translation.Instance.Translate("Les paramètres ont été modifiés avec succès.");
+
+            string softwareNames = BusinessSoftwareTextBox.Text.Trim();
+
+            if (!string.IsNullOrEmpty(softwareNames))
+            {
+                var existingSoftware = new List<string>();
+                if (File.Exists("config.txt"))
+                {
+                    existingSoftware = File.ReadAllLines("config.txt").ToList();
+                }
+
+                var newSoftwareList = softwareNames.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s));
+                foreach (var software in newSoftwareList)
+                {
+                    if (!existingSoftware.Contains(software))
+                    {
+                        existingSoftware.Add(software);
+                    }
+                }
+
+                File.WriteAllLines("config.txt", existingSoftware);
+                MessageBox.Show("Logiciel(s) métier enregistré(s) avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         private async void BackupCreation(object sender, EventArgs e)
