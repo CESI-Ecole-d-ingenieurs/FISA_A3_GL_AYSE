@@ -280,5 +280,10 @@ namespace ProjetWPF
 
             backupController.ExecuteBackup(ToDo_t.Text, realTimeState);
         }
+
+        private void Language_b_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

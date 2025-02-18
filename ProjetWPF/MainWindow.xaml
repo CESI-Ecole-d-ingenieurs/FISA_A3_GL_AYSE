@@ -80,7 +80,6 @@
         <Button Name="Settings_b" Content="Setting" Width="169" Height="50" Background="Lavender" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,20,0" Click="ShowSettings"/>
 
         <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="100,30,0,0" Grid.Column="1" Grid.Row="1">
-            <Button Name="Language_b" Content="Langue / language" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" />
             <Button Name="Create_b" Content="Backup creation" Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowCreation"/>
             <Button Width="300" Height="100" Background="Lavender" FontSize="20" Margin="5,15,5,15" Click="ShowExecution" >
                 <TextBlock Name="Execute_b" Text="Execute one / several backups" TextWrapping="Wrap" TextAlignment="Center"/>
