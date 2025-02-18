@@ -93,10 +93,13 @@ namespace EasySave.ModelLib
 
                 if (state != null && state.RemainingFiles > 0)
                 {
-                    // Decrement remaining files and update progress percentage.
                     state.RemainingFiles--;
-                    state.Progress = 100 - (state.RemainingFiles * 100 / state.TotalFilesToCopy);
-                    // If no files remain, mark the backup as completed.
+
+                    if (state.TotalFilesToCopy > 0)
+                    {
+                        state.Progress = 100 - (state.RemainingFiles * 100 / state.TotalFilesToCopy);
+                    }
+
                     if (state.RemainingFiles == 0)
                     {
                         state.State = "COMPLETED";
@@ -105,10 +108,12 @@ namespace EasySave.ModelLib
                     SaveState(states);
                     NotifyObservers(state);
 
-                    //Console.WriteLine($"Mise à jour : {state.Name} -> {state.Progress}%");
+                    // Vérifier en console si l'observer est bien notifié
+                    //Console.WriteLine($"Mise à jour de {state.Name}: {state.Progress}%");
                 }
             }
         }
+
 
         /// Loads the current backup states from the JSON file.
         public static List<BackupState> LoadState()
