@@ -68,7 +68,7 @@ namespace EasySave.ControllerLib
             catch { }
         }
 
-        public void ExecuteBackup(string input, EasySave.ModelLib.IObserver consoleView)
+        public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
             if (IsBusinessSoftwareRunning())
             {
@@ -100,16 +100,19 @@ namespace EasySave.ControllerLib
                     int totalFiles = files.Length;
                     int processedFiles = 0;
 
-                    foreach (var file in files)
+                    await Task.Run(() =>
                     {
-                        string destFile = file.Replace(backup.Source, backup.Target);
-                        Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                        File.Copy(file, destFile, true);
+                        foreach (var file in files)
+                        {
+                            string destFile = file.Replace(backup.Source, backup.Target);
+                            Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                            File.Copy(file, destFile, true);
+                            BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
 
-                        processedFiles++;
-                        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
-                        Thread.Sleep(500); // Slow down the process for better visualization
-                    }
+                            Thread.Sleep(500); // Slow down the process for better visualization
+                        }
+                    });
+
 
                     stopwatch.Stop();
                     state.Progress = 100;

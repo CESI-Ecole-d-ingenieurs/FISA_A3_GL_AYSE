@@ -15,38 +15,53 @@ namespace ProjetWPF
     {
         public void Update(BackupState state)
         {
-
-            //var states = BackupStateJournal.GetState();
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            var State_t = (TextBox)mainWindow.FindName("State_t");
-            var Test = (TextBox)mainWindow.FindName("Test");
-            // _backupView.DisplayProgress();
-
-            var states = BackupStateJournal.GetState();
-            //Console.Clear();
-            //Console.WriteLine("Mise à jour de la progression..."); // Check
-
-            //Console.WriteLine("Progression des sauvegardes :");
-            foreach (var statee in states)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-             //  Console.WriteLine($"{statee.Name} : {statee.Progress}% - {statee.State}");
-                Test.Text += new String(statee.Name);
-                int progressBlockss = (int)(statee.Progress);
-                Test.Text += new String(':',progressBlockss);
-               
-            }
+                var mainWindow = (MainWindow)Application.Current.MainWindow;
+                var realTimeState = (TextBox)mainWindow.FindName("State_t");
 
-            //realTimeState.Text += "[";
-            int progressBarWidth = 30;
-            int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
-            //realTimeState.Text += new string('█', progressBlocks);
-            //realTimeState.Text += new string('-', progressBarWidth - progressBlocks);
-            //realTimeState.Text += "]" + state.Progress + "%";
-            //realTimeState.Text += "\n";
-            // Use Dispatcher to ensure UI thread updates the TextBox safely
-           
-            // Brief delay to make updates visible.
-            Thread.Sleep(500);
+                if (realTimeState != null)
+                {
+                    string[] lines = realTimeState.Text.Split('\n');
+                    Dictionary<string, string> backupLines = new Dictionary<string, string>();
+
+                    // Vérifier si le nom contient "CompleteBackup" ou "DifferentialBackup" et le filtrer
+                    string backupName = state.Name;
+                    if (backupName.Contains("CompleteBackup") || backupName.Contains("DifferentialBackup"))
+                    {
+                        return; // Ne pas afficher cette entrée
+                    }
+
+                    // Récupérer les sauvegardes existantes
+                    foreach (string line in lines)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            string[] parts = line.Split(']');
+                            if (parts.Length > 1)
+                            {
+                                string name = parts[0].TrimStart('[');
+                                backupLines[name] = line;
+                            }
+                        }
+                    }
+
+                    // Générer la nouvelle barre de progression
+                    int progressBarWidth = 20;
+                    int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
+                    string progressBar = $"[{new string('█', progressBlocks)}{new string('-', progressBarWidth - progressBlocks)}]{state.Progress}%";
+
+                    // Remplacer ou ajouter la ligne pour la sauvegarde en cours
+                    backupLines[backupName] = $"[{backupName}] {progressBar}";
+
+                    // Reconstruire le texte avec les mises à jour
+                    realTimeState.Text = string.Join("\n", backupLines.Values);
+                }
+            });
         }
+
+
+
+
     }
 }
