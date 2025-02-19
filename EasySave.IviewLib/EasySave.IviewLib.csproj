@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="IObserver.cs" />
     <Compile Include="ILanguageView.cs" />
     <Compile Include="IBackupView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

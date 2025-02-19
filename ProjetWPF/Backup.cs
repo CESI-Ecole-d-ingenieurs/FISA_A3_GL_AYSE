@@ -18,6 +18,7 @@ namespace ProjetWPF
 
         }
 
+        // This method gets and returns the user's entry for the parameters of a backup.
         public async Task<BackupModel> UserAsk()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
@@ -25,8 +26,8 @@ namespace ProjetWPF
             var source = (TextBox)mainWindow.FindName("Source_t");
             var target = (TextBox)mainWindow.FindName("Destination_t");
             var listType = (ComboBox)mainWindow.FindName("Type_t");
-            //string type = await Translation.Instance.Translate(((ComboBoxItem)listType.SelectedItem).Content.ToString());
             string type;
+            // Get the type of the backup with the index of the selection in the list.
             switch (listType.SelectedIndex)
             {
                 case 0:

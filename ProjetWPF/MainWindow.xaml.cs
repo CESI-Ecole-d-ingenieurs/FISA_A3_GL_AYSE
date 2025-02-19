@@ -41,6 +41,7 @@ namespace ProjetWPF
         private bool isMonitoring = true;
         private bool alertShown = false;
 
+        // This method initialize and launch the Graphical User Interface
         public MainWindow()
         {
             InitializeComponent();
@@ -51,21 +52,23 @@ namespace ProjetWPF
             MonitorBusinessSoftware();
         }
 
+        // This method displays all the business software that are running in text zone.
         private void LoadBusinessSoftware()
         {
             if (File.Exists("config.txt"))
             {
+                // List the running business software.
                 var businessSoftwareList = File.ReadAllLines("config.txt")
                                                .Select(s => s.Trim())
                                                .Where(s => !string.IsNullOrEmpty(s))
                                                .ToList();
 
-                // Afficher les logiciels dans la TextBox
+                // Display the running businnes software
                 BusinessSoftwareTextBox.Text = string.Join(", ", businessSoftwareList);
             }
         }
 
-
+        // This method verify if one (ore more) business software defined by the user is running.
         private void StartMonitoringBusinessSoftware()
         {
             monitoringThread = new Thread(() =>
@@ -76,18 +79,21 @@ namespace ProjetWPF
                     {
                         if (File.Exists("config.txt"))
                         {
+                            // Make a list with the business software defined by the user.
                             var businessSoftwareList = File.ReadAllLines("config.txt")
                                                            .Select(s => s.Trim().ToLower())
                                                            .Where(s => !string.IsNullOrEmpty(s))
                                                            .ToList();
 
-                            bool softwareRunning = businessSoftwareList.Any(software => Process.GetProcesses()
+                            // Check if one (or more) of the business software are running.
+                            bool softwareRunning = businessSoftwareList.Any(software  => Process.GetProcesses()
                                                                                       .Any(p => p.ProcessName.ToLower().Contains(software)));
 
+                            // Inform the user if one (or more) of the business software are running.
                             if (softwareRunning && !alertShown)
                             {
                                 alertShown = true;
-                                MessageBox.Show("Un ou plusieurs logiciels métiers sont en cours d'exécution. Les sauvegardes sont bloquées.", "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                MessageBox.Show("One or more business software are running. The backups are blocked", "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                             else if (!softwareRunning)
                             {
@@ -102,6 +108,7 @@ namespace ProjetWPF
             monitoringThread.Start();
         }
 
+        // This method verify if one (ore more) business software defined by the user is running during the backups execution.
         private void MonitorBusinessSoftware()
         {
             Task.Run(() =>
@@ -112,11 +119,11 @@ namespace ProjetWPF
                     {
                         if (IsBusinessSoftwareRunning())
                         {
-                            // Afficher une alerte si un logiciel métier est détecté
+                            // Inform the user if one (or more) of the business software are running.
                             if (!alertShown)
                             {
                                 alertShown = true;
-                                MessageBox.Show("Un logiciel métier est en cours d'exécution. Les nouvelles sauvegardes sont bloquées.",
+                                MessageBox.Show("One or more business software are running. The new backups are blocked.",
                                     "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }
                         }
@@ -126,12 +133,12 @@ namespace ProjetWPF
                         }
                     });
 
-                    Thread.Sleep(5000); // Vérifie toutes les 5 secondes
+                    Thread.Sleep(5000); // Check every 5 seconds
                 }
             });
         }
 
-
+        // This method check if the business software define by the user are running.
         public bool IsBusinessSoftwareRunning()
         {
             if (!File.Exists("config.txt"))
@@ -146,11 +153,12 @@ namespace ProjetWPF
                                                                 .Any(p => p.ProcessName.ToLower().Contains(software)));
         }
 
+        // This method displays all the software that are running.
         private void LoadAvailableSoftware()
         {
             var softwareList = new List<string>();
 
-            // Récupérer tous les logiciels installés depuis le registre Windows
+            // Get all the software installed in the Windows register.
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(registryKey))
             {
@@ -170,7 +178,7 @@ namespace ProjetWPF
                 }
             }
 
-            // Ajouter les processus actuellement en cours d'exécution
+            // Add the running software to a list
             var runningProcesses = Process.GetProcesses()
                                           .Select(p => p.ProcessName)
                                           .Distinct()
@@ -179,10 +187,11 @@ namespace ProjetWPF
             softwareList.AddRange(runningProcesses);
             softwareList = softwareList.Distinct().OrderBy(p => p).ToList();
 
-            // Afficher dans la ComboBox
+            // Display the list in a ComboBox.
             ProcessComboBox.ItemsSource = softwareList;
         }
 
+        // This method allows the user to click on an item in the list of the running software. It add the selected software to the list of the software that are not compatible with the backup execution.
         private void ProcessComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (ProcessComboBox.SelectedItem != null)
@@ -198,11 +207,14 @@ namespace ProjetWPF
             }
         }
 
+        // This method is used when the user closed the application.
         private void Window_Closed(object sender, EventArgs e)
         {
             isMonitoring = false;
         }
 
+
+        // This method shows the elements related to the settings part.
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
             format.ClearScreen();
@@ -211,18 +223,19 @@ namespace ProjetWPF
             visible.Show("Settings");
         }
 
+        // This method shows the elements related to the language part.
         private void ShowLanguages()
         {
             languageView.DisplayLanguages(languageModel.Languages, 0);
-
-           // visible.Show("Languages");
         }
 
+        // This method shows the elements related to the backup creation part.
         private void ShowCreation(object sender, RoutedEventArgs e)
         {
             visible.Show("Creation");
         }
 
+        // This method shows the elements related to the backup execution part.
         private async void ShowExecution(object sender, RoutedEventArgs e)
         {
             await controllerBackup.DisplayBackups();
@@ -230,6 +243,7 @@ namespace ProjetWPF
             visible.Show("Execution");
         }
 
+        // This method shows the elements related to the log file part.
         private async void ShowLogs(object sender, RoutedEventArgs e)
         {
             await logs.DisplayLogs();
@@ -237,15 +251,15 @@ namespace ProjetWPF
             visible.Show("Logs");
         }
 
+        // This method close the application by clicking on "Exit".
         private void Exit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
+        // This method translates all the displayed texts in the application.
         private async void LanguageChange(object sender, EventArgs e)
         {
-            //Language_OK.Text = await Translation.Instance.Translate("Traduction en cours...");
-
             languageModel.SelectedLanguage = Language.SelectedIndex;
 
             LanguageController languageController = new LanguageController(languageModel, languageView);
@@ -275,14 +289,15 @@ namespace ProjetWPF
 
             Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
             History.Text = await Translation.Instance.Translate("Historique :");
-
-            //Language_OK.Text = await Translation.Instance.Translate("La langue a été modifiée avec succès");
         }
 
+        // This method changes the format of the log file, creates a list with the extension that need to be encrypted, and creates a list with the software that are not compatible with the backup execution.
         private async void SettingsChange(object sender, EventArgs e)
         {
             MenuController menuController = new MenuController(menuModel, format);
+            // Change the log file format
             await menuController.HandleLogFormat(Format_list.SelectedIndex);
+            // Get the extension that need to be encrypted
             extensionController.ExtensionsChange();
 
             Settings_OK.Text = await Translation.Instance.Translate("Les paramètres ont été modifiés avec succès.");
@@ -302,10 +317,10 @@ namespace ProjetWPF
                                                    .Where(s => !string.IsNullOrEmpty(s))
                                                    .ToList();
 
-                // 🔹 Supprimer uniquement les logiciels qui ne sont plus dans BusinessSoftwareTextBox
+                // Remove from the list the business software that are not defined by the user.
                 var updatedSoftwareList = existingSoftware.Where(s => newSoftwareList.Contains(s)).ToList();
 
-                // 🔹 Ajouter uniquement les nouveaux logiciels
+                // Add the business software that are defined by the user to the list.
                 foreach (var software in newSoftwareList)
                 {
                     if (!updatedSoftwareList.Contains(software))
@@ -314,29 +329,29 @@ namespace ProjetWPF
                     }
                 }
 
-                // 🔹 Mettre à jour config.txt avec la liste mise à jour
+                // Add the business software that are defined by the user to the file.
                 File.WriteAllLines("config.txt", updatedSoftwareList);
 
-                // 🔹 Recharger la liste des logiciels affichés
+                // Reload the displayed business software.
                 LoadBusinessSoftware();
 
-                MessageBox.Show("Logiciel(s) métier mis à jour avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(await Translation.Instance.Translate("Logiciel(s) métier mis à jour avec succès !"), "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
-            // 🔹 Si la TextBox est vide, on supprime tous les logiciels métiers
+            // Remove from the list all the business software if there is no entry from the user.
             if (string.IsNullOrEmpty(softwareNames))
             {
                 BusinessSoftwareTextBox.Clear();
                 if (File.Exists("config.txt"))
                 {
                     File.Delete("config.txt");
-                    MessageBox.Show("Aucun logiciel métier ne sera pris en compte.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show(await Translation.Instance.Translate("Aucun logiciel métier ne sera pris en compte."), "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
             }
         }
 
-
+        // This method is used to create a backup.
         private async void BackupCreation(object sender, EventArgs e)
         {
             BackupController backupController = new BackupController(backup);
@@ -346,23 +361,19 @@ namespace ProjetWPF
             Creation_OK.Text = await Translation.Instance.Translate("La sauvegarde a été créer avec succès.");
         }
 
-        private void BackupExecution(object sender, EventArgs e)
+        // This method is used to execute a backup.
+        private async void BackupExecution(object sender, EventArgs e)
         {
             if (IsBusinessSoftwareRunning())
             {
-                MessageBox.Show("Un logiciel métier est en cours d'exécution. Impossible de démarrer une nouvelle sauvegarde.",
+                MessageBox.Show(await Translation.Instance.Translate("Un logiciel métier est en cours d'exécution. Impossible de démarrer une nouvelle sauvegarde."),
                     "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
-                File.AppendAllText(GlobalVariables.PathBackup, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                return; // Bloque le lancement
+                File.AppendAllText(GlobalVariables.PathBackup, await Translation.Instance.Translate($"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n"));
+                return;
             }
             BackupController backupController = new BackupController(backup);
             RealTimeState realTimeState = new RealTimeState();
-            backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
-        }
-
-        private void Language_b_Click(object sender, RoutedEventArgs e)
-        {
-
+            await backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
         }
     }
 }

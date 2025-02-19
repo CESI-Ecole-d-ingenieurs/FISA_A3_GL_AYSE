@@ -15,6 +15,7 @@ namespace ProjetWPF
 {
     public class ControllerBackup
     {
+        // This method displays all the available backups that are stored in a file to the user.
         public async Task DisplayBackups()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
@@ -25,6 +26,7 @@ namespace ProjetWPF
             {
                 int lineNumber = 1;
                 backups.Text = await Translation.Instance.Translate("Nom - Source - Destination - Type");
+                // Display the lines in the file, one after one.
                 foreach (string line in File.ReadLines(GlobalVariables.PathBackup))
                 {
                     backups.Text += "\n" + lineNumber + " " + line;

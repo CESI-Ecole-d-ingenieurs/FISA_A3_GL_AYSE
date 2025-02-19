@@ -83,6 +83,8 @@ namespace EasySave.Logger
                 Console.Write($"nom: {logFilePath}");
             }
         }
+
+        // This method writes the log file in XML format
         public void WriteLogXML(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime, int encryptionTime = 0, bool isError = false)
         {
 
@@ -128,5 +130,5 @@ namespace EasySave.Logger
         }
     }
 }
-//ajoute une référence à la DLL en exécutant :
+//add a reference to the library with:
 //dotnet add reference C:\Users\salem\source\repos\Aysee2\FISA_A3_GL_AYSE2\EasySave.Logger/EasySave.Logger.csproj

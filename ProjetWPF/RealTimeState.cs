@@ -13,6 +13,7 @@ namespace ProjetWPF
 {
     public class RealTimeState : IObserver
     {
+        // This method diplay the real time state of a backup execution in a text zone.
         public void Update(BackupState state)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -25,14 +26,14 @@ namespace ProjetWPF
                     string[] lines = realTimeState.Text.Split('\n');
                     Dictionary<string, string> backupLines = new Dictionary<string, string>();
 
-                    // Vérifier si le nom contient "CompleteBackup" ou "DifferentialBackup" et le filtrer
+                    // Vérify if the name contains "CompleteBackup" or "DifferentialBackup" and filter it.
                     string backupName = state.Name;
                     if (backupName.Contains("CompleteBackup") || backupName.Contains("DifferentialBackup"))
                     {
-                        return; // Ne pas afficher cette entrée
+                        return; // Don't display this line
                     }
 
-                    // Récupérer les sauvegardes existantes
+                    // Get the existants backups.
                     foreach (string line in lines)
                     {
                         if (!string.IsNullOrWhiteSpace(line))
@@ -46,22 +47,18 @@ namespace ProjetWPF
                         }
                     }
 
-                    // Générer la nouvelle barre de progression
+                    // Generate the new progress bar.
                     int progressBarWidth = 20;
                     int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
                     string progressBar = $"[{new string('█', progressBlocks)}{new string('-', progressBarWidth - progressBlocks)}]{state.Progress}%";
 
-                    // Remplacer ou ajouter la ligne pour la sauvegarde en cours
+                    // Replace or add the line for the backup in execution.
                     backupLines[backupName] = $"[{backupName}] {progressBar}";
 
-                    // Reconstruire le texte avec les mises à jour
+                    // Rebuild the text with the updates.
                     realTimeState.Text = string.Join("\n", backupLines.Values);
                 }
             });
         }
-
-
-
-
     }
 }

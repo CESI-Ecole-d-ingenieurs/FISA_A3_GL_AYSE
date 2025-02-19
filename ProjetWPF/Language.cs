@@ -13,11 +13,12 @@ namespace ProjetWPF
 {
     public class LanguagesView : ILanguageView
     {
+        // This method fills the list for the language choice.
         public void DisplayLanguages(List<string> languages, int selectionIndex)
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             var list = (ComboBox)mainWindow.FindName("Language");
-
+            // Clear the old item in the list before add the new items.
             list.Items.Clear();
             for (int i = 0; i < languages.Count - 1; i++)
             {

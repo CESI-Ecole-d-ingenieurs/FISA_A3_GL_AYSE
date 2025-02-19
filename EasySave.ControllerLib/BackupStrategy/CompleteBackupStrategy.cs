@@ -17,17 +17,19 @@ namespace EasySave.ControllerLib.BackupStrategy
         /// Ensures the target directory exists, initializes the backup state,
         /// and copies all files from the source to the target.
 
+        
         public CompleteBackupStrategy(IBackupView backupview) : base(backupview)
         {
 
         }
+
+        // This method copy all the files from the source to the target
         public override async Task ExecuteBackup(string source, string target,String nameBackup)
         {
+            // Check if the target exists. If not, the target is created.
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
-
-            //backupView.DisplayProgress();
 
             foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {

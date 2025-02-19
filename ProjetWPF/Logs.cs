@@ -14,6 +14,7 @@ namespace ProjetWPF
 {
     public class Logs
     {
+        // This method display the log file in a text zone.
         public async Task DisplayLogs()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;

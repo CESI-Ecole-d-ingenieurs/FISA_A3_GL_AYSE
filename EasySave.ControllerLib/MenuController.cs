@@ -17,7 +17,7 @@ namespace EasySave.ControllerLib
         private IMenuView view;    // Handles user interface interactions
         private int selectionIndex = 0;  // Keeps track of the current selected action
 
-        /// Constructor to initialize the menu controller with a model and view.
+        /// Constructor to initialize the menu controller with a model and a view.
         public MenuController(MenuModel model, IMenuView view)
         {
             this.model = model;
@@ -31,7 +31,7 @@ namespace EasySave.ControllerLib
             while (!exit)
             {
                 Console.Clear();
-                await view.DisplayActions(model.Actions, selectionIndex);// Display available menu actions
+                await view.DisplayActions(model.Actions, selectionIndex); // Display available menu actions
                 ConsoleKeyInfo _key = Console.ReadKey();
                 // Handle user key input for navigation
                 switch (_key.Key)
@@ -50,6 +50,8 @@ namespace EasySave.ControllerLib
                 }
             }
         }
+
+        // This method display the menu that allows the user to choose the log file format and handle user's choice.
         public async Task ChoisirFroamtLog()
         {
             bool exit = false;
@@ -94,7 +96,6 @@ namespace EasySave.ControllerLib
 
                         string content = File.ReadAllText(GlobalVariables.LogFilePath); // Retrieve log content
                         view.DisplayInputPrompt(content); // Display logs to the user
-                                                          // Console.WriteLine(content);
                     }
                     catch (Exception ex)
                     {
@@ -122,24 +123,26 @@ namespace EasySave.ControllerLib
         /// Handles the backup execution process by displaying available backups and executing the selected one.
         private async Task HandleBackupExecution(IBackupView backupView, EasySave.ModelLib.IObserver consoleView)
         {
-
-            //IBackupView backupView = new IBackupView();
             BackupController backupController = new BackupController(backupView);
             view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));
             await ChoisirFroamtLog();
-             backupController.DisplayExistingBackups(); // Show available backups to the user
+            await backupController.DisplayExistingBackups(); // Show available backups to the user
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
-            GlobalVariables.CryptedFileExt = CryptedFileFormat();
+            GlobalVariables.CryptedFileExt = await CryptedFileFormat();
             await backupController.ExecuteBackupAsync(indexes, consoleView); // Execute the selected backup
         }
-        private string[] CryptedFileFormat()
+
+        // Thos method returns a list with the file extensions that the user wants to encrypt.
+        private async Task<string[]> CryptedFileFormat()
         {
-            Console.WriteLine("Entrez les extensions de fichiers à sauvegarder (séparées par une virgule):");
+            Console.WriteLine(await Translation.Instance.Translate("Entrez les extensions de fichiers à crypter (séparées par une virgule):"));
             string input = Console.ReadLine();
             string[] extensions = input.Split(',');
             return extensions;
         }
+
+        // This method manage the user's choice for the log file format.
         public async Task<bool> HandleLogFormat(int index)
         {
             switch (index)
@@ -154,15 +157,12 @@ namespace EasySave.ControllerLib
                     return false;
             }
         }
+
+        // This method change the extension of the log files based on the user's choice.
         private async Task AddBackupExtension(String ext)
         {
             GlobalVariables.LogFilePath = Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
             GlobalVariables.PathTempsReel = Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
-            //GlobalVariables.PathTempsReel= GlobalVariables.PathTempsReel+ext;
         }
-
-
-
-
     }
 }

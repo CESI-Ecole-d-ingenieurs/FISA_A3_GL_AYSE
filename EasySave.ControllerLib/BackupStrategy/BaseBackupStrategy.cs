@@ -93,6 +93,8 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
 
         }
+
+        // This method return the file in parameters if its extension is one of the extensions that the user wants to encrypt
         public static bool CheckFileExtension(string fileName, string extension)
         {
             return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);

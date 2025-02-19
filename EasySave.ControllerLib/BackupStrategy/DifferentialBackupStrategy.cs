@@ -20,8 +20,11 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
+
+        // This method copy all the files from the source to the target
         public override async Task ExecuteBackup(string source, string target, String nameBackup)
         {
+            // Check if the target exists. If not, the target is created.
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("DifferentialBackup", source, target);

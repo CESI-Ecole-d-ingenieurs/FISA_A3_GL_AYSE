@@ -17,15 +17,12 @@ namespace EasySave.ModelLib
         /// Static variable that stores the path of the log file.
         /// It retrieves the log file name from the Logger class DLL.
         public static string LogFilePath { get; set; } = EasySave.Logger.Logger.GetLogFileName();
-
+        /// Static variable that creates a base for different files path.
         private static String BasePath = Environment.GetEnvironmentVariable("EASYSAVE_Backup_PATH") ??
                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "CESI", "EasySave", "Backup");
+        /// Static variable that stores the path of the file where the backups are stored.
         public static string PathBackup = Path.Combine(BasePath, "Backup.txt");
+        /// Static variable that stores the path of the real time log file.
         public static string PathTempsReel = Path.Combine(BasePath, "backup_state.json");
-
-
-
-
-
     }
 }

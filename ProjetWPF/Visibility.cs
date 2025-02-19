@@ -14,6 +14,7 @@ namespace ProjetWPF
 {
     public class Visible
     {
+        // This method hide all the elements on the graphical interface and show only the given element.
         public void Show(string name)
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
@@ -25,7 +26,6 @@ namespace ProjetWPF
             var logs = (Grid)mainWindow.FindName("Logs");
 
             settings.Visibility = Visibility.Collapsed;
-            //languages.Visibility = Visibility.Collapsed;
             creation.Visibility = Visibility.Collapsed;
             execution.Visibility = Visibility.Collapsed;
             logs.Visibility = Visibility.Collapsed;

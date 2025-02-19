@@ -13,6 +13,7 @@ namespace ProjetWPF
 {
     public class ExtensionController
     {
+        // This method get the user's choice for the extension of the file to encrypts.
         public void ExtensionsChange()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;

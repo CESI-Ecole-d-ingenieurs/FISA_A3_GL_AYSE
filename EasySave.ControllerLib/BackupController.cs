@@ -18,6 +18,7 @@ namespace EasySave.ControllerLib
         private BackupStrategyFactory _BackupStrategyFactory;
         private IBackupView backupview;
 
+        // This method check if the business software define by the user are running.
         public bool IsBusinessSoftwareRunning()
         {
             if (!File.Exists("config.txt"))
@@ -33,15 +34,11 @@ namespace EasySave.ControllerLib
         }
 
 
-
-        /// Executes selected backups based on user input.
-        /// It retrieves the backup index, initializes the strategy (complete or differential),
-        /// copies the files, updates the state, and logs the execution time.
-
+        // This method split the entry of the user (backups to execute) to keep only the numbers of the backups in a list.
         public BackupController(IBackupView backupView)
         {
             backupview = backupView;
-            string filePath = GlobalVariables.PathBackup;  // Assurez-vous que le chemin est correct
+            string filePath = GlobalVariables.PathBackup;
             BackupList = new List<BackupModel>();
 
             try
@@ -59,15 +56,16 @@ namespace EasySave.ControllerLib
 
 
                             BackupList.Add(sauvegarde);
-                            //Console.WriteLine("hu");
                         }
                     }
                 }
-                //Console.WriteLine("hu");
             }
             catch { }
         }
 
+        /// Executes selected backups based on user input.
+        /// It retrieves the backup index, initializes the strategy (complete or differential),
+        /// copies the files, updates the state, and logs the execution time.
         public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
             
@@ -85,15 +83,17 @@ namespace EasySave.ControllerLib
                         BackupModel backup = BackupList[index - 1];
                         // Proceed with your logic using the 'backup' object
 
+                        // Create an BackupStrategyFactory objet based on the type of the backup
                         _BackupStrategyFactory = backup.Type == "Complète"
                         ? (BackupStrategyFactory)new CompleteBackupFactory()
                             : (BackupStrategyFactory)new DifferentialBackupFactory();
                         BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+
+                        // Check if a business software defined by the user is running
                         if (IsBusinessSoftwareRunning())
                         {
                             Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            state.State = "Finished BY BUSINESSS SOFTWARE";
+                            state.State = "FINISHED BY BUSINESSS SOFTWARE";
                             BackupStateJournal.UpdateState(state);
                             return;
                         }
@@ -111,11 +111,12 @@ namespace EasySave.ControllerLib
                         state.Progress = 100;
                         state.State = "END";
                         BackupStateJournal.UpdateState(state);
+
+                        // Check if a business software defined by the user is running
                         if (IsBusinessSoftwareRunning())
                         {
                             Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            state.State = "Finished BY BUSINESSS SOFTWARE";
+                            state.State = "FINISHED BY BUSINESSS SOFTWARE";
                             BackupStateJournal.UpdateState(state);
                             return;
                         }
@@ -126,27 +127,8 @@ namespace EasySave.ControllerLib
                         // Handle the error case or log that the index was out of bounds
                         Console.WriteLine("Index is out of range.");
                     }
-
-                    //await Task.Run(() =>
-                    //{
-                    //    foreach (var file in files)
-                    //    {
-                    //    //    string destFile = file.Replace(backup.Source, backup.Target);
-                    //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                    //    //    File.Copy(file, destFile, true);
-                    //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
-
-                    //        Thread.Sleep(500); // Slow down the process for better visualization
-                    //    }
-                    //});
-
-
-                  
-                    //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
-               
             }
-            //GlobalVariables.CryptedFileExt = new string[] { "" };
         }
 
         /// Displays the list of existing backups saved in a file.
@@ -182,12 +164,6 @@ namespace EasySave.ControllerLib
         /// The backup details are stored in a file and added to the list. 
         public async Task CreateBackup()
         {
-            //if (BackupList.Count >= 5)
-            //{
-            //    Console.WriteLine(await Translation.Instance.Translate("Vous pouvez enregistrer 5 sauvegades au maximum."));
-            //    Console.ReadLine();
-            //    return;
-            //}
             BackupModel sauvegarde = await backupview.UserAsk();
 
             BackupList.Add(sauvegarde);
@@ -197,9 +173,8 @@ namespace EasySave.ControllerLib
                 Directory.CreateDirectory(Path.GetDirectoryName(GlobalVariables.PathBackup));
             }
             File.AppendAllText(GlobalVariables.PathBackup, $"{sauvegarde.Name}-{sauvegarde.Source}-{sauvegarde.Target}-{sauvegarde.Type}\n");
-            //Console.WriteLine(await Translation.Instance.Translate($"Sauvegarde'{sauvegarde.Name}' ajouté."));
         }
-        //focntion indice 
+
 
         /// Parses the user input to determine which backup jobs to execute.
         /// Supports individual and range selections (e.g., "1-3" or "1;3").
@@ -226,13 +201,11 @@ namespace EasySave.ControllerLib
                     Indexes.Add(singleIndex);
                 }
             }
-            //    foreach (int Index in Indexes)
-            //{
-            //        Console.WriteLine(Index);
-            //    }
 
             return Indexes;
         }
+
+        // This method returns the number of lines in the file where the backups are stored.
         public int NumberLinesFile()
         {
             int lineCount = 0;
@@ -246,8 +219,6 @@ namespace EasySave.ControllerLib
                         lineCount++;
                     }
                 }
-
-                // Console.WriteLine("Le nombre de lignes dans le fichier est : " + lineCount);
             }
             catch (Exception e)
             {

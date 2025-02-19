@@ -78,7 +78,7 @@
             <Setter Property="BorderBrush" Value="Gray"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Width" Value="400"/>
-            <!-- Largeur fixe -->
+            <!-- Fixed weight -->
             <Setter Property="Height" Value="50"/>
             <Setter Property="Effect">
                 <Setter.Value>
@@ -89,21 +89,21 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
                         <Grid>
-                            <!-- Partie visible du ComboBox -->
+                            <!-- Visible part of the list -->
                             <Border Background="{TemplateBinding Background}" 
                             BorderBrush="{TemplateBinding BorderBrush}" 
                             BorderThickness="{TemplateBinding BorderThickness}" 
                             CornerRadius="10"
                             Padding="5">
                                 <Grid>
-                                    <!-- Contenu sélectionné -->
+                                    <!-- Selected item -->
                                     <ContentPresenter Name="ContentSite"
                                               Content="{TemplateBinding SelectionBoxItem}"
                                               ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                               HorizontalAlignment="Stretch"
                                               VerticalAlignment="Center"
                                               Margin="10,0,30,0"/>
-                                    <!-- Flèche -->
+                                    <!-- Arrow -->
                                     <ToggleButton Name="DropDownToggle"
                                           Width="25" Height="25"
                                           HorizontalAlignment="Right"
@@ -124,7 +124,7 @@
                                 </Grid>
                             </Border>
 
-                            <!-- Liste déroulante avec largeur fixe et hauteur limitée -->
+                            <!-- List with limited height and weight -->
                             <Popup Name="Popup"
                            Placement="Bottom"
                            IsOpen="{TemplateBinding IsDropDownOpen}"
@@ -151,6 +151,7 @@
     <Grid>
         <TextBlock Text="EasySave" FontSize="100" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Grid.Column="1"/>
 
+        <!--Buttons that are always visible-->
         <Button Name="Exit_b" Content="Exit" Width="150" Height="50" Background="#F0F0F2" FontSize="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,20,0,0" Click="Exit" Grid.Column="1"/>
         <ComboBox Name="Language" Width="169" Height="50" SelectionChanged="LanguageChange"  HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,200,0"  Visibility="Visible"  />
 
@@ -166,6 +167,7 @@
 
 
 
+        <!--Elements related to the settings part-->
         <Grid  Name="Settings" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,150,100,0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -192,6 +194,7 @@
 
 
 
+        <!--Elements related to the backup creation part-->
         <Grid Name="Creation" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 200, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -213,9 +216,10 @@
                 </ComboBox>
                 <Button Content="OK" Width="100" Height="50" FontSize="20" Background="#F0F0F2" Margin="50, 75, 0, 0" Click="BackupCreation"/>
             </StackPanel>
-            <TextBlock Name="Creation_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,535,0,-96" Grid.ColumnSpan="2"/>
+            <TextBlock Name="Creation_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,396,0,-98" Grid.ColumnSpan="2"/>
         </Grid>
 
+        <!--Elements related to the backup execution part-->
         <Grid Name="Execution" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -235,6 +239,7 @@
             </StackPanel>
         </Grid>
 
+        <!--Elements related to the log file part-->
         <Grid Name="Logs" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

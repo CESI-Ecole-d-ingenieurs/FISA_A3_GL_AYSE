@@ -13,6 +13,7 @@ namespace ProjetWPF
 {
     public class Format : IMenuView
     {
+        // This method fills the list for the choice of the format of the log file.
         public Task DisplayActions(List<string> formats, int index)
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
@@ -31,6 +32,7 @@ namespace ProjetWPF
 
         }
 
+        // This method clear the selected item in the list for the log file format choice.
         public void ClearScreen()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
