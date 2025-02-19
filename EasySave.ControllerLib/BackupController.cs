@@ -80,12 +80,7 @@ namespace EasySave.ControllerLib
 
                     if (BackupList != null && index > 0 && index <= BackupList.Count)
                     {
-                        if (IsBusinessSoftwareRunning())
-                        {
-                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            return;
-                        }
+                        
 
                         BackupModel backup = BackupList[index - 1];
                         // Proceed with your logic using the 'backup' object
@@ -94,6 +89,15 @@ namespace EasySave.ControllerLib
                         ? (BackupStrategyFactory)new CompleteBackupFactory()
                             : (BackupStrategyFactory)new DifferentialBackupFactory();
                         BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            state.State = "Finished BY BUSINESSS SOFTWARE";
+                            BackupStateJournal.UpdateState(state);
+                            return;
+                        }
+
                         BackupStateJournal.UpdateState(state);
                         var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
                         await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
@@ -107,6 +111,14 @@ namespace EasySave.ControllerLib
                         state.Progress = 100;
                         state.State = "END";
                         BackupStateJournal.UpdateState(state);
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            state.State = "Finished BY BUSINESSS SOFTWARE";
+                            BackupStateJournal.UpdateState(state);
+                            return;
+                        }
 
                     }
                     else
@@ -132,12 +144,7 @@ namespace EasySave.ControllerLib
                   
                     //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
-                if (IsBusinessSoftwareRunning())
-                {
-                    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                    return;
-                }
+               
             }
             //GlobalVariables.CryptedFileExt = new string[] { "" };
         }
