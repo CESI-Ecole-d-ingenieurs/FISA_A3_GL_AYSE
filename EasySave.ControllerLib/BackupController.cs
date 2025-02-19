@@ -70,12 +70,7 @@ namespace EasySave.ControllerLib
 
         public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
-            if (IsBusinessSoftwareRunning())
-            {
-                Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                File.AppendAllText("log.txt", $"[{DateTime.Now}] Sauvegarde annulée : Un logiciel métier est actif.\n");
-                return;
-            }
+            
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
             foreach (var index in BackupIndex)
@@ -85,6 +80,13 @@ namespace EasySave.ControllerLib
 
                     if (BackupList != null && index > 0 && index <= BackupList.Count)
                     {
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            return;
+                        }
+
                         BackupModel backup = BackupList[index - 1];
                         // Proceed with your logic using the 'backup' object
 
@@ -129,6 +131,12 @@ namespace EasySave.ControllerLib
 
                   
                     //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
+                }
+                if (IsBusinessSoftwareRunning())
+                {
+                    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                    return;
                 }
             }
             //GlobalVariables.CryptedFileExt = new string[] { "" };

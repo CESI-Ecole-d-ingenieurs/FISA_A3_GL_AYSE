@@ -48,6 +48,7 @@ namespace ProjetWPF
             StartMonitoringBusinessSoftware();
             LoadAvailableSoftware();
             LoadBusinessSoftware();
+            MonitorBusinessSoftware();
         }
 
         private void LoadBusinessSoftware()
@@ -100,6 +101,36 @@ namespace ProjetWPF
             monitoringThread.IsBackground = true;
             monitoringThread.Start();
         }
+
+        private void MonitorBusinessSoftware()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            // Afficher une alerte si un logiciel métier est détecté
+                            if (!alertShown)
+                            {
+                                alertShown = true;
+                                MessageBox.Show("Un logiciel métier est en cours d'exécution. Les nouvelles sauvegardes sont bloquées.",
+                                    "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
+                            }
+                        }
+                        else
+                        {
+                            alertShown = false;
+                        }
+                    });
+
+                    Thread.Sleep(5000); // Vérifie toutes les 5 secondes
+                }
+            });
+        }
+
 
         public bool IsBusinessSoftwareRunning()
         {
@@ -308,6 +339,13 @@ namespace ProjetWPF
 
         private void BackupExecution(object sender, EventArgs e)
         {
+            if (IsBusinessSoftwareRunning())
+            {
+                MessageBox.Show("Un logiciel métier est en cours d'exécution. Impossible de démarrer une nouvelle sauvegarde.",
+                    "Alerte", MessageBoxButton.OK, MessageBoxImage.Warning);
+                File.AppendAllText(GlobalVariables.PathBackup, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                return; // Bloque le lancement
+            }
             BackupController backupController = new BackupController(backup);
             RealTimeState realTimeState = new RealTimeState();
             backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
