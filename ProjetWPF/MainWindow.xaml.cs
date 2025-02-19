@@ -223,6 +223,7 @@ namespace ProjetWPF
             Execute_b.Text = (await Translation.Instance.Translate("Exécuter une / plusieurs sauvegardes")).ToString();
             Available.Text = await Translation.Instance.Translate("Sauvegardes disponibles :");
             ToDo.Text = await Translation.Instance.Translate("Sauvegardes à faire :");
+            ToDo_l.Content = await Translation.Instance.Translate("Ecrivez '1;3' pour exécuter les sauvegardes 1 et 3. Ecrivez '1-3' pour exécuter les sauvegardes 1 à 3.");
             State.Text = await Translation.Instance.Translate("Etat en temps réel :");
 
             Consult_b.Content = await Translation.Instance.Translate("Consulter l'historique");
