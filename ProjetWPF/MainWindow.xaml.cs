@@ -282,7 +282,6 @@ namespace ProjetWPF
         private async void SettingsChange(object sender, EventArgs e)
         {
             MenuController menuController = new MenuController(menuModel, format);
-
             await menuController.HandleLogFormat(Format_list.SelectedIndex);
             extensionController.ExtensionsChange();
 
@@ -295,27 +294,36 @@ namespace ProjetWPF
                 var existingSoftware = new List<string>();
                 if (File.Exists("config.txt"))
                 {
-                    existingSoftware = File.ReadAllLines("config.txt").ToList();
+                    existingSoftware = File.ReadAllLines("config.txt").Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
                 }
 
-                var newSoftwareList = softwareNames.Split(',').Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s));
+                var newSoftwareList = softwareNames.Split(',')
+                                                   .Select(s => s.Trim())
+                                                   .Where(s => !string.IsNullOrEmpty(s))
+                                                   .ToList();
+
+                // 🔹 Supprimer uniquement les logiciels qui ne sont plus dans BusinessSoftwareTextBox
+                var updatedSoftwareList = existingSoftware.Where(s => newSoftwareList.Contains(s)).ToList();
+
+                // 🔹 Ajouter uniquement les nouveaux logiciels
                 foreach (var software in newSoftwareList)
                 {
-                    if (!existingSoftware.Contains(software))
+                    if (!updatedSoftwareList.Contains(software))
                     {
-                        existingSoftware.Add(software);
+                        updatedSoftwareList.Add(software);
                     }
                 }
 
-                File.WriteAllLines("config.txt", existingSoftware);
+                // 🔹 Mettre à jour config.txt avec la liste mise à jour
+                File.WriteAllLines("config.txt", updatedSoftwareList);
 
-                // Recharger la liste des logiciels dans la TextBox
+                // 🔹 Recharger la liste des logiciels affichés
                 LoadBusinessSoftware();
 
-                //File.WriteAllLines("config.txt", existingSoftware);
-                MessageBox.Show("Logiciel(s) métier enregistré(s) avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Logiciel(s) métier mis à jour avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
+            // 🔹 Si la TextBox est vide, on supprime tous les logiciels métiers
             if (string.IsNullOrEmpty(softwareNames))
             {
                 BusinessSoftwareTextBox.Clear();
@@ -327,6 +335,7 @@ namespace ProjetWPF
                 }
             }
         }
+
 
         private async void BackupCreation(object sender, EventArgs e)
         {
