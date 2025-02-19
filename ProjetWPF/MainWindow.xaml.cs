@@ -47,7 +47,23 @@ namespace ProjetWPF
             ShowLanguages();
             StartMonitoringBusinessSoftware();
             LoadAvailableSoftware();
+            LoadBusinessSoftware();
         }
+
+        private void LoadBusinessSoftware()
+        {
+            if (File.Exists("config.txt"))
+            {
+                var businessSoftwareList = File.ReadAllLines("config.txt")
+                                               .Select(s => s.Trim())
+                                               .Where(s => !string.IsNullOrEmpty(s))
+                                               .ToList();
+
+                // Afficher les logiciels dans la TextBox
+                BusinessSoftwareTextBox.Text = string.Join(", ", businessSoftwareList);
+            }
+        }
+
 
         private void StartMonitoringBusinessSoftware()
         {
@@ -261,7 +277,23 @@ namespace ProjetWPF
                 }
 
                 File.WriteAllLines("config.txt", existingSoftware);
+
+                // Recharger la liste des logiciels dans la TextBox
+                LoadBusinessSoftware();
+
+                //File.WriteAllLines("config.txt", existingSoftware);
                 MessageBox.Show("Logiciel(s) métier enregistré(s) avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            if (string.IsNullOrEmpty(softwareNames))
+            {
+                BusinessSoftwareTextBox.Clear();
+                if (File.Exists("config.txt"))
+                {
+                    File.Delete("config.txt");
+                    MessageBox.Show("Aucun logiciel métier ne sera pris en compte.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
             }
         }
 
