@@ -127,11 +127,11 @@ namespace EasySave.ControllerLib
             BackupController backupController = new BackupController(backupView);
             view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));
             await ChoisirFroamtLog();
-            backupController.DisplayExistingBackups(); // Show available backups to the user
+             backupController.DisplayExistingBackups(); // Show available backups to the user
             view.DisplayInputPrompt(await Translation.Instance.Translate("Entrez l'indice de la sauvegarde à exécuter, par ex., '1-3' pour exécuter automatiquement les sauvegardes 1 à 3 :"));
             string indexes = Console.ReadLine();
             GlobalVariables.CryptedFileExt = CryptedFileFormat();
-            backupController.ExecuteBackupAsync(indexes, consoleView); // Execute the selected backup
+            await backupController.ExecuteBackupAsync(indexes, consoleView); // Execute the selected backup
         }
         private string[] CryptedFileFormat()
         {

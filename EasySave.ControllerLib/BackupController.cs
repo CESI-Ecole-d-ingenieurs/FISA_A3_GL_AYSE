@@ -87,12 +87,12 @@ namespace EasySave.ControllerLib
                       _BackupStrategyFactory = backup.Type == "Complète"
                     ? (BackupStrategyFactory)new CompleteBackupFactory()
                         : (BackupStrategyFactory)new DifferentialBackupFactory();
-                 
+                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                    BackupStateJournal.UpdateState(state);
                     var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
                     await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
-                    BackupStateJournal.UpdateState(state);
+                  
 
                     string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
                     int totalFiles = files.Length;

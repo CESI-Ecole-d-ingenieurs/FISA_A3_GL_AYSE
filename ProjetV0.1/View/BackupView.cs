@@ -1,4 +1,4 @@
-﻿using ProjetV0._1.Controller;
+﻿
 using EasySave.ModelLib;
 using System;
 using System.Collections.Generic;
@@ -22,14 +22,14 @@ namespace ProjetV0._1.View
         public void DisplayProgress()
         {
             var states = BackupStateJournal.GetState();
-            Console.Clear();
-            Console.WriteLine("Mise à jour de la progression..."); // Check
+            //Console.Clear();
+            //Console.WriteLine("Mise à jour de la progression..."); // Check
 
-            Console.WriteLine("Progression des sauvegardes :");
-            foreach (var state in states)
-            {
-                Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
-            }
+            //Console.WriteLine("Progression des sauvegardes :");
+            //foreach (var state in states)
+            //{
+            //    Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
+            //}
         }
 
         /// Asks the user for backup details (name, source, destination, and type).

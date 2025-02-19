@@ -27,7 +27,7 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
 
-            backupView.DisplayProgress();
+            //backupView.DisplayProgress();
 
             foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {

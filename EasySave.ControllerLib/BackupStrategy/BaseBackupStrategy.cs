@@ -79,9 +79,10 @@ namespace EasySave.ControllerLib.BackupStrategy
 
                     // Real-time status updates
                     BackupStateJournal.UpdateProgress(Path.GetFileName(file));
+               
 
                     // Progress Display
-                    backupView.DisplayProgress();
+                     backupView.DisplayProgress();
                 
             }
             catch (Exception ex)

@@ -85,9 +85,12 @@ namespace EasySave.Logger
         }
         public void WriteLogXML(string name, string fileSource, string fileTarget, long fileSize, double fileTransferTime, int encryptionTime = 0, bool isError = false)
         {
+
             this.LogFilePath = Path.ChangeExtension(LogFilePath, ".xml");
             lock (lockObj) // Ensures thread safety while writing to the log file
             {
+                try
+                { 
                 XElement logEntry = new XElement("LogEntry",
                     new XElement("Name", name),
                     new XElement("FileSource", fileSource),
@@ -114,6 +117,12 @@ namespace EasySave.Logger
                     XDocument doc = XDocument.Load(logFilePath);
                     doc.Root.Add(logEntry);
                     doc.Save(logFilePath);
+                }
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine($"An unexpected error occurred: {e.Message}");
+                    Console.Error.WriteLine($"Stack Trace: {e.StackTrace}");
                 }
             }
         }

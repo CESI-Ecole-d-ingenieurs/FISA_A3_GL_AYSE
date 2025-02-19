@@ -89,7 +89,7 @@ namespace EasySave.ModelLib
             lock (lockObj)
             {
                 List<BackupState> states = LoadState();
-                BackupState state = states.Find(e => e.Name == name);
+                BackupState state = states.Find(e => e.Name == name); //statenull? statesvide
 
                 if (state != null && state.RemainingFiles > 0)
                 {
@@ -130,7 +130,8 @@ namespace EasySave.ModelLib
 
                 using (StreamReader reader = new StreamReader(stateFilePath))
                 {
-                    return (List<BackupState>)serializer.Deserialize(reader) ?? new List<BackupState>();
+                    List < BackupState > s = (List<BackupState>)serializer.Deserialize(reader) ?? new List<BackupState>(); 
+                    return s;
                 }
             }
             else
@@ -145,15 +146,30 @@ namespace EasySave.ModelLib
         private static void SaveState(List<BackupState> states)
         {
             // string jsonData = JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true });
-            string jsonData = JsonConvert.SerializeObject(states, Newtonsoft.Json.Formatting.Indented);
+            //string jsonData = JsonConvert.SerializeObject(states, Newtonsoft.Json.Formatting.Indented);
 
+            //if (CheckFileExtension(stateFilePath, ".xml"))
+            //{
+            //    var xmlDoc = JsonConvert.DeserializeXNode($"{{'Root':{jsonData}}}", "Root");
+            //    xmlDoc.Save(stateFilePath);
+            //}
+            //else
+            //{
+            //    File.WriteAllText(stateFilePath, jsonData);
+            //}
             if (CheckFileExtension(stateFilePath, ".xml"))
             {
-                var xmlDoc = JsonConvert.DeserializeXNode($"{{'Root':{jsonData}}}", "Root");
-                xmlDoc.Save(stateFilePath);
+                // Utiliser XmlSerializer pour sérialiser directement en XML
+                var serializer = new XmlSerializer(typeof(List<BackupState>), new XmlRootAttribute("Root"));
+                using (var writer = new StreamWriter(stateFilePath))
+                {
+                    serializer.Serialize(writer, states);
+                }
             }
             else
             {
+                // Sérialisation en JSON
+                string jsonData = JsonConvert.SerializeObject(states, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(stateFilePath, jsonData);
             }
         }
