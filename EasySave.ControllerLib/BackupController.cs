@@ -83,20 +83,35 @@ namespace EasySave.ControllerLib
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
 
-                    BackupModel backup = BackupList[index - 1];
-                      _BackupStrategyFactory = backup.Type == "Complète"
-                    ? (BackupStrategyFactory)new CompleteBackupFactory()
-                        : (BackupStrategyFactory)new DifferentialBackupFactory();
-                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
-                    BackupStateJournal.UpdateState(state);
-                    var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-                    await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
-                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-                  
+                    if (BackupList != null && index > 0 && index <= BackupList.Count)
+                    {
+                        BackupModel backup = BackupList[index - 1];
+                        // Proceed with your logic using the 'backup' object
 
-                    string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
-                    int totalFiles = files.Length;
-                    int processedFiles = 0;
+                        _BackupStrategyFactory = backup.Type == "Complète"
+                        ? (BackupStrategyFactory)new CompleteBackupFactory()
+                            : (BackupStrategyFactory)new DifferentialBackupFactory();
+                        BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                        BackupStateJournal.UpdateState(state);
+                        var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
+                        await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
+                        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+
+                        string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
+                        int totalFiles = files.Length;
+                        int processedFiles = 0;
+                        stopwatch.Stop();
+                        state.Progress = 100;
+                        state.State = "END";
+                        BackupStateJournal.UpdateState(state);
+
+                    }
+                    else
+                    {
+                        // Handle the error case or log that the index was out of bounds
+                        Console.WriteLine("Index is out of range.");
+                    }
 
                     //await Task.Run(() =>
                     //{
@@ -112,11 +127,7 @@ namespace EasySave.ControllerLib
                     //});
 
 
-                    stopwatch.Stop();
-                    state.Progress = 100;
-                    state.State = "END";
-                    BackupStateJournal.UpdateState(state);
-
+                  
                     //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
             }
