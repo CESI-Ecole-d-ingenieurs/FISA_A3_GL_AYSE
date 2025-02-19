@@ -38,7 +38,7 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 var targetFile = file.Replace(source, target);
 
-                DateTime lastBackupTime = DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
+                DateTime lastBackupTime = await DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
                 var fileInfo = new FileInfo(file);
 
                 if (fileInfo.LastWriteTimeUtc > lastBackupTime)
@@ -57,13 +57,26 @@ namespace EasySave.ControllerLib.BackupStrategy
 
         /// Determines the last backup date of a given file based on the log history.
         /// It searches the log file to find the most recent backup date of the given file.
-        private DateTime DateOfLastBackup(string logFile, string source, string target)
+        private async Task<DateTime> DateOfLastBackup(string logFile, string source, string target)
         {
             DateTime lastBackupTime = DateTime.MinValue;
 
-            if (File.Exists(logFile))
+            // Vérifie si le fichier log n'existe pas ou est vide
+            if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
             {
-                string jsonLog = File.ReadAllText(logFile);
+                //Console.WriteLine(" Aucun log trouvé, la sauvegarde différentielle copiera tous les fichiers.");
+                return DateTime.MinValue; // Force la copie de tous les fichiers
+            }
+
+            string jsonLog = File.ReadAllText(logFile);
+            if (string.IsNullOrWhiteSpace(jsonLog))
+            {
+                //Console.WriteLine(" Fichier log vide, la sauvegarde différentielle copiera tous les fichiers.");
+                return DateTime.MinValue;
+            }
+
+            try
+            {
                 var logs = Newtonsoft.Json.Linq.JArray.Parse(jsonLog);
 
                 foreach (var log in logs)
@@ -81,6 +94,12 @@ namespace EasySave.ControllerLib.BackupStrategy
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(await Translation.Instance.Translate($" Erreur lors de la lecture du fichier log : {ex.Message}"));
+                return DateTime.MinValue;
+            }
+
             return lastBackupTime;
         }
     }
