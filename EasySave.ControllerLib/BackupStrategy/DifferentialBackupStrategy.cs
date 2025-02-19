@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasySave.Logger;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace EasySave.ControllerLib.BackupStrategy
 {
@@ -42,6 +43,13 @@ namespace EasySave.ControllerLib.BackupStrategy
 
                 if (fileInfo.LastWriteTimeUtc > lastBackupTime)
                 {
+                    await Task.Run(() =>
+                    {
+                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+
+                        Thread.Sleep(500); // Slow down the process for better visualization
+                    }
+                   );
                     BackupFile(file, source, target);
                 }
             }
