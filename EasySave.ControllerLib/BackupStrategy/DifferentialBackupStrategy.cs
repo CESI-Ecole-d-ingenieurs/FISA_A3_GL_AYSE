@@ -53,9 +53,22 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
             DateTime lastBackupTime = DateTime.MinValue;
 
-            if (File.Exists(logFile))
+            // Vérifie si le fichier log n'existe pas ou est vide
+            if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
             {
-                string jsonLog = File.ReadAllText(logFile);
+                Console.WriteLine("🚨 Aucun log trouvé, la sauvegarde différentielle copiera tous les fichiers.");
+                return DateTime.MinValue; // Force la copie de tous les fichiers
+            }
+
+            string jsonLog = File.ReadAllText(logFile);
+            if (string.IsNullOrWhiteSpace(jsonLog))
+            {
+                Console.WriteLine("⚠️ Fichier log vide, la sauvegarde différentielle copiera tous les fichiers.");
+                return DateTime.MinValue;
+            }
+
+            try
+            {
                 var logs = Newtonsoft.Json.Linq.JArray.Parse(jsonLog);
 
                 foreach (var log in logs)
@@ -73,7 +86,14 @@ namespace EasySave.ControllerLib.BackupStrategy
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Erreur lors de la lecture du fichier log : {ex.Message}");
+                return DateTime.MinValue;
+            }
+
             return lastBackupTime;
         }
+
     }
 }
