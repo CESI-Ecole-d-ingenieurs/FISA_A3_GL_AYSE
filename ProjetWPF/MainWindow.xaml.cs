@@ -49,6 +49,7 @@ namespace ProjetWPF
             LoadAvailableSoftware();
             LoadBusinessSoftware();
             MonitorBusinessSoftware();
+            LoadExtensions();
         }
 
         private void LoadBusinessSoftware()
@@ -62,6 +63,20 @@ namespace ProjetWPF
 
                 // Afficher les logiciels dans la TextBox
                 BusinessSoftwareTextBox.Text = string.Join(", ", businessSoftwareList);
+            }
+        }
+
+        private void LoadExtensions()
+        {
+            if (File.Exists("extensions.txt"))
+            {
+                var extensionsList = File.ReadAllLines("extensions.txt")
+                                               .Select(s => s.Trim())
+                                               .Where(s => !string.IsNullOrEmpty(s))
+                                               .ToList();
+
+                // Afficher les logiciels dans la TextBox
+                Extensions.Text = string.Join(", ", extensionsList);
             }
         }
 
@@ -331,6 +346,58 @@ namespace ProjetWPF
                 {
                     File.Delete("config.txt");
                     MessageBox.Show("Aucun logiciel métier ne sera pris en compte.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+            }
+
+
+
+            string extensions = Extensions.Text.Trim();
+
+            if (!string.IsNullOrEmpty(extensions))
+            {
+                var existingExtensions = new List<string>();
+                if (File.Exists("extensions.txt"))
+                {
+                    existingExtensions = File.ReadAllLines("extensions.txt").Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
+                }
+
+                var newExtensionsList = extensions.Split(',')
+                                          .Select(s => s.Trim())
+                                          .Where(s => !string.IsNullOrEmpty(s))
+                                          .Select(s => s.StartsWith(".") ? s : "." + s) // Ajoute un point si absent
+                                          .Distinct()
+                                          .ToList();
+
+                // 🔹 Supprimer uniquement les logiciels qui ne sont plus dans BusinessSoftwareTextBox
+                var updatedExtensionsList = existingExtensions.Where(s => newExtensionsList.Contains(s)).ToList();
+
+                // 🔹 Ajouter uniquement les nouveaux logiciels
+                foreach (var extensionName in newExtensionsList)
+                {
+                    if (!updatedExtensionsList.Contains(extensions))
+                    {
+                        updatedExtensionsList.Add(extensions);
+                    }
+                }
+
+                // 🔹 Mettre à jour config.txt avec la liste mise à jour
+                File.WriteAllLines("extensions.txt", newExtensionsList);
+
+                // 🔹 Recharger la liste des logiciels affichés
+                LoadExtensions();
+
+                MessageBox.Show("Extensions prioritaires mises à jour avec succès !", "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+            // 🔹 Si la TextBox est vide, on supprime tous les logiciels métiers
+            if (string.IsNullOrEmpty(extensions))
+            {
+                Extensions.Clear();
+                if (File.Exists("extensions.txt"))
+                {
+                    File.Delete("extensions.txt");
+                    MessageBox.Show("Aucune extension ne sera prise en compte.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
             }

@@ -35,7 +35,20 @@ namespace EasySave.ControllerLib.BackupStrategy
                 DirectoryExist(targetDirectory);
             }
 
-            foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
+            var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
+
+            var extensionPriority = File.Exists("extensions.txt") ?
+        File.ReadAllLines("extensions.txt").ToList() :
+        new List<string>();
+
+            var sortedFiles = files.OrderBy(f =>
+            {
+                var ext = Path.GetExtension(f);
+                int index = extensionPriority.IndexOf(ext);
+                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
+            }).ThenBy(f => f).ToList();
+
+            foreach (var file in sortedFiles)
             {
                 await Task.Run(() =>
                 {
