@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EasySave.ControllerLib.BackupFactory;
 using System.Diagnostics;
+using System.Reflection;
 namespace EasySave.ControllerLib
 {
 
@@ -133,8 +134,10 @@ namespace EasySave.ControllerLib
             }
             foreach (var index in BackupIndex)
             {
+
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
+
                     if (BackupList != null && index > 0 && index <= BackupList.Count)
                     {
                         
@@ -164,13 +167,6 @@ namespace EasySave.ControllerLib
                             BackupStateJournal.UpdateState(state);
                             return;
                         }
-
-                        //Cancelation token creation
-                        /*var cts = new CancellationTokenSource();
-                        _cancellationTokens[backup.Name] = cts;
-                        CancellationToken token = cts.Token;
-
-                        _isPaused[backup.Name] = false;*/
 
                         BackupStateJournal.UpdateState(state);
                         var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
@@ -211,42 +207,41 @@ namespace EasySave.ControllerLib
                         state.Progress = 100;
                         state.State = "END";
                         BackupStateJournal.UpdateState(state);
-                        if (IsBusinessSoftwareRunning())
-                        {
-                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            state.State = "Finished BY BUSINESSS SOFTWARE";
-                            BackupStateJournal.UpdateState(state);
-                            return;
-                        }
+                            //if (IsBusinessSoftwareRunning())
+                            //{
+                            //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            //    state.State = "Blocked BY BUSINESSS SOFTWARE";
+                            //    BackupStateJournal.UpdateState(state);
 
-                    }
-                    else
-                    {
-                        // Handle the error case or log that the index was out of bounds
-                        Console.WriteLine("Index is out of range.");
-                    }
-
-                    //await Task.Run(() =>
-                    //{
-                    //    foreach (var file in files)
-                    //    {
-                    //    //    string destFile = file.Replace(backup.Source, backup.Target);
-                    //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                    //    //    File.Copy(file, destFile, true);
-                    //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
-
-                    //        Thread.Sleep(500); // Slow down the process for better visualization
-                    //    }
-                    //});
-
-
-                  
-                    //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
+                            //}
+                            //run = false;
+                        //}
+                    //} while (run);
                 }
-               
+                else
+                {
+                    // Handle the error case or log that the index was out of bounds
+                    Console.WriteLine("Index is out of range.");
+                }
+
+                //await Task.Run(() =>
+                //{
+                //    foreach (var file in files)
+                //    {
+                //    //    string destFile = file.Replace(backup.Source, backup.Target);
+                //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                //    //    File.Copy(file, destFile, true);
+                //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
+
+                //        Thread.Sleep(500); // Slow down the process for better visualization
+                //    }
+                //});
+
+
+
+                //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
             }
-            //GlobalVariables.CryptedFileExt = new string[] { "" };
         }
 
         /// Displays the list of existing backups saved in a file.

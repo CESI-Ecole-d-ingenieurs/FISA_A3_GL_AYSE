@@ -35,16 +35,45 @@ namespace EasySave.ControllerLib.BackupStrategy
                 DirectoryExist(targetDirectory);
             }
 
-            foreach (var file in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
-            {
-                await Task.Run(() =>
-                {
-                    BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+            var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
 
-                    Thread.Sleep(500); // Slow down the process for better visualization
-                }
-                    );
-            BackupFile(file, source, target);
+            var extensionPriority = File.Exists("extensions.txt") ?
+        File.ReadAllLines("extensions.txt").ToList() :
+        new List<string>();
+
+            var sortedFiles = files.OrderBy(f =>
+            {
+                var ext = Path.GetExtension(f);
+                int index = extensionPriority.IndexOf(ext);
+                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
+            }).ThenBy(f => f).ToList();
+
+            foreach (var file in sortedFiles)
+            {
+                bool run = false;
+                do
+                {
+                    if (IsBusinessSoftwareRunning() )
+                    {
+                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                        state.State = "Blocked BY BUSINESSS SOFTWARE";
+                        BackupStateJournal.UpdateState(state);
+                        run = true;
+                    }
+                    else
+                    {
+                        await Task.Run(() =>
+                    {
+                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+
+                        Thread.Sleep(500); // Slow down the process for better visualization
+                    }
+                        );
+                        BackupFile(file, source, target);
+                        run = false;
+                    }
+                }while(run);
             }
         }
 
