@@ -17,6 +17,8 @@ namespace EasySave.ControllerLib
         private List<BackupModel> BackupList;
         private BackupStrategyFactory _BackupStrategyFactory;
         private IBackupView backupview;
+        private Dictionary<string, bool> _isPaused = new Dictionary<string, bool>();
+        private Dictionary<string, CancellationTokenSource> _cancellationTokens = new Dictionary<string, CancellationTokenSource>();
 
         public bool IsBusinessSoftwareRunning()
         {
@@ -32,6 +34,47 @@ namespace EasySave.ControllerLib
                                                                 .Any(p => p.ProcessName.ToLower().Contains(software)));
         }
 
+        public void PauseBackup(int index)
+        {
+            string name = GetBackupNameByIndex(index);
+            
+            if (name != "null")
+            {
+                Debug.WriteLine(_isPaused[name]);
+                if (_isPaused.ContainsKey(name))
+                {
+                    _isPaused[name] = true;
+                }
+            }
+        }
+
+        public void ResumeBackup(int index)
+        {
+            string name = GetBackupNameByIndex(index);
+            
+            if (name != "null")
+            {
+                Debug.WriteLine(_isPaused[name]);
+                if (_isPaused.ContainsKey(name))
+                {
+                    _isPaused[name] = false;
+                }
+            }
+        }
+
+        public void StopBackup(int index)
+        {
+            string name = GetBackupNameByIndex(index);
+            
+            if (name != "null")
+            {
+                Debug.WriteLine(_cancellationTokens[name]);
+                if (_cancellationTokens.ContainsKey(name))
+                {
+                    _cancellationTokens[name].Cancel();
+                }
+            }
+        }
 
 
         /// Executes selected backups based on user input.
@@ -75,15 +118,39 @@ namespace EasySave.ControllerLib
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
             foreach (var index in BackupIndex)
             {
+                BackupModel backup = BackupList[index - 1];
+                // Proceed with your logic using the 'backup' object
+
+                if (!_isPaused.ContainsKey(backup.Name))
+                {
+                    _isPaused.Add(backup.Name, false);
+                }
+
+                if (!_cancellationTokens.ContainsKey(backup.Name))
+                {
+                    _cancellationTokens.Add(backup.Name, new CancellationTokenSource());
+                }
+            }
+            foreach (var index in BackupIndex)
+            {
                 if (index - 1 < NumberLinesFile() && index > 0)
                 {
-
                     if (BackupList != null && index > 0 && index <= BackupList.Count)
                     {
                         
 
                         BackupModel backup = BackupList[index - 1];
                         // Proceed with your logic using the 'backup' object
+
+                        /*if (!_isPaused.ContainsKey(backup.Name))
+                        {
+                            _isPaused.Add(backup.Name, false);
+                        }
+
+                        if (!_cancellationTokens.ContainsKey(backup.Name))
+                        {
+                            _cancellationTokens.Add(backup.Name, new CancellationTokenSource());
+                        }*/
 
                         _BackupStrategyFactory = backup.Type == "Complète"
                         ? (BackupStrategyFactory)new CompleteBackupFactory()
@@ -98,15 +165,48 @@ namespace EasySave.ControllerLib
                             return;
                         }
 
+                        //Cancelation token creation
+                        /*var cts = new CancellationTokenSource();
+                        _cancellationTokens[backup.Name] = cts;
+                        CancellationToken token = cts.Token;
+
+                        _isPaused[backup.Name] = false;*/
+
                         BackupStateJournal.UpdateState(state);
                         var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-                        await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
+
+                        //await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
                         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
 
                         string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
                         int totalFiles = files.Length;
                         int processedFiles = 0;
+
+                        foreach (var file in files)
+                        {
+                            if (_cancellationTokens[backup.Name].Token.IsCancellationRequested)
+                            {
+                                state.State = "STOPPED";
+                                BackupStateJournal.UpdateState(state);
+                                return;
+                            }
+
+                            while (_isPaused[backup.Name])
+                            {
+                                await Task.Delay(500);
+                            }
+
+                            // The execution of the backup can be stopped with the token.
+                            await Task.Run(() => strategy.ExecuteBackup(backup.Source, backup.Target, backup.Name), _cancellationTokens[backup.Name].Token);
+                            Debug.WriteLine(_isPaused[backup.Name]);
+
+                            BackupStateJournal.UpdateProgress(backup.Name);
+                            processedFiles++;
+                            state.Progress = (processedFiles * 100) / totalFiles;
+                            BackupStateJournal.UpdateState(state);
+                        }
+
                         stopwatch.Stop();
                         state.Progress = 100;
                         state.State = "END";
@@ -255,6 +355,15 @@ namespace EasySave.ControllerLib
                 Console.WriteLine(e.Message);
             }
             return lineCount;
+        }
+
+        private string GetBackupNameByIndex(int index)
+        {
+            if (index > 0 && index <= BackupList.Count)
+            {
+                return BackupList[index - 1].Name;
+            }
+            return "null";
         }
 
     }

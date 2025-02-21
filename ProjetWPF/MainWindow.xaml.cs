@@ -30,7 +30,8 @@ namespace ProjetWPF
         MenuModel menuModel = new MenuModel();
         Format format = new Format();
 
-        Backup backup = new Backup();
+        //Backup backup = new Backup();
+        BackupController backupController = new BackupController(new Backup());
         ControllerBackup controllerBackup = new ControllerBackup();
 
         Logs logs = new Logs();
@@ -339,14 +340,14 @@ namespace ProjetWPF
 
         private async void BackupCreation(object sender, EventArgs e)
         {
-            BackupController backupController = new BackupController(backup);
+            //BackupController backupController = new BackupController(backup);
 
             await backupController.CreateBackup();
 
             Creation_OK.Text = await Translation.Instance.Translate("La sauvegarde a été créer avec succès.");
         }
 
-        private void BackupExecution(object sender, EventArgs e)
+        private async void BackupExecution(object sender, EventArgs e)
         {
             if (IsBusinessSoftwareRunning())
             {
@@ -355,9 +356,43 @@ namespace ProjetWPF
                 File.AppendAllText(GlobalVariables.PathBackup, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
                 return; // Bloque le lancement
             }
-            BackupController backupController = new BackupController(backup);
+            //BackupController backupController = new BackupController(backup);
             RealTimeState realTimeState = new RealTimeState();
-            backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
+            await backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
+        }
+
+        private void PauseSelectedBackups(object sender, RoutedEventArgs e)
+        {
+            //BackupController backupController = new BackupController(backup);
+
+            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
+            
+            foreach (int index in backupIndexes)
+            {
+                backupController.PauseBackup(index);
+            }
+        }
+        private void ResumeSelectedBackups(object sender, RoutedEventArgs e)
+        {
+            //BackupController backupController = new BackupController(backup);
+
+            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
+            
+            foreach (int index in backupIndexes)
+            {
+                backupController.ResumeBackup(index);
+            }
+        }
+        private void StopSelectedBackups(object sender, RoutedEventArgs e)
+        {
+            //BackupController backupController = new BackupController(backup);
+
+            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
+            
+            foreach (int index in backupIndexes)
+            {
+                backupController.StopBackup(index);
+            }
         }
 
         private void Language_b_Click(object sender, RoutedEventArgs e)
