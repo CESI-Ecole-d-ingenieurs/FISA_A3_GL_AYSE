@@ -82,50 +82,55 @@ namespace EasySave.ControllerLib
         }
         public async Task ExecuteOneBackup(int index)
         {
+            //bool run = false;
             if (index - 1 < NumberLinesFile() && index > 0)
             {
                 if (BackupList != null && index > 0 && index <= BackupList.Count)
                 {
+                    //do
+                    //{
 
+                        BackupModel backup = BackupList[index - 1];
+                        // Proceed with your logic using the 'backup' object
 
-                    BackupModel backup = BackupList[index - 1];
-                    // Proceed with your logic using the 'backup' object
-
-                    _BackupStrategyFactory = backup.Type == "Complète"
-                    ? (BackupStrategyFactory)new CompleteBackupFactory()
-                        : (BackupStrategyFactory)new DifferentialBackupFactory();
-                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
-                    if (IsBusinessSoftwareRunning())
-                    {
-                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                        state.State = "Finished BY BUSINESSS SOFTWARE";
+                        _BackupStrategyFactory = backup.Type == "Complète"
+                        ? (BackupStrategyFactory)new CompleteBackupFactory()
+                            : (BackupStrategyFactory)new DifferentialBackupFactory();
+                        BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                        //if (IsBusinessSoftwareRunning() && !run )
+                        //{
+                        //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                        //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                        //    state.State = "Blocked BY BUSINESSS SOFTWARE";
+                        //    BackupStateJournal.UpdateState(state);
+                        //    run=true;
+                        //}
+                        //else
+                        //{
                         BackupStateJournal.UpdateState(state);
-                        return;
-                    }
-
-                    BackupStateJournal.UpdateState(state);
-                    var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-                    await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
-                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                        var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
+                        await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
+                        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
 
-                    string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
-                    int totalFiles = files.Length;
-                    int processedFiles = 0;
-                    stopwatch.Stop();
-                    state.Progress = 100;
-                    state.State = "END";
-                    BackupStateJournal.UpdateState(state);
-                    if (IsBusinessSoftwareRunning())
-                    {
-                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                        state.State = "Finished BY BUSINESSS SOFTWARE";
+                        string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
+                        int totalFiles = files.Length;
+                        int processedFiles = 0;
+                        stopwatch.Stop();
+                        state.Progress = 100;
+                        state.State = "END";
                         BackupStateJournal.UpdateState(state);
-                        return;
-                    }
+                            //if (IsBusinessSoftwareRunning())
+                            //{
+                            //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            //    state.State = "Blocked BY BUSINESSS SOFTWARE";
+                            //    BackupStateJournal.UpdateState(state);
 
+                            //}
+                            //run = false;
+                        //}
+                    //} while (run);
                 }
                 else
                 {

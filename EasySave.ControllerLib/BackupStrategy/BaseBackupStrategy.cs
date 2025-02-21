@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasySave.Logger;
 using System.Threading;
+using System.Diagnostics;
 namespace EasySave.ControllerLib.BackupStrategy
 {
 
@@ -96,6 +97,19 @@ namespace EasySave.ControllerLib.BackupStrategy
         public static bool CheckFileExtension(string fileName, string extension)
         {
             return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);
+        }
+        public bool IsBusinessSoftwareRunning()
+        {
+            if (!File.Exists("config.txt"))
+                return false;
+
+            var businessSoftwareList = File.ReadAllLines("config.txt")
+                                           .Select(s => s.Trim().ToLower())
+                                           .Where(s => !string.IsNullOrEmpty(s))
+                                           .ToList();
+
+            return businessSoftwareList.Any(software => Process.GetProcesses()
+                                                                .Any(p => p.ProcessName.ToLower().Contains(software)));
         }
     }
 }
