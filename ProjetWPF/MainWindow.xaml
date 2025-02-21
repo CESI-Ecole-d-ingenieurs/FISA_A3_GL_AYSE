@@ -216,7 +216,7 @@
             <TextBlock Name="Creation_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,535,0,-96" Grid.ColumnSpan="2"/>
         </Grid>
 
-        <Grid Name="Execution" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Visible">
+        <Grid Name="Execution" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 150, 100, 0" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -237,7 +237,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="▶️" Grid.Column="0" Width="100" FontSize="30" Background="#F0F0F2" Margin="0, 40, 0, 0"/>
+                    <Button Content="▶️" Grid.Column="0" Width="100" FontSize="30" Background="#F0F0F2" Margin="0, 40, 0, 0" Click="BackupExecution"/>
                     <Button Content="⏸️" Grid.Column="1" Width="100" FontSize="30" Background="#F0F0F2" Margin="20, 40, 20, 0"/>
                     <Button Content="🛑" Grid.Column="2" Width="100" FontSize="30" Background="#F0F0F2"  Margin="0, 40, 0, 0"/>
                 </Grid>
