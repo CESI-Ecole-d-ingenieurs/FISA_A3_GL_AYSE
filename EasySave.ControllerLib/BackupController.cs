@@ -114,7 +114,7 @@ namespace EasySave.ControllerLib
 
         public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
-            
+
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
             foreach (var index in BackupIndex)
@@ -140,7 +140,7 @@ namespace EasySave.ControllerLib
 
                     if (BackupList != null && index > 0 && index <= BackupList.Count)
                     {
-                        
+
 
                         BackupModel backup = BackupList[index - 1];
                         // Proceed with your logic using the 'backup' object
@@ -207,40 +207,41 @@ namespace EasySave.ControllerLib
                         state.Progress = 100;
                         state.State = "END";
                         BackupStateJournal.UpdateState(state);
-                            //if (IsBusinessSoftwareRunning())
-                            //{
-                            //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            //    state.State = "Blocked BY BUSINESSS SOFTWARE";
-                            //    BackupStateJournal.UpdateState(state);
+                        //if (IsBusinessSoftwareRunning())
+                        //{
+                        //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                        //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                        //    state.State = "Blocked BY BUSINESSS SOFTWARE";
+                        //    BackupStateJournal.UpdateState(state);
 
-                            //}
-                            //run = false;
                         //}
-                    //} while (run);
+                        //run = false;
+                        //}
+                        //} while (run);
+                    }
+                    else
+                    {
+                        // Handle the error case or log that the index was out of bounds
+                        Console.WriteLine("Index is out of range.");
+                    }
+
+                    //await Task.Run(() =>
+                    //{
+                    //    foreach (var file in files)
+                    //    {
+                    //    //    string destFile = file.Replace(backup.Source, backup.Target);
+                    //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                    //    //    File.Copy(file, destFile, true);
+                    //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
+
+                    //        Thread.Sleep(500); // Slow down the process for better visualization
+                    //    }
+                    //});
+
+
+
+                    //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
                 }
-                else
-                {
-                    // Handle the error case or log that the index was out of bounds
-                    Console.WriteLine("Index is out of range.");
-                }
-
-                //await Task.Run(() =>
-                //{
-                //    foreach (var file in files)
-                //    {
-                //    //    string destFile = file.Replace(backup.Source, backup.Target);
-                //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                //    //    File.Copy(file, destFile, true);
-                //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
-
-                //        Thread.Sleep(500); // Slow down the process for better visualization
-                //    }
-                //});
-
-
-
-                //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
             }
         }
 
