@@ -136,7 +136,7 @@ namespace EasySave.ControllerLib
                 }
                 else
                 {
-                    _cancellationTokens[backup.Name].Cancel();
+                    _cancellationTokens[backup.Name] = new CancellationTokenSource();
                 }
             }
             foreach (var index in BackupIndex)
