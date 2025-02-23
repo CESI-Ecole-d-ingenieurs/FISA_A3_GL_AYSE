@@ -424,11 +424,16 @@ namespace ProjetWPF
                 return; // Bloque le lancement
             }
             //BackupController backupController = new BackupController(backup);
+
+            Pause_b.Click += PauseSelectedBackups;
+            Stop_b.Click += StopSelectedBackups;
+            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
+
             RealTimeState realTimeState = new RealTimeState();
             await backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
         }
 
-        private void PauseSelectedBackups(object sender, RoutedEventArgs e)
+        private async void PauseSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
 
@@ -438,8 +443,11 @@ namespace ProjetWPF
             {
                 backupController.PauseBackup(index);
             }
+
+            Resume_b.Click += ResumeSelectedBackups;
+            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont en pause.");
         }
-        private void ResumeSelectedBackups(object sender, RoutedEventArgs e)
+        private async void ResumeSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
 
@@ -449,8 +457,10 @@ namespace ProjetWPF
             {
                 backupController.ResumeBackup(index);
             }
+
+            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes ont repris.");
         }
-        private void StopSelectedBackups(object sender, RoutedEventArgs e)
+        private async void StopSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
 
@@ -460,6 +470,11 @@ namespace ProjetWPF
             {
                 backupController.StopBackup(index);
             }
+
+            Pause_b.Click -= PauseSelectedBackups;
+            Resume_b.Click -= ResumeSelectedBackups;
+            Stop_b.Click -= StopSelectedBackups;
+            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont arrêtées.");
         }
 
         private void Language_b_Click(object sender, RoutedEventArgs e)
