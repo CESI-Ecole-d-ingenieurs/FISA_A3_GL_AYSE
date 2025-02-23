@@ -41,7 +41,6 @@ namespace EasySave.ControllerLib
             
             if (name != "null")
             {
-                Debug.WriteLine(_isPaused[name]);
                 if (_isPaused.ContainsKey(name))
                 {
                     _isPaused[name] = true;
@@ -55,7 +54,6 @@ namespace EasySave.ControllerLib
             
             if (name != "null")
             {
-                Debug.WriteLine(_isPaused[name]);
                 if (_isPaused.ContainsKey(name))
                 {
                     _isPaused[name] = false;
@@ -69,7 +67,6 @@ namespace EasySave.ControllerLib
             
             if (name != "null")
             {
-                Debug.WriteLine(_cancellationTokens[name]);
                 if (_cancellationTokens.ContainsKey(name))
                 {
                     _cancellationTokens[name].Cancel();
@@ -114,8 +111,8 @@ namespace EasySave.ControllerLib
 
         public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
-            _isPaused.Clear();
-            _cancellationTokens.Clear();
+            //_isPaused.Clear();
+            //_cancellationTokens.Clear();
 
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
@@ -128,10 +125,18 @@ namespace EasySave.ControllerLib
                 {
                     _isPaused.Add(backup.Name, false);
                 }
+                else
+                {
+                    _isPaused[backup.Name] = false;
+                }
 
                 if (!_cancellationTokens.ContainsKey(backup.Name))
                 {
                     _cancellationTokens.Add(backup.Name, new CancellationTokenSource());
+                }
+                else
+                {
+                    _cancellationTokens[backup.Name].Cancel();
                 }
             }
             foreach (var index in BackupIndex)
@@ -197,8 +202,7 @@ namespace EasySave.ControllerLib
 
                             // The execution of the backup can be stopped with the token.
                             await Task.Run(() => strategy.ExecuteBackup(backup.Source, backup.Target, backup.Name), _cancellationTokens[backup.Name].Token);
-                            Debug.WriteLine(_isPaused[backup.Name]);
-
+                            
                             BackupStateJournal.UpdateProgress(backup.Name);
                             processedFiles++;
                             state.Progress = (processedFiles * 100) / totalFiles;

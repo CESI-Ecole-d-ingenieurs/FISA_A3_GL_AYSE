@@ -425,6 +425,7 @@ namespace ProjetWPF
             }
             //BackupController backupController = new BackupController(backup);
 
+            Play_b.Click -= BackupExecution;
             Pause_b.Click += PauseSelectedBackups;
             Stop_b.Click += StopSelectedBackups;
             Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
@@ -471,6 +472,7 @@ namespace ProjetWPF
                 backupController.StopBackup(index);
             }
 
+            Play_b.Click += BackupExecution;
             Pause_b.Click -= PauseSelectedBackups;
             Resume_b.Click -= ResumeSelectedBackups;
             Stop_b.Click -= StopSelectedBackups;

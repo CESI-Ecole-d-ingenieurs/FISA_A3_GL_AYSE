@@ -241,7 +241,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="▶️" Grid.Column="0" Width="100" FontSize="30" Background="#F0F0F2" Margin="0, 40, 0, 0" Click="BackupExecution"/>
+                    <Button Name="Play_b" Content="▶️" Grid.Column="0" Width="100" FontSize="30" Background="#F0F0F2" Margin="0, 40, 0, 0" Click="BackupExecution"/>
                     <Button Name="Pause_b" Content="⏸️" Grid.Column="1" Width="100" FontSize="30" Background="#F0F0F2" Margin="20, 40, 20, 0"/>
                     <Button Name="Resume_b" Content="🔁" Grid.Column="2" Width="100" FontSize="30" Background="#F0F0F2" Margin="20, 40, 20, 0"/>
                     <Button Name="Stop_b" Content="⏹" Grid.Column="3" Width="100" FontSize="30" Background="#F0F0F2"  Margin="0, 40, 0, 0"/>
