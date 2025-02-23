@@ -114,6 +114,8 @@ namespace EasySave.ControllerLib
 
         public async Task ExecuteBackupAsync(string input, EasySave.ModelLib.IObserver consoleView)
         {
+            _isPaused.Clear();
+            _cancellationTokens.Clear();
 
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
