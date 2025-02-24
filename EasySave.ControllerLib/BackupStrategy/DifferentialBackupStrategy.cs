@@ -56,14 +56,30 @@ namespace EasySave.ControllerLib.BackupStrategy
 
                 if (fileInfo.LastWriteTimeUtc > lastBackupTime)
                 {
-                    await Task.Run(() =>
+                    bool run = false;
+                    do
+                    {
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            state.State = "Blocked BY BUSINESSS SOFTWARE";
+                            BackupStateJournal.UpdateState(state);
+                            run = true;
+                        }
+                        else
+                        {
+                            await Task.Run(() =>
                     {
                         BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
 
                         Thread.Sleep(500); // Slow down the process for better visualization
                     }
                    );
-                    BackupFile(file, source, target);
+                            BackupFile(file, source, target);
+                            run = false;
+                        }
+                    } while (run);
                 }
             }
         }
