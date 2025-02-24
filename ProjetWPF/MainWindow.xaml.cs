@@ -414,7 +414,7 @@ namespace ProjetWPF
             Creation_OK.Text = await Translation.Instance.Translate("La sauvegarde a été créer avec succès.");
         }
 
-        private async void BackupExecution(object sender, EventArgs e)
+        private void BackupExecution(object sender, EventArgs e)
         {
             if (IsBusinessSoftwareRunning())
             {
@@ -428,10 +428,10 @@ namespace ProjetWPF
             Play_b.Click -= BackupExecution;
             Pause_b.Click += PauseSelectedBackups;
             Stop_b.Click += StopSelectedBackups;
-            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
+           // Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
 
             RealTimeState realTimeState = new RealTimeState();
-            await backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
+             backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
         }
 
         private async void PauseSelectedBackups(object sender, RoutedEventArgs e)

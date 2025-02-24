@@ -26,7 +26,7 @@ namespace EasySave.ControllerLib.BackupStrategy
             backupView = backupview;
         }
         /// Abstract method that must be implemented by derived classes to execute a specific backup strategy.
-        public abstract  Task ExecuteBackup(string source, string target, String nameBackup);
+        public abstract  Task ExecuteBackup(string source, string target, String nameBackup, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null) ;
         /// Ensures that a directory exists. If not, it creates the directory.
         protected void DirectoryExist(string path)
         {

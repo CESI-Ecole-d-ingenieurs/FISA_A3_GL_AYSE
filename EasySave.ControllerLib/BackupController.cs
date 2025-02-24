@@ -116,6 +116,10 @@ namespace EasySave.ControllerLib
 
             List<int> BackupIndex = ParseJobIndex(input);
             BackupStateJournal.AddObserver(consoleView); // Add observer for real-time progress display
+            //foreach (var index in BackupIndex)
+            //{
+              
+            //}
             foreach (var index in BackupIndex)
             {
                 BackupModel backup = BackupList[index - 1];
@@ -138,118 +142,120 @@ namespace EasySave.ControllerLib
                 {
                     _cancellationTokens[backup.Name] = new CancellationTokenSource();
                 }
-            }
-            foreach (var index in BackupIndex)
-            {
-
-                if (index - 1 < NumberLinesFile() && index > 0)
-                {
-
-                    if (BackupList != null && index > 0 && index <= BackupList.Count)
-                    {
+                Task.Run(() => ExecuteOneBackup(index));
 
 
-                        BackupModel backup = BackupList[index - 1];
-                        // Proceed with your logic using the 'backup' object
+                //await Task.Run(() =>
+                //{
+                //    foreach (var file in files)
+                //    {
+                //    //    string destFile = file.Replace(backup.Source, backup.Target);
+                //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                //    //    File.Copy(file, destFile, true);
+                //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
 
-                        /*if (!_isPaused.ContainsKey(backup.Name))
-                        {
-                            _isPaused.Add(backup.Name, false);
-                        }
-
-                        if (!_cancellationTokens.ContainsKey(backup.Name))
-                        {
-                            _cancellationTokens.Add(backup.Name, new CancellationTokenSource());
-                        }*/
-
-                        _BackupStrategyFactory = backup.Type == "Complète"
-                        ? (BackupStrategyFactory)new CompleteBackupFactory()
-                            : (BackupStrategyFactory)new DifferentialBackupFactory();
-                        BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
-                        if (IsBusinessSoftwareRunning())
-                        {
-                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                            state.State = "Finished BY BUSINESSS SOFTWARE";
-                            BackupStateJournal.UpdateState(state);
-                            return;
-                        }
-
-                        BackupStateJournal.UpdateState(state);
-                        var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
-
-                        //await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name);
-                        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-
-                        string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
-                        int totalFiles = files.Length;
-                        int processedFiles = 0;
-
-                        foreach (var file in files)
-                        {
-                            if (_cancellationTokens[backup.Name].Token.IsCancellationRequested)
-                            {
-                                state.State = "STOPPED";
-                                BackupStateJournal.UpdateState(state);
-                                return;
-                            }
-
-                            while (_isPaused[backup.Name])
-                            {
-                                await Task.Delay(500);
-                            }
-
-                            // The execution of the backup can be stopped with the token.
-                            await Task.Run(() => strategy.ExecuteBackup(backup.Source, backup.Target, backup.Name), _cancellationTokens[backup.Name].Token);
-                            
-                            BackupStateJournal.UpdateProgress(backup.Name);
-                            processedFiles++;
-                            state.Progress = (processedFiles * 100) / totalFiles;
-                            BackupStateJournal.UpdateState(state);
-                        }
-
-                        stopwatch.Stop();
-                        state.Progress = 100;
-                        state.State = "END";
-                        BackupStateJournal.UpdateState(state);
-                        //if (IsBusinessSoftwareRunning())
-                        //{
-                        //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                        //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                        //    state.State = "Blocked BY BUSINESSS SOFTWARE";
-                        //    BackupStateJournal.UpdateState(state);
-
-                        //}
-                        //run = false;
-                        //}
-                        //} while (run);
-                    }
-                    else
-                    {
-                        // Handle the error case or log that the index was out of bounds
-                        Console.WriteLine("Index is out of range.");
-                    }
-
-                    //await Task.Run(() =>
-                    //{
-                    //    foreach (var file in files)
-                    //    {
-                    //    //    string destFile = file.Replace(backup.Source, backup.Target);
-                    //    //    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
-                    //    //    File.Copy(file, destFile, true);
-                    //        BackupStateJournal.UpdateProgress(backup.Name); // Real-time update
-
-                    //        Thread.Sleep(500); // Slow down the process for better visualization
-                    //    }
-                    //});
+                //        Thread.Sleep(500); // Slow down the process for better visualization
+                //    }
+                //});
 
 
 
-                    //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
-                }
+                //Console.WriteLine($"Sauvegarde {backup.Name} terminée en {stopwatch.Elapsed.TotalSeconds} secondes.");
+
             }
         }
+        public async Task ExecuteOneBackup(int index)
+        {
+            if (index - 1 < NumberLinesFile() && index > 0)
+            {
+
+                if (BackupList != null && index > 0 && index <= BackupList.Count)
+                {
+                    BackupModel backup = BackupList[index - 1];
+
+                    // BackupModel backup = BackupList[index - 1];
+                    // Proceed with your logic using the 'backup' object
+
+                    /*if (!_isPaused.ContainsKey(backup.Name))
+                    {
+                        _isPaused.Add(backup.Name, false);
+                    }
+
+                    if (!_cancellationTokens.ContainsKey(backup.Name))
+                    {
+                        _cancellationTokens.Add(backup.Name, new CancellationTokenSource());
+                    }*/
+
+                    _BackupStrategyFactory = backup.Type == "Complète"
+                    ? (BackupStrategyFactory)new CompleteBackupFactory()
+                        : (BackupStrategyFactory)new DifferentialBackupFactory();
+                    BackupState state = BackupStateJournal.ComputeState(backup.Name, backup.Source, backup.Target);
+                    if (IsBusinessSoftwareRunning())
+                    {
+                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                        state.State = "Finished BY BUSINESSS SOFTWARE";
+                        BackupStateJournal.UpdateState(state);
+                        return;
+                    }
+
+                    BackupStateJournal.UpdateState(state);
+                    var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
+
+                    await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name, _isPaused, _cancellationTokens);
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+
+                    string[] files = Directory.GetFiles(backup.Source, "*", SearchOption.AllDirectories);
+                    int totalFiles = files.Length;
+                    int processedFiles = 0;
+
+                    //foreach (var file in files)
+                    //{
+                    //    if (_cancellationTokens[backup.Name].Token.IsCancellationRequested)
+                    //    {
+                    //        state.State = "STOPPED";
+                    //        BackupStateJournal.UpdateState(state);
+                    //        return;
+                    //    }
+
+                    //    while (_isPaused[backup.Name])
+                    //    {
+                    //        await Task.Delay(500);
+                    //    }
+
+                    //    // The execution of the backup can be stopped with the token.
+                    //    await Task.Run(() => strategy.ExecuteBackup(backup.Source, backup.Target, backup.Name), _cancellationTokens[backup.Name].Token);
+
+                    //    BackupStateJournal.UpdateProgress(backup.Name);
+                    //    processedFiles++;
+                    //    state.Progress = (processedFiles * 100) / totalFiles;
+                    //    BackupStateJournal.UpdateState(state);
+                    //}
+
+                    stopwatch.Stop();
+                    state.Progress = 100;
+                    state.State = "END";
+                    BackupStateJournal.UpdateState(state);
+                    //if (IsBusinessSoftwareRunning())
+                    //{
+                    //    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                    //    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                    //    state.State = "Blocked BY BUSINESSS SOFTWARE";
+                    //    BackupStateJournal.UpdateState(state);
+
+                    //}
+                    //run = false;
+                    //}
+                    //} while (run);
+                }
+                else
+                {
+                    // Handle the error case or log that the index was out of bounds
+                    Console.WriteLine("Index is out of range.");
+                }
+            }
+            }
         /// Displays the list of existing backups saved in a file.
         /// If backups exist, it lists them with their name, source, destination, and type.
         /// If no backups are found, it notifies the user.

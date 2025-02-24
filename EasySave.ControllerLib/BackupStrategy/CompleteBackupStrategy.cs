@@ -1,5 +1,6 @@
 ﻿using EasySave.IviewLib;
 using EasySave.ModelLib;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,7 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
-        public override async Task ExecuteBackup(string source, string target,String nameBackup)
+        public override async Task ExecuteBackup(string source, string target,String nameBackup, Dictionary<string, bool> _isPaused=null, Dictionary<string, CancellationTokenSource> _cancellationTokens=null)
         {
             DirectoryExist(target);
 
@@ -50,30 +51,79 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             foreach (var file in sortedFiles)
             {
+                CancellationToken token = _cancellationTokens[nameBackup].Token;
+                if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
+                {
+                    state.State = "STOPPED";
+                    BackupStateJournal.UpdateState(state);
+                    return;
+                }
+
+                while (_isPaused[nameBackup])
+                {
+                    await Task.Delay(500);
+                }
                 bool run = false;
                 do
                 {
-                    if (IsBusinessSoftwareRunning() )
+                    try
                     {
-                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                        state.State = "Blocked BY BUSINESSS SOFTWARE";
-                        BackupStateJournal.UpdateState(state);
-                        run = true;
-                    }
-                    else
-                    {
-                        await Task.Run(() =>
-                    {
-                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+                        token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
 
-                        Thread.Sleep(500); // Slow down the process for better visualization
+                        if (IsBusinessSoftwareRunning())
+                        {
+                            Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                            //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                            state.State = "Blocked BY BUSINESS SOFTWARE";
+                            BackupStateJournal.UpdateState(state);
+                            run = true;
+                        }
+                        else
+                        {
+                            await Task.Run(() =>
+                            {
+                                token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
+                                BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+                                Thread.Sleep(500); // Slow down the process for better visualization
+                            }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
+
+                            BackupFile(file, source, target);
+                            run = false;
+                        }
                     }
-                        );
-                        BackupFile(file, source, target);
-                        run = false;
+                    catch (OperationCanceledException)
+                    {
+                        Console.WriteLine("Operation was canceled by user.");
+                        // Logique optionnelle pour gérer l'annulation ici
+                        // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
                     }
-                }while(run);
+                } while (run);
+
+                //bool run = false;
+                //do
+                //{
+                //    if (IsBusinessSoftwareRunning() )
+                //    {
+                //        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                //        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                //        state.State = "Blocked BY BUSINESSS SOFTWARE";
+                //        BackupStateJournal.UpdateState(state);
+                //        run = true;
+                //    }
+                //    else
+                //    {
+                //        await Task.Run(() =>
+                //    {
+                //        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+
+                //        Thread.Sleep(500); // Slow down the process for better visualization
+                //    }
+                //        );
+                //        BackupFile(file, source, target);
+
+                //        run = false;
+                //    }
+                //}while(run);
             }
         }
 
