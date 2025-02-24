@@ -8,11 +8,18 @@ using EasySave.ModelLib;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Threading;
+using BackupServer;
 
 namespace ProjetWPF
 {
     public class RealTimeState : IObserver
     {
+        private readonly ServerController _serverController;
+
+        public RealTimeState(ServerController serverController)
+        {
+            _serverController = serverController;
+        }
         public void Update(BackupState state)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -56,6 +63,12 @@ namespace ProjetWPF
 
                     // Reconstruire le texte avec les mises à jour
                     realTimeState.Text = string.Join("\n", backupLines.Values);
+
+                    string message = realTimeState.Text;
+                    //Console.WriteLine($"🔹 Envoi de la progression au client : {message}"); // Vérification console
+                    _serverController.SendToClient(message);
+                    //Console.WriteLine($"🔹 Envoi au client : [{state.Name}] [{new string('█', progressBlocks)}{new string('-', progressBarWidth - progressBlocks)}] {state.Progress}%");
+
                 }
             });
         }

@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.IviewLib", "EasySa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.ControllerLib", "EasySave.ControllerLib\EasySave.ControllerLib.csproj", "{A08CA056-8FC2-40DE-8E06-029E9C6A04D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySave.Client", "EasySave.Client\EasySave.Client.csproj", "{3259ECD1-09A8-4A06-8818-C61C68706ABD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{A08CA056-8FC2-40DE-8E06-029E9C6A04D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08CA056-8FC2-40DE-8E06-029E9C6A04D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A08CA056-8FC2-40DE-8E06-029E9C6A04D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3259ECD1-09A8-4A06-8818-C61C68706ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3259ECD1-09A8-4A06-8818-C61C68706ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3259ECD1-09A8-4A06-8818-C61C68706ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3259ECD1-09A8-4A06-8818-C61C68706ABD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
