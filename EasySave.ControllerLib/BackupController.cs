@@ -142,7 +142,8 @@ namespace EasySave.ControllerLib
                 {
                     _cancellationTokens[backup.Name] = new CancellationTokenSource();
                 }
-                Task.Run(() => ExecuteOneBackup(index));
+                CancellationToken token = _cancellationTokens[backup.Name].Token;
+                Task.Run(() => ExecuteOneBackup(index,token));
 
 
                 //await Task.Run(() =>
@@ -164,13 +165,15 @@ namespace EasySave.ControllerLib
 
             }
         }
-        public async Task ExecuteOneBackup(int index)
+        public async Task ExecuteOneBackup(int index, CancellationToken token = default(CancellationToken))
         {
+            token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
             if (index - 1 < NumberLinesFile() && index > 0)
             {
 
                 if (BackupList != null && index > 0 && index <= BackupList.Count)
                 {
+
                     BackupModel backup = BackupList[index - 1];
 
                     // BackupModel backup = BackupList[index - 1];
@@ -203,6 +206,7 @@ namespace EasySave.ControllerLib
                     var strategy = _BackupStrategyFactory.CreateBackupStrategy(backupview);
 
                     await strategy.ExecuteBackup(BackupList[index - 1].Source, BackupList[index - 1].Target, backup.Name, _isPaused, _cancellationTokens);
+                    token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
 
