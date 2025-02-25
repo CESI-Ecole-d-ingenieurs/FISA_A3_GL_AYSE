@@ -36,7 +36,9 @@ jobs:
         run: dotnet clean
 
       - name: Supprimer les fichiers de build précédents
-        run: rm -rf bin obj
+        run: Remove-Item -Recurse -Force bin,obj
+        shell: pwsh
+
 
       - name: Restauration des dépendances
         run: dotnet restore --packages C:\Users\runneradmin\.nuget\packages
