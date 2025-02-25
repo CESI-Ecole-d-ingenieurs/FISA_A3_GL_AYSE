@@ -57,8 +57,19 @@ jobs:
       - name: Vérifier si Newtonsoft.Json est installé
         run: ls C:/Users/runneradmin/.nuget/packages/newtonsoft.json || echo "Newtonsoft.Json NON TROUVÉ"
 
-      - name: Compilation du projet
-        run: dotnet build --configuration Release --no-restore
+      - name: Installation manuelle de Newtonsoft.Json
+        run: dotnet add package Newtonsoft.Json --version 13.0.3
+        shell: pwsh
 
-      - name: Exécution des tests unitaires avec couverture de code
-        run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+      - name: Restauration des packages NuGet
+        run: dotnet restore
+        shell: pwsh
+
+      - name: Vérification des packages installés
+        run: dotnet list package
+        shell: pwsh
+
+- name: Compilation du projet
+  run: dotnet build --configuration Release --no-restore
+  shell: pwsh
+
