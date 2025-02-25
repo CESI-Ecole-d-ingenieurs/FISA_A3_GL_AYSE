@@ -52,9 +52,6 @@ jobs:
           dotnet clean EasySave.Logger/EasySave.Logger.csproj
           dotnet nuget locals all --clear
 
-      - name: 📦 Restauration spécifique pour EasySave.Logger
-        run: dotnet restore EasySave.Logger/EasySave.Logger.csproj --force
-
 
 
       - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
