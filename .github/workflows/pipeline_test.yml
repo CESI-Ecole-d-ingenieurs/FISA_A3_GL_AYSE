@@ -51,6 +51,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Ajoute le token SonarCloud dans GitHub Secrets
         with:
           args: >
-            -Dsonar.organization=votre-org
-            -Dsonar.projectKey=votre-projet
+            -Dsonar.organization=Cesi-Ecole-d-ingenieurs
+            -Dsonar.projectKey=FISA_A3_GL_AYSE
             -Dsonar.host.url=https://sonarcloud.io
