@@ -35,26 +35,14 @@ jobs:
       - name: Restauration des dépendances
         run: dotnet restore
 
-      - name: Vérification du format du code
-        run: dotnet format --verify-no-changes
-        continue-on-error: true # Ne bloque pas le pipeline si le format n'est pas correct
+      - name: Afficher les chemins NuGet
+        run: dotnet nuget locals all --list
 
-      - name: Nettoyer et restaurer les dépendances NuGet
-        run: dotnet nuget locals all --clear && dotnet restore
-
-      - name: Restaurer les dépendances
-        run: dotnet restore
-
-      - name: Vérifier Newtonsoft.Json
+      - name: Vérifier si Newtonsoft.Json est installé
         run: ls ~/.nuget/packages/newtonsoft.json || echo "Newtonsoft.Json NON TROUVÉ"
-
-      - name: Installer Newtonsoft.Json
-        run: dotnet add package Newtonsoft.Json --version 13.0.3
-
 
       - name: Compilation du projet
         run: dotnet build --configuration Release --no-restore
-        
 
       - name: Exécution des tests unitaires avec couverture de code
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
@@ -62,7 +50,7 @@ jobs:
       - name: Upload de la couverture de code vers Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # Ajoute le token Codecov dans GitHub Secrets
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./TestResults/**/*.xml
           fail_ci_if_error: true
 
@@ -70,7 +58,7 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Ajoute le token SonarCloud dans GitHub Secrets
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
             -Dsonar.organization=Cesi-Ecole-d-ingenieurs
