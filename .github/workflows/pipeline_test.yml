@@ -13,7 +13,7 @@ on:
 jobs:
   test:
     name: 🔍 Vérifications & Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: 📥 Checkout du code
