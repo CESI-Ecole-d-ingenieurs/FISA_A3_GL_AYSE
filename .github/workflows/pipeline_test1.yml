@@ -37,7 +37,7 @@ jobs:
         run: dotnet clean ProjetV0.1/ProjetV0.1.csproj
 
       - name: 🔨 Compilation du projet avec MSBuild
-        run: msbuild ProjetV0.1/ProjetV0.1.csproj /p:Configuration=Release
+        run: dotnet build ProjetV0.1/ProjetV0.1.csproj /p:Configuration=Release
 
       - name: 🧪 Exécution des tests unitaires avec couverture de code
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
