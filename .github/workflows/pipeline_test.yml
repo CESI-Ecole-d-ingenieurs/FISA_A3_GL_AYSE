@@ -55,8 +55,6 @@ jobs:
       - name: 📦 Restauration spécifique pour EasySave.Logger
         run: dotnet restore EasySave.Logger/EasySave.Logger.csproj --force
 
-      - name: 🔍 Vérification des packages NuGet installés
-        run: dotnet list EasySave.Logger/EasySave.Logger.csproj package | findstr "Newtonsoft.Json"
 
       - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
         run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release -v diag
