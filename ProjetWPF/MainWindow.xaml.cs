@@ -12,9 +12,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using BackupServer;
 using EasySave.ControllerLib;
+using EasySave.ControllerLib.BackupStrategy;
 using EasySave.IviewLib;
 using EasySave.ModelLib;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjetWPF
 {
@@ -294,6 +297,8 @@ namespace ProjetWPF
             Format.Text = await Translation.Instance.Translate("Format d'historique :");
             Crypt.Text = await Translation.Instance.Translate("Fichiers à crypter :");
             Software.Text = await Translation.Instance.Translate("Logiciels métier :");
+            NKoctets.Text = await Translation.Instance.Translate("Taille maximale des fichiers à sauvegarder :");
+            Ext.Text = await Translation.Instance.Translate("Extensions prioritaires :");
 
             Create_b.Content = await Translation.Instance.Translate("Création de sauvegarde");
             Name.Text = await Translation.Instance.Translate("Nom :");
@@ -421,6 +426,17 @@ namespace ProjetWPF
                     MessageBox.Show("Aucune extension ne sera prise en compte.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
+            }
+
+
+            // Récupération nKoctets
+            if (Regex.IsMatch(NKoctetsTextBox.Text, @"^\d+$"))
+            {
+                GlobalVariables.maximumSize = int.Parse(NKoctetsTextBox.Text);
+            }
+            else
+            {
+                MessageBox.Show(await Translation.Instance.Translate("La taille maximale des fichiers doit être un nombre."), "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 

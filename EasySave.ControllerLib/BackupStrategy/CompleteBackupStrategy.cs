@@ -3,6 +3,7 @@ using EasySave.ModelLib;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -130,8 +131,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                                 //    run = false;
                                 //}
                                 FileInfo fileInfo = new FileInfo(file);
-
-                                if ((fileInfo.Length / 1024.0) > 40)
+                                if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
                                 {
                                     // Traitement des grands fichiers avec sémaphore
                                     var task = ProcessLargeFileAsync(source, target, nameBackup, file, token);
