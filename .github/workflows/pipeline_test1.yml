@@ -19,38 +19,29 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
-      - name: 🔍 Vérification de .NET Framework installé
-        run: reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
-        shell: cmd
-
-      - name: 📥 Installer le .NET Framework 4.7.2 Developer Pack
+      - name: 🔍 Vérification des fichiers projet
         run: |
-          Invoke-WebRequest -Uri https://download.visualstudio.microsoft.com/download/pr/8c6824b2-18a3-4724-8979-b8918df75bc9/8b8b661a89b4e38a320007626f5b2c53/dotnet-framework-4.7.2-devpack.exe -OutFile dotnet-framework-4.7.2-devpack.exe
-          Start-Process -FilePath dotnet-framework-4.7.2-devpack.exe -ArgumentList "/quiet", "/norestart" -NoNewWindow -Wait
+          if (!(Test-Path "ProjetV0.1/ProjetV0.1.sln")) { Write-Host "❌ ERREUR: ProjetV0.1.sln introuvable"; exit 1 }
+          if (!(Test-Path "ProjetV0.1/ProjetV0.1.csproj")) { Write-Host "❌ ERREUR: ProjetV0.1.csproj introuvable"; exit 1 }
         shell: pwsh
 
-      - name: 🛠️ Installation de .NET 8
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '8.0.x'
-
       - name: 📦 Restauration des dépendances NuGet
-        run: nuget restore ProjetV0.1.sln
+        run: nuget restore ProjetV0.1/ProjetV0.1.sln
 
       - name: 📦 Installation du package Newtonsoft.Json
-        run: dotnet add ProjetV0.1.sln package Newtonsoft.Json --version 13.0.3
+        run: dotnet add ProjetV0.1/ProjetV0.1.sln package Newtonsoft.Json --version 13.0.3
 
       - name: 📦 Restauration des dépendances .NET
-        run: dotnet restore ProjetV0.1.sln
+        run: dotnet restore ProjetV0.1/ProjetV0.1.sln
 
       - name: 🔍 Vérification de la présence de Newtonsoft.Json
-        run: dotnet list ProjetV0.1.sln package | findstr "Newtonsoft.Json"
+        run: dotnet list ProjetV0.1/ProjetV0.1.sln package | findstr "Newtonsoft.Json"
 
       - name: 🧹 Nettoyage des builds précédents
-        run: dotnet clean ProjetV0.1.sln
+        run: dotnet clean ProjetV0.1/ProjetV0.1.sln
 
       - name: 🔨 Compilation du projet avec MSBuild
-        run: msbuild ProjetV0.1.sln /p:Configuration=Release
+        run: msbuild ProjetV0.1/ProjetV0.1.sln /p:Configuration=Release
 
       - name: 🧪 Exécution des tests unitaires avec couverture de code
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
