@@ -30,6 +30,8 @@ jobs:
           choco install netfx-4.7.2-devpack -y
         shell: powershell
 
+      - name: 🔨 Clean existing build files
+        run: dotnet clean
 
       - name: 📦 Restauration des dépendances
         run: dotnet restore --source "https://api.nuget.org/v3/index.json"
