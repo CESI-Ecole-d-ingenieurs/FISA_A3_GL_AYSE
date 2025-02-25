@@ -31,8 +31,8 @@ jobs:
       - name: 📦 Installation du package Newtonsoft.Json
         run: dotnet add ProjetV0.1/ProjetV0.1.sln package Newtonsoft.Json --version 13.0.3
 
-      - name: 📦 Restauration des dépendances .NET
-        run: dotnet restore ProjetV0.1/ProjetV0.1.sln
+      - name: 📦 Restauration des dépendances
+        run: dotnet restore ProjetV0.1/ProjetV0.1.csproj
 
       - name: 🔍 Vérification de la présence de Newtonsoft.Json
         run: dotnet list ProjetV0.1/ProjetV0.1.sln package | findstr "Newtonsoft.Json"
@@ -41,7 +41,7 @@ jobs:
         run: dotnet clean ProjetV0.1/ProjetV0.1.sln
 
       - name: 🔨 Compilation du projet avec MSBuild
-        run: msbuild ProjetV0.1/ProjetV0.1.sln /p:Configuration=Release
+        run: msbuild ProjetV0.1/ProjetV0.1.csproj /p:Configuration=Release
 
       - name: 🧪 Exécution des tests unitaires avec couverture de code
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
