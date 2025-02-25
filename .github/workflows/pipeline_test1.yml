@@ -34,8 +34,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: 📦 Restauration des dépendances
+      - name: 📦 Restauration des dépendances NuGet
+        run: nuget restore EasySave.sln
+
+      - name: 📦 Restauration des dépendances .NET
         run: dotnet restore
+
+      - name: 🔍 Vérification de la présence de Newtonsoft.Json
+        run: dotnet list package | findstr "Newtonsoft.Json"
 
       - name: 🧹 Nettoyage des builds précédents
         run: dotnet clean
