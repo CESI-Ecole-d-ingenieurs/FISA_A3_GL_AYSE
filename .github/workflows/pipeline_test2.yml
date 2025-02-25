@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     name: 🔍 Vérifications & Tests
-    runs-on: windows-latest
+    runs-on: windows-latest 
 
     steps:
       - name: 📥 Checkout du code
