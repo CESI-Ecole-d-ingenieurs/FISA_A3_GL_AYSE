@@ -41,14 +41,14 @@ jobs:
 
       # ✅ Build .NET 8 projects
       - name: 🔨 Build .NET 8 Projects
-        run: dotnet build YourSolution.sln --configuration Release --framework net8.0 --no-restore
+        run: dotnet build ProjetV0.1.sln --configuration Release --framework net8.0 --no-restore
 
       # ✅ Build .NET Framework 4.7.2 projects
       - name: 🔨 Build .NET Framework Projects
-        run: msbuild YourSolution.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
+        run: msbuild ProjetV0.1.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
 
       - name: 🧪 Run unit tests with code coverage
-        run: dotnet test YourSolution.sln --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+        run: dotnet test ProjetV0.1.sln --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
 
       - name: 📊 Upload code coverage to Codecov
         uses: codecov/codecov-action@v3
