@@ -3,10 +3,12 @@ name: CI - Tests & Analyse EasySave
 on:
   push:
     branches:
-      - version-v1.1
+       - main
+       - develop
   pull_request:
     branches:
-      - version-v1.1
+      - main
+      - develop
 
 jobs:
   test:
