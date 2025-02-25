@@ -28,17 +28,18 @@ jobs:
       - name: 📦 Restauration des dépendances pour EasySave.Logger
         run: dotnet restore EasySave.Logger/EasySave.Logger.csproj --force
 
+      - name: 🕒 Pause pour s'assurer que les dépendances sont bien restaurées
+        run: sleep 10
+
       - name: 🧹 Nettoyage du projet EasySave.Logger
         run: dotnet clean EasySave.Logger/EasySave.Logger.csproj
-
-      - name: 🔍 Vérification des packages NuGet installés
-        run: dotnet list ProjetV0.1/ProjetV0.1.csproj package
 
       - name: 🔍 Vérification de la présence de Newtonsoft.Json dans EasySave.Logger
         run: dotnet list EasySave.Logger/EasySave.Logger.csproj package | findstr "Newtonsoft.Json"
 
       - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
         run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release -v diag
+
 
       - name: 🔨 Compilation du projet avec Build
         run: dotnet build ProjetV0.1/ProjetV0.1.csproj --configuration Release
