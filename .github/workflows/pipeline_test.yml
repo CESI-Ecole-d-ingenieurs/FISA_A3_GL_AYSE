@@ -23,6 +23,15 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+     
+      - name: Installation de .NET Framework 4.7.2 via Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          Invoke-WebRequest -Uri https://community.chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
+          choco install netfx-4.7.2-devpack -y
+        shell: powershell
+
 
       - name: 📦 Restauration des dépendances
         run: dotnet restore
