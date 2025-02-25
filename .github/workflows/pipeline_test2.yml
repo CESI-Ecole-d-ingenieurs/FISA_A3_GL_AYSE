@@ -33,16 +33,16 @@ jobs:
           choco install netfx-4.7.2-devpack -y
         shell: powershell
 
-      - name: 📦 Restauration des dépendances .NET Core/.NET 8
+      - name: 📦 Restauration des dépendances pour .NET Core/.NET 8
         run: dotnet restore --source "https://api.nuget.org/v3/index.json"
 
-      - name: 📦 Restauration des dépendances .NET Framework
-        run: nuget restore
+      - name: 📦 Restauration des dépendances pour .NET Framework
+        run: nuget restore EasySave2.sln
 
       - name: 🔨 Nettoyage des fichiers de build existants
         run: |
           dotnet clean
-          "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /t:Clean
+          "& 'C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe' /t:Clean /p:Configuration=Release /p:Platform="Any CPU""
         shell: powershell
 
       - name: 🔨 Compilation du projet .NET Core/.NET 8
@@ -50,15 +50,15 @@ jobs:
 
       - name: 🔨 Compilation du projet .NET Framework
         run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /p:Configuration=Release
+          "& 'C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe' EasySave2.sln /p:Configuration=Release /p:Platform="Any CPU""
         shell: powershell
 
-      - name: 🧪 Exécution des tests unitaires .NET Core/.NET 8
+      - name: 🧪 Exécution des tests unitaires pour .NET Core/.NET 8
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
 
-      - name: 🧪 Exécution des tests unitaires .NET Framework
+      - name: 🧪 Exécution des tests unitaires pour .NET Framework
         run: |
-          $vsTestPath = "${{ runner.tool_cache }}/Microsoft.TestPlatform/vstest.console.exe"
+          $vsTestPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe"
           if (Test-Path $vsTestPath) {
             & $vsTestPath ./Tests/YourTestProject/bin/Release/YourTestProject.dll /Logger:trx
           } else {
@@ -84,4 +84,3 @@ jobs:
             -Dsonar.organization=votre-org
             -Dsonar.projectKey=votre-projet
             -Dsonar.host.url=https://sonarcloud.io
-
