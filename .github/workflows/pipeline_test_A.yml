@@ -34,11 +34,7 @@ jobs:
       - name: 🧹 Nettoyage du projet EasySave.Logger
         run: dotnet clean EasySave.Logger/EasySave.Logger.csproj
 
-      - name: 🔍 Vérification de la présence de Newtonsoft.Json dans EasySave.Logger
-        run: dotnet list EasySave.Logger/EasySave.Logger.csproj package | findstr "Newtonsoft.Json"
-
-      - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
-        run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release -v diag
+     
 
 
       - name: 🔨 Compilation du projet avec Build
