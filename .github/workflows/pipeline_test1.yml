@@ -37,6 +37,9 @@ jobs:
       - name: 📦 Restauration des dépendances NuGet
         run: nuget restore EasySave.sln
 
+      - name: 📦 Installation du package Newtonsoft.Json
+        run: dotnet add package Newtonsoft.Json --version 13.0.3
+
       - name: 📦 Restauration des dépendances .NET
         run: dotnet restore
 
