@@ -6,31 +6,36 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace EasySave.ControllerLib.BackupStrategy
 {
-
     internal class CompleteBackupStrategy : BaseBackupStrategy
     {
-        /// Executes a complete backup of all files and directories.
-        /// Ensures the target directory exists, initializes the backup state,
-        /// and copies all files from the source to the target.
-        
+        private volatile int networkLoad = 50;
+        private CancellationTokenSource _networkMonitorCancellation = new CancellationTokenSource();
+
         public CompleteBackupStrategy(IBackupView backupview) : base(backupview)
         {
-            
+            ShowAvailableNetworkInterfaces();
+
+            Task.Run(() =>
+            {
+                while (!_networkMonitorCancellation.Token.IsCancellationRequested)
+                {
+                    networkLoad = GetNetworkLoad();
+                    Thread.Sleep(2000);
+                }
+            }, _networkMonitorCancellation.Token);
         }
+
         public override async Task ExecuteBackup(string source, string target, String nameBackup, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null)
         {
             DirectoryExist(target);
-
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
-
-            //backupView.DisplayProgress();
 
             foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {
@@ -40,151 +45,87 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
 
-            var extensionPriority = File.Exists("extensions.txt") ?
-        File.ReadAllLines("extensions.txt").ToList() :
-        new List<string>();
-
-            var sortedFiles = files.OrderBy(f =>
+            List<Task> tasks = new List<Task>();
+            foreach (var file in files)
             {
-                var ext = Path.GetExtension(f);
-                int index = extensionPriority.IndexOf(ext);
-                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
-            }).ThenBy(f => f).ToList();
-          
-            // Groupe les fichiers par priorité d'extension
-            var groups = sortedFiles.GroupBy(f => Path.GetExtension(f)).ToList();
-            foreach (var group in groups)
-            {
-                List<Task> tasks = new List<Task>();
-                foreach (var file in group)
+                while (networkLoad > 80)
                 {
-                    CancellationToken token = _cancellationTokens[nameBackup].Token;
-                    if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
-                    {
-                        state.State = "STOPPED";
-                        BackupStateJournal.UpdateState(state);
-                        return;
-                    }
-
-                    while (_isPaused[nameBackup])
-                    {
-                        await Task.Delay(500);
-                    }
-                    bool run = false;
-                    do
-                    {
-                        try
-                        {
-                            token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
-
-                            if (IsBusinessSoftwareRunning())
-                            {
-                                Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                                //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                                state.State = "Blocked BY BUSINESS SOFTWARE";
-                                BackupStateJournal.UpdateState(state);
-                                run = true;
-                            }
-                            else
-                            {
-                                //var fileInfo = new FileInfo(file);
-                                //if ((fileInfo.Length / 1024.0) > 40)
-                                //{
-                                //    await CompleteBackupStrategy.largeFileSemaphore.WaitAsync();
-                                //    Console.WriteLine("Entered semaphore.");
-                                //    try
-                                //    {
-                                //        await Task.Run(() =>
-                                //         {
-                                //             token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                                //             BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                                //             Thread.Sleep(500); // Slow down the process for better visualization
-                                //         }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                                //        BackupFile(file, source, target);
-                                //        run = false;
-                                //    }
-                                //    catch (OperationCanceledException)
-                                //    {
-                                //        Console.WriteLine("Operation was cancelled.");
-                                //    }
-                                //    catch (Exception ex)
-                                //    {
-                                //        Console.WriteLine($"An exception occurred: {ex.Message}");
-                                //    }
-                                //    finally
-                                //    {
-                                //        CompleteBackupStrategy.largeFileSemaphore.Release();
-                                //    }
-                                //}
-                                //else
-                                //{
-
-                                //    await Task.Run(() =>
-                                //    {
-                                //        token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                                //        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                                //        Thread.Sleep(500); // Slow down the process for better visualization
-                                //    }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                                //    BackupFile(file, source, target);
-                                //    run = false;
-                                //}
-                                FileInfo fileInfo = new FileInfo(file);
-                                if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
-                                {
-                                    // Traitement des grands fichiers avec sémaphore
-                                    var task = ProcessLargeFileAsync(source, target, nameBackup, file, token);
-                                    tasks.Add(task);
-                                }
-                                else
-                                {
-                                    // Traitement des petits fichiers immédiatement sans attendre
-                                    var task = ProcessSmallFileAsync(source, target, nameBackup, file, token);
-                                    tasks.Add(task);
-                                }
-
-                            }
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            Console.WriteLine("Operation was canceled by user.");
-                            // Logique optionnelle pour gérer l'annulation ici
-                            // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
-                        }
-                    } while (run);
-
-                    //bool run = false;
-                    //do
-                    //{
-                    //    if (IsBusinessSoftwareRunning() )
-                    //    {
-                    //        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                    //        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                    //        state.State = "Blocked BY BUSINESSS SOFTWARE";
-                    //        BackupStateJournal.UpdateState(state);
-                    //        run = true;
-                    //    }
-                    //    else
-                    //    {
-                    //        await Task.Run(() =>
-                    //    {
-                    //        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-
-                    //        Thread.Sleep(500); // Slow down the process for better visualization
-                    //    }
-                    //        );
-                    //        BackupFile(file, source, target);
-
-                    //        run = false;
-                    //    }
-                    //}while(run);
+                    Console.WriteLine("Réduction des tâches en parallèle à cause de la charge réseau...");
+                    await Task.Delay(2000);
                 }
-                await Task.WhenAll(tasks);
+
+                CancellationToken token = _cancellationTokens[nameBackup].Token;
+                if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
+                {
+                    state.State = "STOPPED";
+                    BackupStateJournal.UpdateState(state);
+                    return;
+                }
+
+                while (_isPaused[nameBackup])
+                {
+                    await Task.Delay(500);
+                }
+
+                FileInfo fileInfo = new FileInfo(file);
+                if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
+                {
+                    var task = ProcessLargeFileAsync(source, target, nameBackup, file, token);
+                    tasks.Add(task);
+                }
+                else
+                {
+                    var task = ProcessSmallFileAsync(source, target, nameBackup, file, token);
+                    tasks.Add(task);
+                }
+            }
+            await Task.WhenAll(tasks);
+            _networkMonitorCancellation.Cancel(); // Arrête la surveillance réseau après la sauvegarde
+        }
+
+        private int GetNetworkLoad()
+        {
+            try
+            {
+                NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+                if (interfaces.Length == 0) return 50;
+
+                long totalBytesSentBefore = interfaces.Sum(i => i.GetIPv4Statistics().BytesSent);
+                long totalBytesReceivedBefore = interfaces.Sum(i => i.GetIPv4Statistics().BytesReceived);
+
+                Thread.Sleep(1000);
+
+                long totalBytesSentAfter = interfaces.Sum(i => i.GetIPv4Statistics().BytesSent);
+                long totalBytesReceivedAfter = interfaces.Sum(i => i.GetIPv4Statistics().BytesReceived);
+
+                long bytesSentPerSec = (totalBytesSentAfter - totalBytesSentBefore);
+                long bytesReceivedPerSec = (totalBytesReceivedAfter - totalBytesReceivedBefore);
+
+                float totalUsage = (bytesSentPerSec + bytesReceivedPerSec) * 8 / 1000000;
+                if (totalUsage < 0.1f) totalUsage = 0.1f;
+
+                System.Diagnostics.Debug.WriteLine($"📤 Octets envoyés/sec : {bytesSentPerSec}");
+                System.Diagnostics.Debug.WriteLine($"📥 Octets reçus/sec : {bytesReceivedPerSec}");
+                System.Diagnostics.Debug.WriteLine($"✅ Charge réseau calculée : {totalUsage} Mbps");
+
+                return (int)Math.Min(Math.Max(totalUsage, 0), 100);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Erreur lors de la récupération de la charge réseau avec NetworkInterface.");
+                System.Diagnostics.Debug.WriteLine($"🔹 Détails : {ex.Message}");
+                return 50;
             }
         }
 
-
+        private void ShowAvailableNetworkInterfaces()
+        {
+            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+            System.Diagnostics.Debug.WriteLine("🔍 Interfaces réseau détectées :");
+            foreach (var iface in interfaces)
+            {
+                System.Diagnostics.Debug.WriteLine($"- {iface.Name} ({iface.Description})");
+            }
+        }
     }
-
 }
