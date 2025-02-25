@@ -2,11 +2,12 @@
 using ProjetV0._1;
 
 using System;
-using translation;
-using ProjetV0._1.Controller;
-using ProjetV0._1.Model;
-using ProjetV0._1.View;
 
+
+using EasySave.ModelLib;
+using ProjetV0._1.View;
+using EasySave.IviewLib;
+using EasySave.ControllerLib;
 class Program
 {
     static async Task Main(string[] args)
@@ -23,15 +24,20 @@ class Program
 
         //Men actions_menu = new ActionChoice();
         //await actions_menu.ActionsMenu(translation);
-        LanguageModel languageModel = new LanguageModel();
-        LanguageView view = new LanguageView();
-        LanguageController languages_menu = new LanguageController(languageModel, view);
-        languages_menu.NavigateLanguages();
 
+        // Initialize language selection
+        LanguageModel languageModel = new LanguageModel();
+        ILanguageView view = new LanguageView();
+        LanguageController languages_menu = new LanguageController(languageModel, view);
+        languages_menu.NavigateLanguages(); // User selects the language
+
+        // Initialize the menu system
         MenuModel menuModel = new MenuModel();
-        MenuView menuView = new MenuView();
+        IMenuView menuView = new MenuView();
         MenuController menuController = new MenuController(menuModel, menuView);
-        await menuController.ManageActions();
+        IBackupView backupView = new BackupView();
+        EasySave.ModelLib.IObserver consoleView = new ConsoleView();
+        await menuController.ManageActions(backupView, consoleView); // Starts the menu loop
 
 
         //-------------------------------------------------------------
@@ -58,7 +64,7 @@ class Program
         //-------------------------------------------------------------
         // TEST LOG
         //-------------------------------------------------------------
-
+        //t
 
         // aysee
         //    LogController logController = new LogController();

@@ -9,11 +9,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Controller\TranslateStrategy\TranslateStrategy.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+	<ProjectReference Include="..\CryptoSoft\EasySave.CryptoSoft.csproj" />
+	<ProjectReference Include="..\EasySave.ControllerLib\EasySave.ControllerLib.csproj" />
+	<ProjectReference Include="..\EasySave.IviewLib\EasySave.IviewLib.csproj" />
+   
+    <ProjectReference Include="..\EasySave.Logger\EasySave.Logger.csproj" />
+   
+    <ProjectReference Include="..\EasySave.ModelLib\EasySave.ModelLib.csproj" />
   </ItemGroup>
 
 </Project>
