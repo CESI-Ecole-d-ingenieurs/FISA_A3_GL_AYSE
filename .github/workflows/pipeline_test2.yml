@@ -37,12 +37,12 @@ jobs:
         run: dotnet restore --source "https://api.nuget.org/v3/index.json"
 
       - name: 📦 Restauration des dépendances pour .NET Framework
-        run: nuget restore ProjetV0.1.sln
+        run: nuget restore EasySave2.sln
 
       - name: 🔨 Nettoyage des fichiers de build existants
         run: |
           dotnet clean
-          "& 'C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe' /t:Clean /p:Configuration=Release /p:Platform="Any CPU""
+          & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" /t:Clean /p:Configuration=Release /p:Platform="Any CPU"
         shell: powershell
 
       - name: 🔨 Compilation du projet .NET Core/.NET 8
@@ -50,7 +50,7 @@ jobs:
 
       - name: 🔨 Compilation du projet .NET Framework
         run: |
-          "& 'C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe' EasySave2.sln /p:Configuration=Release /p:Platform="Any CPU""
+          & "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" EasySave2.sln /p:Configuration=Release /p:Platform="Any CPU"
         shell: powershell
 
       - name: 🧪 Exécution des tests unitaires pour .NET Core/.NET 8
