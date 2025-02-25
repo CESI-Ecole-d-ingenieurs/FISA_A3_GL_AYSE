@@ -25,11 +25,11 @@ jobs:
       - name: 🔍 Vérification des packages NuGet installés
         run: dotnet list ProjetV0.1/ProjetV0.1.csproj package
 
-      - name: 🧹 Nettoyage des builds précédents
-        run: dotnet clean ProjetV0.1/ProjetV0.1.csproj
+      - name: 🔨 Compilation de la bibliothèque EasySave.Logger
+        run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release
 
-      - name: 🔍 Vérification de la présence de Newtonsoft.Json
-        run: dotnet list ProjetV0.1/ProjetV0.1.csproj package | findstr "Newtonsoft.Json"
+      - name: 🔍 Vérification de la présence de Newtonsoft.Json dans EasySave.Logger
+        run: dotnet list EasySave.Logger/EasySave.Logger.csproj package | findstr "Newtonsoft.Json"
 
       - name: 🔨 Compilation du projet avec Build
         run: dotnet build ProjetV0.1/ProjetV0.1.csproj --configuration Release
