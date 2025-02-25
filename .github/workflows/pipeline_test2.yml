@@ -11,57 +11,53 @@ on:
 jobs:
   test:
     name: 🔍 Vérifications & Tests
-    runs-on: windows-latest
+    runs-on: windows-latest 
 
     steps:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
-      # ✅ Install .NET 8 SDK (for your .NET 8 projects)
-      - name: 🛠️ Setup .NET Core SDK
+      - name: 🛠️ Installation de .NET 8
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
-
-      # ✅ Install .NET Framework 4.7.2 Developer Pack (Required for .NET Framework builds)
-      - name: 🛠️ Install .NET Framework 4.7.2 Developer Pack via Chocolatey
+     
+      - name: Installation de .NET Framework 4.7.2 via Chocolatey
         run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          Invoke-WebRequest -Uri https://community.chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
           choco install netfx-4.7.2-devpack -y
         shell: powershell
 
       - name: 🔨 Clean existing build files
         run: dotnet clean
 
-      - name: 📦 Restore dependencies
+      - name: 📦 Restauration des dépendances
         run: dotnet restore --source "https://api.nuget.org/v3/index.json"
 
-      - name: 🔍 Check code format
+      - name: 🔍 Vérification du format du code
         run: dotnet format --verify-no-changes
-        continue-on-error: true # Continue if code format is not correct
+        continue-on-error: true # Ne bloque pas le pipeline si le format n'est pas correct
 
-      # ✅ Build .NET 8 projects
-      - name: 🔨 Build .NET 8 Projects
-        run: dotnet build ProjetV0.1.sln --configuration Release --framework net8.0 --no-restore
+      - name: 🔨 Compilation du projet
+        run: dotnet build --configuration Release --no-restore
 
-      # ✅ Build .NET Framework 4.7.2 projects
-      - name: 🔨 Build .NET Framework Projects
-        run: msbuild ProjetV0.1.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
+      - name: 🧪 Exécution des tests unitaires avec couverture de code
+        run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
 
-      - name: 🧪 Run unit tests with code coverage
-        run: dotnet test ProjetV0.1.sln --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
-
-      - name: 📊 Upload code coverage to Codecov
+      - name: 📊 Upload de la couverture de code vers Codecov
         uses: codecov/codecov-action@v3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }} # This is the token from Codecov
+          token: ${{ secrets.CODECOV_TOKEN }} # 🔐 Ajoute le token Codecov dans GitHub Secrets
           files: ./TestResults/**/*.xml
           fail_ci_if_error: true
 
-      - name: 🔍 Code analysis with SonarCloud
+      - name: 🔍 Analyse de code avec SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # This is the token from SonarCloud
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # 🔐 Ajoute le token SonarCloud dans GitHub Secrets
         with:
           args: >
             -Dsonar.organization=votre-org
