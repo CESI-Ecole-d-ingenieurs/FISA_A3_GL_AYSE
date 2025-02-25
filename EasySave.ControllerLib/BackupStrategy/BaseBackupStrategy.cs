@@ -16,6 +16,7 @@ namespace EasySave.ControllerLib.BackupStrategy
     /// Implements common methods for backup operations and logging.
     public abstract class BaseBackupStrategy : BackupStrategy
     {
+        private static SemaphoreSlim largeFileSemaphore = new SemaphoreSlim(1, 1);
         /// Logger instance for recording backup logs.
         protected Logger.Logger logger = new Logger.Logger();
         /// BackupView instance for displaying backup progress.
@@ -80,7 +81,6 @@ namespace EasySave.ControllerLib.BackupStrategy
 
                     // Real-time status updates
                     BackupStateJournal.UpdateProgress(Path.GetFileName(file));
-               
 
                     // Progress Display
                      backupView.DisplayProgress();
@@ -110,6 +110,37 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             return businessSoftwareList.Any(software => Process.GetProcesses()
                                                                 .Any(p => p.ProcessName.ToLower().Contains(software)));
+        }
+        public async Task ProcessLargeFileAsync(string source, string target, String nameBackup, string file, CancellationToken token)
+        {
+            await CompleteBackupStrategy.largeFileSemaphore.WaitAsync();
+            try
+            {
+                await Task.Run(() =>
+                {
+                    token.ThrowIfCancellationRequested();
+                    BackupStateJournal.UpdateProgress(nameBackup);
+                    Thread.Sleep(500); // Considérez changer ceci en Task.Delay si cela n'affecte pas d'autres parties
+                }, token);
+
+                BackupFile(file, source, target);
+            }
+            finally
+            {
+                CompleteBackupStrategy.largeFileSemaphore.Release();
+            }
+        }
+
+        public async Task ProcessSmallFileAsync(string source, string target, String nameBackup, string file, CancellationToken token)
+        {
+            await Task.Run(() =>
+            {
+                token.ThrowIfCancellationRequested();
+                BackupStateJournal.UpdateProgress(nameBackup);
+                Thread.Sleep(500); // De même, changez en Task.Delay si possible
+            }, token);
+
+            BackupFile(file, source, target);
         }
     }
 }
