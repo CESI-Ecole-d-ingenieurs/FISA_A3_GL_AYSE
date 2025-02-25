@@ -13,7 +13,7 @@ on:
 jobs:
   test:
     name: Vérifications & Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout du code
@@ -23,6 +23,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '8.0.x'
+
+      - name: Installation de .NET Framework 4.7.2 Developer Pack
+        run: |
+          Invoke-WebRequest -Uri https://download.visualstudio.microsoft.com/download/pr/51b40c2d-37cf-4046-bca2-3cbbb7e04bb4/799f67c2c70f65569b12e7ebd7f4244f/ndp472-devpack-enu.exe -OutFile ndp472-devpack.exe
+          Start-Process -FilePath ndp472-devpack.exe -ArgumentList "/q" -Wait -NoNewWindow
+        shell: powershell
 
       - name: Restauration des dépendances
         run: dotnet restore
