@@ -39,6 +39,9 @@ jobs:
         run: dotnet format --verify-no-changes
         continue-on-error: true # Ne bloque pas le pipeline si le format n'est pas correct
 
+      - name: Nettoyer et restaurer les dépendances NuGet
+        run: dotnet nuget locals all --clear && dotnet restore
+
       - name: Compilation du projet
         run: dotnet build --configuration Release --no-restore
 
