@@ -1,4 +1,4 @@
-name: CI - Tests & Analyse EasySave
+name: CI - Tests & Analyse EasySave2
 
 on:
   push:
