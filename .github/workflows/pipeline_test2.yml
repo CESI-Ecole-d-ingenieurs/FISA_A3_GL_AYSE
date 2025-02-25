@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
- 
+
 jobs:
   test:
     name: 🔍 Vérifications & Tests
@@ -17,15 +17,17 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
+      # ✅ Install .NET 8 SDK (for your .NET 8 projects)
       - name: 🛠️ Setup .NET Core SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x' # Replace with the correct .NET Core version you are using (e.g., 5.0, 6.0)
+          dotnet-version: '8.0.x'
 
-      - name: 🛠️ Setup .NET Framework Targeting Pack
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '4.7.2' # This installs the targeting pack for .NET Framework 4.7.2
+      # ✅ Install .NET Framework 4.7.2 Developer Pack (Required for .NET Framework builds)
+      - name: 🛠️ Install .NET Framework 4.7.2 Developer Pack via Chocolatey
+        run: |
+          choco install netfx-4.7.2-devpack -y
+        shell: powershell
 
       - name: 🔨 Clean existing build files
         run: dotnet clean
@@ -37,11 +39,13 @@ jobs:
         run: dotnet format --verify-no-changes
         continue-on-error: true # Continue if code format is not correct
 
-      - name: 🔨 Build .NET Core Projects
+      # ✅ Build .NET 8 projects
+      - name: 🔨 Build .NET 8 Projects
         run: dotnet build YourSolution.sln --configuration Release --framework net8.0 --no-restore
 
+      # ✅ Build .NET Framework 4.7.2 projects
       - name: 🔨 Build .NET Framework Projects
-        run: dotnet build YourSolution.sln --configuration Release --framework net472 --no-restore
+        run: msbuild YourSolution.sln /p:Configuration=Release /p:TargetFrameworkVersion=v4.7.2
 
       - name: 🧪 Run unit tests with code coverage
         run: dotnet test YourSolution.sln --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
