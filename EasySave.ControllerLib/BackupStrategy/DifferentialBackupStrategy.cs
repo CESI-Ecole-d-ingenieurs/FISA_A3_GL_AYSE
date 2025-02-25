@@ -39,7 +39,6 @@ namespace EasySave.ControllerLib.BackupStrategy
             var extensionPriority = File.Exists("extensions.txt") ?
         File.ReadAllLines("extensions.txt").ToList() :
         new List<string>();
-
             var sortedFiles = files.OrderBy(f =>
             {
                 var ext = Path.GetExtension(f);
