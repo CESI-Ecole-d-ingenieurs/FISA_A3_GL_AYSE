@@ -19,9 +19,9 @@ jobs:
       - name: 📥 Checkout du code
         uses: actions/checkout@v3
 
-      - name: 🔍 Vérification des versions .NET Framework
-        run: Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full' | Get-ItemPropertyValue -Name Version
-        shell: pwsh
+      - name: 🔍 Vérification de .NET Framework installé
+        run: reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
+        shell: cmd
 
       - name: 📥 Installer le .NET Framework 4.7.2 Developer Pack
         run: |
