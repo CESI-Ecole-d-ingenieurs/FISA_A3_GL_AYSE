@@ -32,13 +32,18 @@ jobs:
           choco install netfx-4.7.2-devpack -y
         shell: powershell
 
+      - name: Afficher le répertoire courant
+        run: Get-Location
+        shell: pwsh
+
       - name: Nettoyage des anciennes références
         run: dotnet clean
 
       - name: Supprimer les fichiers de build précédents
-        run: Remove-Item -Recurse -Force bin,obj
+        run: |
+          if (Test-Path bin) { Remove-Item -Recurse -Force bin }
+          if (Test-Path obj) { Remove-Item -Recurse -Force obj }
         shell: pwsh
-
 
       - name: Restauration des dépendances
         run: dotnet restore --packages C:\Users\runneradmin\.nuget\packages
