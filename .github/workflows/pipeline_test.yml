@@ -32,7 +32,7 @@ jobs:
           choco install netfx-4.7.2-devpack -y
         shell: powershell
 
-      - name: Afficher le répertoire courant
+      - name: Vérifier le répertoire courant
         run: Get-Location
         shell: pwsh
 
@@ -46,23 +46,25 @@ jobs:
         shell: pwsh
 
       - name: Restauration des dépendances
-        run: dotnet restore --packages C:\Users\runneradmin\.nuget\packages
+        run: dotnet restore --packages ${{ github.workspace }}/.nuget/packages
 
       - name: Définir le chemin des packages NuGet
-        run: echo "NUGET_PACKAGES=C:\Users\runneradmin\.nuget\packages" >> $GITHUB_ENV
+        run: echo "NUGET_PACKAGES=${{ github.workspace }}/.nuget/packages" >> $GITHUB_ENV
 
       - name: Afficher les chemins NuGet
         run: dotnet nuget locals all --list
 
       - name: Vérifier si Newtonsoft.Json est installé
-        run: ls C:/Users/runneradmin/.nuget/packages/newtonsoft.json || echo "Newtonsoft.Json NON TROUVÉ"
+        run: ls ${{ github.workspace }}/.nuget/packages/newtonsoft.json || echo "Newtonsoft.Json NON TROUVÉ"
 
-      - name: Installation manuelle de Newtonsoft.Json
-        run: dotnet add package Newtonsoft.Json --version 13.0.3
+      - name: Vérifier les fichiers projet
+        run: Get-ChildItem -Path ${{ github.workspace }} -Filter "*.csproj" -Recurse
         shell: pwsh
 
-      - name: Restauration des packages NuGet
-        run: dotnet restore
+      - name: Installation manuelle de Newtonsoft.Json
+        run: |
+          cd ${{ github.workspace }}/EasySave.Logger
+          dotnet add package Newtonsoft.Json --version 13.0.3
         shell: pwsh
 
       - name: Vérification des packages installés
@@ -73,3 +75,5 @@ jobs:
         run: dotnet build --configuration Release --no-restore
         shell: pwsh
 
+      - name: Exécution des tests unitaires avec couverture de code
+        run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
