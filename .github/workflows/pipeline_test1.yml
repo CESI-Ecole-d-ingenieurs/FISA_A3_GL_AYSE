@@ -35,22 +35,22 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: 📦 Restauration des dépendances NuGet
-        run: nuget restore EasySave.sln
+        run: nuget restore ProjetV0.1.sln
 
       - name: 📦 Installation du package Newtonsoft.Json
-        run: dotnet add package Newtonsoft.Json --version 13.0.3
+        run: dotnet add ProjetV0.1.sln package Newtonsoft.Json --version 13.0.3
 
       - name: 📦 Restauration des dépendances .NET
-        run: dotnet restore
+        run: dotnet restore ProjetV0.1.sln
 
       - name: 🔍 Vérification de la présence de Newtonsoft.Json
-        run: dotnet list package | findstr "Newtonsoft.Json"
+        run: dotnet list ProjetV0.1.sln package | findstr "Newtonsoft.Json"
 
       - name: 🧹 Nettoyage des builds précédents
-        run: dotnet clean
+        run: dotnet clean ProjetV0.1.sln
 
       - name: 🔨 Compilation du projet avec MSBuild
-        run: msbuild EasySave.Logger/EasySave.Logger.csproj /p:Configuration=Release
+        run: msbuild ProjetV0.1.sln /p:Configuration=Release
 
       - name: 🧪 Exécution des tests unitaires avec couverture de code
         run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
