@@ -36,6 +36,10 @@ jobs:
         run: Get-Location
         shell: pwsh
 
+      - name: Vérifier où le code est extrait
+        run: Get-Location
+        shell: pwsh
+
       - name: Nettoyage des anciennes références
         run: dotnet clean
 
