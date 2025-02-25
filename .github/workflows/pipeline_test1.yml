@@ -36,7 +36,7 @@ jobs:
       - name: 🧹 Nettoyage des builds précédents
         run: dotnet clean ProjetV0.1/ProjetV0.1.csproj
 
-      - name: 🔨 Compilation du projet avec MSBuild
+      - name: 🔨 Compilation du projet avec Build
         run: dotnet build ProjetV0.1/ProjetV0.1.csproj /p:Configuration=Release
 
       - name: 🧪 Exécution des tests unitaires avec couverture de code
