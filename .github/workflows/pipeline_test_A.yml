@@ -52,8 +52,6 @@ jobs:
           dotnet clean EasySave.Logger/EasySave.Logger.csproj
           dotnet nuget locals all --clear
 
-
-
       - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
         run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release -v diag
 
