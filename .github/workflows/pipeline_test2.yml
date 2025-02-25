@@ -37,7 +37,7 @@ jobs:
         run: dotnet restore --source "https://api.nuget.org/v3/index.json"
 
       - name: 📦 Restauration des dépendances pour .NET Framework
-        run: nuget restore EasySave2.sln
+        run: nuget restore ProjetV0.1.sln
 
       - name: 🔨 Nettoyage des fichiers de build existants
         run: |
