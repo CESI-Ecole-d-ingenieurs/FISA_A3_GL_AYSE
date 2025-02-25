@@ -39,9 +39,6 @@ jobs:
         run: dotnet format --verify-no-changes
         continue-on-error: true # Ne bloque pas le pipeline si le format n'est pas correct
 
-      - name: Vérification et installation de Newtonsoft.Json
-        run: dotnet add "EasySave.Logger/EasySave.Logger.csproj" package Newtonsoft.Json
-
       - name: Compilation du projet
         run: dotnet build --configuration Release --no-restore
 
