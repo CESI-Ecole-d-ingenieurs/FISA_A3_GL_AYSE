@@ -39,10 +39,16 @@ namespace EasySave.ControllerLib.BackupStrategy
 
 
 
+
             var groups = MakeGroupsPrior(files);
             foreach (var group in groups)
             {
+
+                double networkLoad = GetNetworkUtilization();
+                int maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
+
                 List<Task> tasks = new List<Task>();
+
                 foreach (var file in group)
                 {
                     var targetFile = file.Replace(source, target);
@@ -112,7 +118,11 @@ namespace EasySave.ControllerLib.BackupStrategy
                     //    }
                     //    }
                 }
-                await Task.WhenAll(tasks);
+                do
+                {
+                    await Task.WhenAll(tasks.Take(maxParallelTasks));
+                    tasks = tasks.Skip(maxParallelTasks).ToList();
+                } while (tasks.Count > 0);
             }
             }
 
@@ -136,7 +146,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                 return DateTime.MinValue;
             }
 
-            try
+            try  
             {
                 var logs = Newtonsoft.Json.Linq.JArray.Parse(jsonLog);
 

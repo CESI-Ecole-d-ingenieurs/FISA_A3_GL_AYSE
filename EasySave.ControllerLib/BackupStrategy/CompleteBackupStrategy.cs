@@ -32,8 +32,8 @@ namespace EasySave.ControllerLib.BackupStrategy
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
-            double networkLoad = GetNetworkUtilization();
-            int maxParallelTasks = networkLoad > 80 ? 1 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
+            double networkLoad ;
+            int maxParallelTasks; // Limite le nombre de tâches parallèles selon la charge réseau
 
             //backupView.DisplayProgress();
 
@@ -47,9 +47,13 @@ namespace EasySave.ControllerLib.BackupStrategy
             var groups = MakeGroupsPrior( files);
             foreach (var group in groups)
             {
+                 networkLoad = GetNetworkUtilization();
+                maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
+                int n = 0;
                 List<Task> tasks = new List<Task>();
                 foreach (var file in group)
                 {
+                    n++;
                     BackupOneFile(state, source, file, target, nameBackup, tasks, _isPaused, _cancellationTokens);
 
                 }
