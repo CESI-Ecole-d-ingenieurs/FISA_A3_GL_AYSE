@@ -11,17 +11,11 @@ namespace BackupServer
 {
     public class ServerController
     {
-        private readonly MainWindow _mainWindow;
         private Socket _serverSocket;
         private Socket _clientSocket;
         private bool _isRunning = true;
         private bool _isPaused = false;
         private CancellationTokenSource _cancellationTokenSource;
-
-        public ServerController(MainWindow mainWindow)
-        {
-            _mainWindow = mainWindow;
-        }
 
         public async Task StartServerAsync()
         {
@@ -49,6 +43,7 @@ namespace BackupServer
 
         private async Task ListenToClientAsync()
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             await Task.Run(() =>
             {
                 try
@@ -65,17 +60,17 @@ namespace BackupServer
                         switch (message.ToUpper())
                         {
                             case "PAUSE":
-                                _mainWindow.PauseSelectedBackups(null, null);
+                                mainWindow.PauseSelectedBackups(null, null);
                                 UpdateUI("⏸ Sauvegarde en pause...");
                                 SendToClient("CONFIRM:PAUSE");
                                 break;
                             case "RESUME":
-                                _mainWindow.ResumeSelectedBackups(null, null);
+                                mainWindow.ResumeSelectedBackups(null, null);
                                 UpdateUI("▶️ Reprise de la sauvegarde...");
                                 SendToClient("CONFIRM:RESUME");
                                 break;
                             case "STOP":
-                                _mainWindow.StopSelectedBackups(null, null);
+                                mainWindow.StopSelectedBackups(null, null);
                                 UpdateUI("⏹ Sauvegarde arrêtée.");
                                 SendToClient("CONFIRM:STOP");
                                 break;
@@ -139,9 +134,10 @@ namespace BackupServer
 
         private void UpdateUI(string message)
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             Application.Current.Dispatcher.Invoke(() =>
             {
-                _mainWindow.ServerStatus.Content = message;
+                mainWindow.ServerStatus.Content = message;
                 SendToClient(message);
             });
         }

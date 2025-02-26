@@ -4,26 +4,25 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace BackupMonitorClient
 {
     public class ClientController
     {
-        private readonly MainWindow _mainWindow;
         private Socket _clientSocket;
 
-        public ClientController(MainWindow mainWindow)
-        {
-            _mainWindow = mainWindow;
-        }
 
         public async Task ConnectToServerAsync()
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var infos = (Label)mainWindow.FindName("Informations");
+
             await Task.Run(() =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    _mainWindow.Informations.Content = "Connexion au serveur...";
+                    infos.Content = "Connexion au serveur...";
                 });
 
                 try
@@ -35,7 +34,7 @@ namespace BackupMonitorClient
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _mainWindow.Informations.Content = "✅ Connecté au serveur.";
+                        infos.Content = "✅ Connecté au serveur.";
                     });
 
                     _ = ListenToServerAsync();
@@ -44,7 +43,7 @@ namespace BackupMonitorClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _mainWindow.Informations.Content = "❌ Erreur : " + e.Message;
+                        mainWindow.Informations.Content = "❌ Erreur : " + e.Message;
                     });
                 }
             });
@@ -52,6 +51,7 @@ namespace BackupMonitorClient
 
         private async Task ListenToServerAsync()
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             await Task.Run(() =>
             {
                 try
@@ -77,20 +77,20 @@ namespace BackupMonitorClient
                                 switch (command)
                                 {
                                     case "PAUSE":
-                                        _mainWindow.Informations.Content = "⏸️ Sauvegarde mise en pause par le serveur.";
+                                        mainWindow.Informations.Content = "⏸️ Sauvegarde mise en pause par le serveur.";
                                         break;
                                     case "RESUME":
-                                        _mainWindow.Informations.Content = "▶️ Reprise de la sauvegarde par le serveur.";
+                                        mainWindow.Informations.Content = "▶️ Reprise de la sauvegarde par le serveur.";
                                         break;
                                     case "STOP":
-                                        _mainWindow.Informations.Content = "⏹ Sauvegarde arrêtée par le serveur.";
+                                        mainWindow.Informations.Content = "⏹ Sauvegarde arrêtée par le serveur.";
                                         break;
                                 }
                             }
                             else if (message.StartsWith("[") && message.Contains("]"))
                             {
                                 // ✅ Mise à jour de la progression
-                                _mainWindow.State_t.Text = string.Join("\n", message.Split('\n').Distinct());
+                                mainWindow.State_t.Text = string.Join("\n", message.Split('\n').Distinct());
                             }
                         });
                     }
@@ -99,7 +99,7 @@ namespace BackupMonitorClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        _mainWindow.Informations.Content = "⚠️ Déconnecté du serveur.";
+                        mainWindow.Informations.Content = "⚠️ Déconnecté du serveur.";
                     });
                 }
                 finally
@@ -141,6 +141,7 @@ namespace BackupMonitorClient
 
         public void Disconnect()
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             if (_clientSocket != null && _clientSocket.Connected)
             {
                 try
@@ -154,9 +155,9 @@ namespace BackupMonitorClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        if (_mainWindow != null)
+                        if (mainWindow != null)
                         {
-                            _mainWindow.Informations.Content = "❌ Erreur de déconnexion : " + e.Message;
+                            mainWindow.Informations.Content = "❌ Erreur de déconnexion : " + e.Message;
                         }
                     });
                 }
@@ -164,9 +165,9 @@ namespace BackupMonitorClient
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (_mainWindow != null)
+                if (mainWindow != null)
                 {
-                    _mainWindow.Close();
+                    mainWindow.Close();
                 }
             });
         }

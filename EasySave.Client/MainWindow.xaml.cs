@@ -10,7 +10,7 @@ namespace BackupMonitorClient
         public MainWindow()
         {
             InitializeComponent();
-            clientController = new ClientController(this);
+            clientController = new ClientController();
         }
 
         private async void Connection(object sender, RoutedEventArgs e)
