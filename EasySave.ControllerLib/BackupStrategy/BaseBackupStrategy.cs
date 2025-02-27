@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using EasySave.Logger;
 using System.Threading;
 using System.Diagnostics;
+
 namespace EasySave.ControllerLib.BackupStrategy
 {
 
@@ -142,5 +143,108 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             BackupFile(file, source, target);
         }
+
+        public List<IGrouping<String,String>> MakeGroupsPrior(string[] files)
+        {
+            var extensionPriority = File.Exists("extensions.txt") ?
+           File.ReadAllLines("extensions.txt").ToList() :
+            new List<string>();
+
+            var sortedFiles = files.OrderBy(f =>
+            {
+                var ext = Path.GetExtension(f);
+                int index = extensionPriority.IndexOf(ext);
+                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
+            }).ThenBy(f => f).ToList();
+
+            // Groupe les fichiers par priorité d'extension
+            var groups = sortedFiles.GroupBy(f => Path.GetExtension(f)).ToList();
+            return groups;
+        }
+        public async Task BackupOneFile(BackupState state, string source, string file, string target, String nameBackup, List<Task> tasks = null, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null)
+        {
+            CancellationToken token = _cancellationTokens[nameBackup].Token;
+            if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
+            {
+                state.State = "STOPPED";
+                BackupStateJournal.UpdateState(state);
+                return;
+            }
+
+            while (_isPaused[nameBackup])
+            {
+                await Task.Delay(500);
+            }
+            bool run = false;
+            do
+            {
+                try
+                {
+                    token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
+
+                    if (IsBusinessSoftwareRunning())
+                    { 
+                        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                        state.State = "Blocked BY BUSINESS SOFTWARE";
+                        BackupStateJournal.UpdateState(state);
+                        run = true;
+                    }
+                    else
+                    {
+                        FileInfo fileInfo = new FileInfo(file);
+                        if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
+                        {
+                            // Traitement des grands fichiers avec sémaphore
+                            var task = ProcessLargeFileAsync(source, target, nameBackup, file, token);
+                            tasks.Add(task);
+                        }
+                        else
+                        {
+                            // Traitement des petits fichiers immédiatement sans attendre
+                            var task = ProcessSmallFileAsync(source, target, nameBackup, file, token);
+                            tasks.Add(task);
+                        }
+
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("Operation was canceled by user.");
+                    // Logique optionnelle pour gérer l'annulation ici
+                    // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
+                }
+            } while (run);
+        }
+
+
+        public static double GetNetworkUtilization()
+        {
+            try
+            {
+                const string categoryName = "Network Interface";
+                const string counterName = "Bytes Total/sec"; // Ce compteur mesure le total des bytes envoyés et reçus par seconde.
+                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; //  le nom de votre interface réseau.
+
+                PerformanceCounter performanceCounter = new PerformanceCounter(categoryName, counterName, instanceName);
+                float bytesPerSec = performanceCounter.NextValue(); // Première lecture souvent à 0
+                System.Threading.Thread.Sleep(1000); // Attendre une seconde
+                bytesPerSec = performanceCounter.NextValue(); // Deuxième lecture pour obtenir la valeur actuelle
+
+                // Convertir en pourcentage d'utilisation (exemple fictif)
+                // Supposons que vous ayez une bande passante maximale de 100 Mbps
+                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convertir en bytes par seconde
+                double networkUtilization = (bytesPerSec / maxBandwidth) * 100;
+
+                return networkUtilization;
+            }
+            catch (Exception ex)
+            {
+                // Gérer l'exception ou retourner une valeur par défaut
+                Console.WriteLine("Erreur lors de l'obtention de la charge réseau: " + ex.Message);
+                return 0.0; // Retourner 0 ou toute autre valeur appropriée en cas d'erreur
+            }
+        }
+
     }
 }

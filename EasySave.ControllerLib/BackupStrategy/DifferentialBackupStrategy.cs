@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using EasySave.Logger;
 using Newtonsoft.Json;
 using System.Threading;
+using System.Reflection;
 
 namespace EasySave.ControllerLib.BackupStrategy
 {
@@ -36,79 +37,94 @@ namespace EasySave.ControllerLib.BackupStrategy
 
             var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
 
-            var extensionPriority = File.Exists("extensions.txt") ?
-        File.ReadAllLines("extensions.txt").ToList() :
-        new List<string>();
-            var sortedFiles = files.OrderBy(f =>
+
+
+
+            var groups = MakeGroupsPrior(files);
+            foreach (var group in groups)
             {
-                var ext = Path.GetExtension(f);
-                int index = extensionPriority.IndexOf(ext);
-                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
-            }).ThenBy(f => f).ToList();
 
-            foreach (var file in sortedFiles)
-            {
-                var targetFile = file.Replace(source, target);
+                double networkLoad = GetNetworkUtilization();
+                int maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
 
-                DateTime lastBackupTime = await DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
-                var fileInfo = new FileInfo(file);
+                List<Task> tasks = new List<Task>();
 
-                if (fileInfo.LastWriteTimeUtc > lastBackupTime)
+                foreach (var file in group)
                 {
+                    var targetFile = file.Replace(source, target);
+                    DateTime lastBackupTime = await DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
+                    var fileInfo = new FileInfo(file);
+                    if (fileInfo.LastWriteTimeUtc > lastBackupTime)
                     {
-                        CancellationToken token = _cancellationTokens[nameBackup].Token;
-                        if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
-                        {
-                            state.State = "STOPPED";
-                            BackupStateJournal.UpdateState(state);
-                            return;
-                        }
-
-                        while (_isPaused[nameBackup])
-                        {
-                            await Task.Delay(500);
-                        }
-                        bool run = false;
-                        do
-                        {
-                            try
-                            {
-
-                                token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
-
-                                if (IsBusinessSoftwareRunning())
-                                {
-                                    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                                    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                                    state.State = "Blocked BY BUSINESS SOFTWARE";
-                                    BackupStateJournal.UpdateState(state);
-                                    run = true;
-                                }
-                                else
-                                {
-                                    await Task.Run(() =>
-                                    {
-                                        token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                                        Thread.Sleep(500); // Slow down the process for better visualization
-                                    }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                                    BackupFile(file, source, target);
-                                    run = false;
-                                }
-                            
-                             }
-                    catch (OperationCanceledException)
-                    {
-                            Console.WriteLine("Operation was canceled by user.");
-                            // Logique optionnelle pour gérer l'annulation ici
-                            // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
-                        }
-                    } while (run);
+                        BackupOneFile(state, source, file, target, nameBackup, tasks, _isPaused, _cancellationTokens);
                     }
-                    }
+                    //var targetFile = file.Replace(source, target);
+
+                    //DateTime lastBackupTime = await DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
+                    //var fileInfo = new FileInfo(file);
+
+                    //if (fileInfo.LastWriteTimeUtc > lastBackupTime)
+                    //{
+                    //    {
+                    //        CancellationToken token = _cancellationTokens[nameBackup].Token;
+                    //        if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
+                    //        {
+                    //            state.State = "STOPPED";
+                    //            BackupStateJournal.UpdateState(state);
+                    //            return;
+                    //        }
+
+                    //        while (_isPaused[nameBackup])
+                    //        {
+                    //            await Task.Delay(500);
+                    //        }
+                    //        bool run = false;
+                    //        do
+                    //        {
+                    //            try
+                    //            {
+
+                    //                token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
+
+                    //                if (IsBusinessSoftwareRunning())
+                    //                {
+                    //                    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
+                    //                    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
+                    //                    state.State = "Blocked BY BUSINESS SOFTWARE";
+                    //                    BackupStateJournal.UpdateState(state);
+                    //                    run = true;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await Task.Run(() =>
+                    //                    {
+                    //                        token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
+                    //                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
+                    //                        Thread.Sleep(500); // Slow down the process for better visualization
+                    //                    }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
+
+                    //                    BackupFile(file, source, target);
+                    //                    run = false;
+                    //                }
+
+                    //             }
+                    //    catch (OperationCanceledException)
+                    //    {
+                    //            Console.WriteLine("Operation was canceled by user.");
+                    //            // Logique optionnelle pour gérer l'annulation ici
+                    //            // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
+                    //        }
+                    //    } while (run);
+                    //    }
+                    //    }
                 }
-        }
+                do
+                {
+                    await Task.WhenAll(tasks.Take(maxParallelTasks));
+                    tasks = tasks.Skip(maxParallelTasks).ToList();
+                } while (tasks.Count > 0);
+            }
+            }
 
         /// Determines the last backup date of a given file based on the log history.
         /// It searches the log file to find the most recent backup date of the given file.
@@ -130,7 +146,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                 return DateTime.MinValue;
             }
 
-            try
+            try  
             {
                 var logs = Newtonsoft.Json.Linq.JArray.Parse(jsonLog);
 

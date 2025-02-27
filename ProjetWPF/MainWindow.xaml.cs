@@ -10,10 +10,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BackupServer;
 using EasySave.ControllerLib;
+using EasySave.ControllerLib.BackupStrategy;
 using EasySave.IviewLib;
 using EasySave.ModelLib;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
+//using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjetWPF
 {
@@ -42,6 +46,8 @@ namespace ProjetWPF
         private bool isMonitoring = true;
         private bool alertShown = false;
 
+        private ServerController serverController;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -51,7 +57,24 @@ namespace ProjetWPF
             LoadBusinessSoftware();
             MonitorBusinessSoftware();
             LoadExtensions();
+            serverController = new ServerController(this);
+            _ = StartServerAsync();
         }
+
+        private async Task StartServerAsync()
+        {
+            await serverController.StartServerAsync();
+        }
+
+        //private void Window_Closed(object sender, EventArgs e)
+        //{
+        //    serverController.StopServer();
+        //}
+
+        //private async void StartBackup_Click(object sender, RoutedEventArgs e)
+        //{
+        //    await serverController.StartBackupAsync();
+        //}
 
         private void LoadBusinessSoftware()
         {
@@ -274,6 +297,8 @@ namespace ProjetWPF
             Format.Text = await Translation.Instance.Translate("Format d'historique :");
             Crypt.Text = await Translation.Instance.Translate("Fichiers à crypter :");
             Software.Text = await Translation.Instance.Translate("Logiciels métier :");
+            NKoctets.Text = await Translation.Instance.Translate("Taille maximale des fichiers à sauvegarder :");
+            Ext.Text = await Translation.Instance.Translate("Extensions prioritaires :");
 
             Create_b.Content = await Translation.Instance.Translate("Création de sauvegarde");
             Name.Text = await Translation.Instance.Translate("Nom :");
@@ -402,6 +427,17 @@ namespace ProjetWPF
                     return;
                 }
             }
+
+
+            // Récupération nKoctets
+            if (Regex.IsMatch(NKoctetsTextBox.Text, @"^\d+$"))
+            {
+                GlobalVariables.maximumSize = int.Parse(NKoctetsTextBox.Text);
+            }
+            else
+            {
+                MessageBox.Show(await Translation.Instance.Translate("La taille maximale des fichiers doit être un nombre."), "Confirmation", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
 
@@ -428,17 +464,27 @@ namespace ProjetWPF
             Play_b.Click -= BackupExecution;
             Pause_b.Click += PauseSelectedBackups;
             Stop_b.Click += StopSelectedBackups;
-           // Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
+            // Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont lancées.");
 
-            RealTimeState realTimeState = new RealTimeState();
+            RealTimeState realTimeState = new RealTimeState(serverController);
              backupController.ExecuteBackupAsync(ToDo_t.Text, realTimeState);
         }
 
-        private async void PauseSelectedBackups(object sender, RoutedEventArgs e)
+        public async void PauseSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
 
-            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
+            string todoText = "";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                todoText = ToDo_t.Text; // Récupère la valeur de ToDo_t.Text sur le thread UI
+            });
+
+            // Maintenant, on peut utiliser la variable en dehors du Dispatcher
+            List<int> backupIndexes = backupController.ParseJobIndex(todoText);
+
+
+            //List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
             
             foreach (int index in backupIndexes)
             {
@@ -446,27 +492,53 @@ namespace ProjetWPF
             }
 
             Resume_b.Click += ResumeSelectedBackups;
-            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont en pause.");
+
+            Application.Current.Dispatcher.Invoke(async () =>
+            {
+                Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont en pause.");
+            });
+
+            //Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont en pause.");
         }
-        private async void ResumeSelectedBackups(object sender, RoutedEventArgs e)
+        public async void ResumeSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
 
-            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
-            
+            string toDoText = "";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                toDoText = ToDo_t.Text; // 🔹 Récupère le texte en toute sécurité depuis l'UI
+            });
+
+            List<int> backupIndexes = backupController.ParseJobIndex(toDoText);
+
+
+            //List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
+
             foreach (int index in backupIndexes)
             {
                 backupController.ResumeBackup(index);
             }
-
-            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes ont repris.");
+            string translatedText = await Translation.Instance.Translate("Les sauvegardes ont repris.");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Play_Pause_Stop.Content = translatedText;
+            });
+            //Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes ont repris.");
         }
-        private async void StopSelectedBackups(object sender, RoutedEventArgs e)
+        public async void StopSelectedBackups(object sender, RoutedEventArgs e)
         {
             //BackupController backupController = new BackupController(backup);
+            string toDoText = "";
 
-            List<int> backupIndexes = backupController.ParseJobIndex(ToDo_t.Text);
-            
+            // 🔹 Récupérer la valeur en toute sécurité depuis l'UI
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                toDoText = ToDo_t.Text;
+            });
+
+            List<int> backupIndexes = backupController.ParseJobIndex(toDoText);
+
             foreach (int index in backupIndexes)
             {
                 backupController.StopBackup(index);
@@ -476,7 +548,14 @@ namespace ProjetWPF
             Pause_b.Click -= PauseSelectedBackups;
             Resume_b.Click -= ResumeSelectedBackups;
             Stop_b.Click -= StopSelectedBackups;
-            Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont arrêtées.");
+
+            string translatedText = await Translation.Instance.Translate("Les sauvegardes sont arrêtées.");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Play_Pause_Stop.Content = translatedText;
+            });
+
+            //Play_Pause_Stop.Content = await Translation.Instance.Translate("Les sauvegardes sont arrêtées.");
         }
 
         private void Language_b_Click(object sender, RoutedEventArgs e)

@@ -1,10 +1,12 @@
 ﻿<Window x:Class="ProjetWPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EasySave" Height="1080" Width="1920" Background="#77B5FE"
-        WindowState="Maximized"
-        WindowStyle="None"
-        ResizeMode="NoResize"
+        Title="EasySave" 
+        Height="800" Width="1000"
+        Background="#77B5FE"
+        WindowState="Normal"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -177,18 +179,20 @@
                 </ComboBox>
                 <TextBlock Name="Crypt" Text="Files to encrypt:" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
                 <TextBox Name="Extensions_t" Width="400" Height="50" Margin="0, 10, 0, 50"/>
+                <TextBlock Name="Ext" Text="Extensions in priority:" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBox Name="Extensions" Width="400" Height="50"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Margin="10, 0, 0, 0">
                 <TextBlock Name="Software" Text="Business software:" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
                 <TextBox Name="BusinessSoftwareTextBox" Width="400" Height="50" Margin="0, 10, 0, 50"/>
                 <ComboBox Name="ProcessComboBox" Width="400" Height="50" Background="White" Margin="0, 35, 0, 50"
           SelectionChanged="ProcessComboBox_SelectionChanged"/>
-                <TextBlock Name="Ext" Text="Extensions in priority:" FontSize="20" FontWeight="Bold" TextAlignment="Center" Margin="-830, 10, 0, 0"/>
-                <TextBox Name="Extensions" Width="400" Height="50" Margin="-830, 10, 0, 75"/>
+                <TextBlock Name="NKoctets" Text="Maximum size of files to be saved :" FontSize="20" FontWeight="Bold" TextAlignment="Center"/>
+                <TextBox Name="NKoctetsTextBox" Width="400" Height="50" Margin="0, 10, 0, 50"/>
 
-                <Button Content="OK" Width="100" Height="50" FontSize="16" Background="#F0F0F2" Margin="-50, -200, -50, 0" Click="SettingsChange"/>
+                <Button Content="OK" Width="100" Height="50" FontSize="16" Background="#F0F0F2" Margin="0, 0, 0, 50" Click="SettingsChange"/>
             </StackPanel>
-            <TextBlock Name="Settings_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Background="#77B5FE" Padding="30" Margin="0,396,0,-98" Grid.ColumnSpan="2"/>
+            <TextBlock Name="Settings_OK" Text="" FontSize="20" FontWeight="Normal" TextAlignment="Center" Width="800" Height="30" Background="#77B5FE" VerticalAlignment="Bottom" Margin="0,0,0,0" Grid.ColumnSpan="2"/>
         </Grid>
 
 
@@ -234,6 +238,7 @@
                 <TextBlock Name="State" Text="Real-time state:" FontSize="20" FontWeight="Bold" Width="400" TextAlignment="Center"/>
                 <TextBox Name="State_t" Text="" Width="430" Height="300" Background="#F0F0F2" IsReadOnly="True" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" TextWrapping="Wrap" Margin="0, 10, 0, 30"/>
                 <Label Name="Play_Pause_Stop" Content="" HorizontalAlignment="Center"/>
+                <Label x:Name="ServerStatus" Content="Serveur en attente..." HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <Grid Name="Manage" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 0, 0, 0" Visibility="Visible">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>

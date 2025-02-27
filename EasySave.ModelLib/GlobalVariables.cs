@@ -23,9 +23,6 @@ namespace EasySave.ModelLib
         public static string PathBackup = Path.Combine(BasePath, "Backup.txt");
         public static string PathTempsReel = Path.Combine(BasePath, "backup_state.json");
 
-
-
-
-
+        public static int maximumSize;
     }
 }
