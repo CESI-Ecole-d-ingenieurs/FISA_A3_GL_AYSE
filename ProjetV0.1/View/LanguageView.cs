@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 using EasySave.IviewLib;
 namespace ProjetV0._1.View
 {
-    //public interface ILanguageView
-    //{
-    //    public void DisplayLanguages(List<string> languages, int selectionIndex);
-    //}
     internal class LanguageView: ILanguageView
     {
         /// Displays the list of available languages and highlights the currently selected option.
@@ -23,12 +19,12 @@ namespace ProjetV0._1.View
                 if (i == selectionIndex)
                 {
                     Console.ForegroundColor = ConsoleColor.Green; // Highlight the selected language.
-                    Console.WriteLine($"> {languages[i]}");
+                    Console.WriteLine($"> {languages[i]}"); // Display the selected language with a cursor.
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine($"  {languages[i]}");
+                    Console.WriteLine($"  {languages[i]}"); // Display the other languages without a cursor.
                 }
             }
         }

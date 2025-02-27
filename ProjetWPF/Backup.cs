@@ -11,21 +11,27 @@ using System.Windows;
 
 namespace ProjetWPF
 {
+    /// Class representing the display and interaction of backup in the WPF interface.
+    /// Implements the IBackupView interface.
     public class Backup : IBackupView
     {
+        /// Method to display the backup progress.
         public void DisplayProgress()
         {
 
         }
 
+        /// Method to retrieve user input for a backup.
         public async Task<BackupModel> UserAsk()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
+            // Get input fields from the UI by their names
             var name = (TextBox)mainWindow.FindName("Name_t");
             var source = (TextBox)mainWindow.FindName("Source_t");
             var target = (TextBox)mainWindow.FindName("Destination_t");
             var listType = (ComboBox)mainWindow.FindName("Type_t");
-            //string type = await Translation.Instance.Translate(((ComboBoxItem)listType.SelectedItem).Content.ToString());
+
+            // Determine the backup type based on the user's selection
             string type;
             switch (listType.SelectedIndex)
             {
@@ -42,6 +48,7 @@ namespace ProjetWPF
                     break;
             }
 
+            // Create a BackupModel object containing the user-input data
             BackupModel backupModel = new BackupModel(name.Text.ToString(), source.Text.ToString(), target.Text.ToString(), type);
 
             name.Clear();

@@ -1,0 +1,59 @@
+name: CI - Tests & Analyse EasySave
+
+on:
+  push:
+    branches:
+       - main
+       - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: 🔍 Vérifications & Tests
+    runs-on: windows-latest
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Installation de .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Installation de .NET Framework 4.7.2 via Chocolatey
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+          Invoke-WebRequest -Uri https://community.chocolatey.org/install.ps1 -UseBasicParsing | Invoke-Expression
+          choco install netfx-4.7.2-devpack -y
+        shell: powershell
+
+      - name: 📦 Restauration des dépendances pour tous les projets
+        run: dotnet restore
+
+      - name: 🔍 Vérification du format du code
+        run: dotnet format --verify-no-changes
+        continue-on-error: true # Ne bloque pas le pipeline si le format n'est pas correct
+
+      - name: 🗑 Suppression des dossiers de compilation
+        run: |
+          if (Test-Path "EasySave.Logger/bin") { Remove-Item -Recurse -Force EasySave.Logger/bin }
+          if (Test-Path "EasySave.Logger/obj") { Remove-Item -Recurse -Force EasySave.Logger/obj }
+          if (Test-Path "ProjetV0.1/bin") { Remove-Item -Recurse -Force ProjetV0.1/bin }
+          if (Test-Path "ProjetV0.1/obj") { Remove-Item -Recurse -Force ProjetV0.1/obj }
+        shell: powershell
+
+      - name: 🗑 Suppression complète des builds et du cache NuGet
+        run: |
+          dotnet clean EasySave.Logger/EasySave.Logger.csproj
+          dotnet nuget locals all --clear
+
+      - name: 🔨 Compilation de la bibliothèque EasySave.Logger avec diagnostics
+        run: dotnet build EasySave.Logger/EasySave.Logger.csproj --configuration Release -v diag
+
+      - name: 🔨 Compilation du projet avec Build
+        run: dotnet build ProjetV0.1/ProjetV0.1.csproj --configuration Release

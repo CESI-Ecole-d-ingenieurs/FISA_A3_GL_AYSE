@@ -12,16 +12,20 @@ using System.Windows;
 
 namespace ProjetWPF
 {
+    /// Class responsible for displaying log history in the UI.
     public class Logs
     {
+        /// Asynchronously reads and displays the contents of the log file in the UI.
         public async Task DisplayLogs()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             var logs = (TextBox)mainWindow.FindName("History_t");
             try
             {
-
+                // Read the content of the log file
                 string content = File.ReadAllText(GlobalVariables.LogFilePath);
+
+                // Display the content in the TextBox
                 logs.Text = content;
             }
             catch (Exception ex)

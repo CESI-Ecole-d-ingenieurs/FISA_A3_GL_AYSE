@@ -1,0 +1,71 @@
+name: CI - Tests & Analyse EasySave
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: 🔍 Vérifications & Tests
+    runs-on: windows-latest
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v3
+
+      - name: 🔍 Vérification de .NET Framework installé
+        run: reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full"
+        shell: cmd
+
+      - name: 📥 Installer le .NET Framework 4.7.2 Developer Pack
+        run: |
+          Invoke-WebRequest -Uri https://download.visualstudio.microsoft.com/download/pr/8c6824b2-18a3-4724-8979-b8918df75bc9/8b8b661a89b4e38a320007626f5b2c53/dotnet-framework-4.7.2-devpack.exe -OutFile dotnet-framework-4.7.2-devpack.exe
+          Start-Process -FilePath dotnet-framework-4.7.2-devpack.exe -ArgumentList "/quiet", "/norestart" -NoNewWindow -Wait
+        shell: pwsh
+
+      - name: 🛠️ Installation de .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 📦 Restauration des dépendances NuGet
+        run: nuget restore EasySave.sln
+
+      - name: 📦 Restauration des dépendances .NET
+        run: dotnet restore
+
+      - name: 🔍 Vérification de la présence de Newtonsoft.Json
+        run: dotnet list package | findstr "Newtonsoft.Json"
+
+      - name: 🧹 Nettoyage des builds précédents
+        run: dotnet clean
+
+      - name: 🔨 Compilation du projet avec MSBuild
+        run: msbuild EasySave.Logger/EasySave.Logger.csproj /p:Configuration=Release
+
+      - name: 🧪 Exécution des tests unitaires avec couverture de code
+        run: dotnet test --configuration Release --no-restore --verbosity normal --collect:"XPlat Code Coverage"
+
+      - name: 📊 Upload de la couverture de code vers Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }} # 🔐 Ajoute le token Codecov dans GitHub Secrets
+          files: ./TestResults/**/*.xml
+          fail_ci_if_error: true
+
+      - name: 🔍 Analyse de code avec SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # 🔐 Ajoute le token SonarCloud dans GitHub Secrets
+        with:
+          args: >
+            -Dsonar.organization=votre-org
+            -Dsonar.projectKey=votre-projet
+            -Dsonar.host.url=https://sonarcloud.io
