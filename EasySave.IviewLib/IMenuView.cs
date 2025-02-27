@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasySave.IviewLib
 {
+    // This interface is used for the actions.
     public interface IMenuView
     {
          Task DisplayActions(List<string> actions, int selectedIndex);

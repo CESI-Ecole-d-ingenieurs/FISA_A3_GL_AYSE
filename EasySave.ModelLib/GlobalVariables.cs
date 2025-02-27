@@ -23,6 +23,8 @@ namespace EasySave.ModelLib
         public static string PathBackup = Path.Combine(BasePath, "Backup.txt");
         public static string PathTempsReel = Path.Combine(BasePath, "backup_state.json");
 
+        /// Static variable that stores the maximum size to save in parallel.
+        /// This Number is defined by the user.
         public static int maximumSize;
     }
 }

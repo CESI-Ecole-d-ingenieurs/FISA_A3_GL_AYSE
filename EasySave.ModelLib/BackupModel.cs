@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EasySave.ModelLib
 {
-    /// Represents a backup job with its properties such as name, source, target, and type.
+    /// This interface represents a backup job with its properties such as name, source, target, and type.
     public class BackupModel
     {
         public string Name { get; set; }
