@@ -183,7 +183,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                     token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
 
                     if (IsBusinessSoftwareRunning())
-                    {
+                    { 
                         Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
                         //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
                         state.State = "Blocked BY BUSINESS SOFTWARE";
@@ -192,49 +192,6 @@ namespace EasySave.ControllerLib.BackupStrategy
                     }
                     else
                     {
-                        //var fileInfo = new FileInfo(file);
-                        //if ((fileInfo.Length / 1024.0) > 40)
-                        //{
-                        //    await CompleteBackupStrategy.largeFileSemaphore.WaitAsync();
-                        //    Console.WriteLine("Entered semaphore.");
-                        //    try
-                        //    {
-                        //        await Task.Run(() =>
-                        //         {
-                        //             token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                        //             BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                        //             Thread.Sleep(500); // Slow down the process for better visualization
-                        //         }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                        //        BackupFile(file, source, target);
-                        //        run = false;
-                        //    }
-                        //    catch (OperationCanceledException)
-                        //    {
-                        //        Console.WriteLine("Operation was cancelled.");
-                        //    }
-                        //    catch (Exception ex)
-                        //    {
-                        //        Console.WriteLine($"An exception occurred: {ex.Message}");
-                        //    }
-                        //    finally
-                        //    {
-                        //        CompleteBackupStrategy.largeFileSemaphore.Release();
-                        //    }
-                        //}
-                        //else
-                        //{
-
-                        //    await Task.Run(() =>
-                        //    {
-                        //        token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                        //        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                        //        Thread.Sleep(500); // Slow down the process for better visualization
-                        //    }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                        //    BackupFile(file, source, target);
-                        //    run = false;
-                        //}
                         FileInfo fileInfo = new FileInfo(file);
                         if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
                         {
@@ -261,7 +218,33 @@ namespace EasySave.ControllerLib.BackupStrategy
         }
 
 
+        public static double GetNetworkUtilization()
+        {
+            try
+            {
+                const string categoryName = "Network Interface";
+                const string counterName = "Bytes Total/sec"; // Ce compteur mesure le total des bytes envoyés et reçus par seconde.
+                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; //  le nom de votre interface réseau.
 
+                PerformanceCounter performanceCounter = new PerformanceCounter(categoryName, counterName, instanceName);
+                float bytesPerSec = performanceCounter.NextValue(); // Première lecture souvent à 0
+                System.Threading.Thread.Sleep(1000); // Attendre une seconde
+                bytesPerSec = performanceCounter.NextValue(); // Deuxième lecture pour obtenir la valeur actuelle
+
+                // Convertir en pourcentage d'utilisation (exemple fictif)
+                // Supposons que vous ayez une bande passante maximale de 100 Mbps
+                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convertir en bytes par seconde
+                double networkUtilization = (bytesPerSec / maxBandwidth) * 100;
+
+                return networkUtilization;
+            }
+            catch (Exception ex)
+            {
+                // Gérer l'exception ou retourner une valeur par défaut
+                Console.WriteLine("Erreur lors de l'obtention de la charge réseau: " + ex.Message);
+                return 0.0; // Retourner 0 ou toute autre valeur appropriée en cas d'erreur
+            }
+        }
 
     }
 }

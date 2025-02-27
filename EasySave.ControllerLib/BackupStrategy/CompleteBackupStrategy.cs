@@ -32,6 +32,8 @@ namespace EasySave.ControllerLib.BackupStrategy
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
+            double networkLoad ;
+            int maxParallelTasks; // Limite le nombre de tâches parallèles selon la charge réseau
 
             //backupView.DisplayProgress();
 
@@ -42,56 +44,24 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
 
             var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
-
-            // var extensionPriority = File.Exists("extensions.txt") ?
-            //File.ReadAllLines("extensions.txt").ToList() :
-            //new List<string>();
-
-            // var sortedFiles = files.OrderBy(f =>
-            // {
-            //     var ext = Path.GetExtension(f);
-            //     int index = extensionPriority.IndexOf(ext);
-            //     return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
-            // }).ThenBy(f => f).ToList();
-
-            // // Groupe les fichiers par priorité d'extension
-            // var groups = sortedFiles.GroupBy(f => Path.GetExtension(f)).ToList();
             var groups = MakeGroupsPrior( files);
             foreach (var group in groups)
             {
+                 networkLoad = GetNetworkUtilization();
+                maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
+                int n = 0;
                 List<Task> tasks = new List<Task>();
                 foreach (var file in group)
                 {
+                    n++;
                     BackupOneFile(state, source, file, target, nameBackup, tasks, _isPaused, _cancellationTokens);
 
-
-                    //bool run = false;
-                    //do
-                    //{
-                    //    if (IsBusinessSoftwareRunning() )
-                    //    {
-                    //        Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                    //        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                    //        state.State = "Blocked BY BUSINESSS SOFTWARE";
-                    //        BackupStateJournal.UpdateState(state);
-                    //        run = true;
-                    //    }
-                    //    else
-                    //    {
-                    //        await Task.Run(() =>
-                    //    {
-                    //        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-
-                    //        Thread.Sleep(500); // Slow down the process for better visualization
-                    //    }
-                    //        );
-                    //        BackupFile(file, source, target);
-
-                    //        run = false;
-                    //    }
-                    //}while(run);
                 }
-                await Task.WhenAll(tasks);
+                do
+                {
+                    await Task.WhenAll(tasks.Take(maxParallelTasks));
+                    tasks = tasks.Skip(maxParallelTasks).ToList();
+                }while (tasks.Count > 0);   
             }
         }
 
