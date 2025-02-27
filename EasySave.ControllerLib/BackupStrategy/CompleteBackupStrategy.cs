@@ -55,11 +55,15 @@ namespace EasySave.ControllerLib.BackupStrategy
                 {
                     n++;
                     BackupOneFile(state, source, file, target, nameBackup, tasks, _isPaused, _cancellationTokens);
-
+                  
                 }
                 do
                 {
-                    await Task.WhenAll(tasks.Take(maxParallelTasks));
+                    while (_isPaused[nameBackup])
+                    {
+                        await Task.Delay(500);
+                    }
+                    await Task.WhenAll(tasks.Take(maxParallelTasks)); //prob
                     tasks = tasks.Skip(maxParallelTasks).ToList();
                 }while (tasks.Count > 0);   
             }
