@@ -112,9 +112,14 @@ namespace EasySave.ControllerLib.BackupStrategy
             return businessSoftwareList.Any(software => Process.GetProcesses()
                                                                 .Any(p => p.ProcessName.ToLower().Contains(software)));
         }
-        public async Task ProcessLargeFileAsync(string source, string target, String nameBackup, string file, CancellationToken token)
+        public async Task ProcessLargeFileAsync(string source, string target, String nameBackup, string file, CancellationToken token, Dictionary<string, bool> _isPaused = null)
         {
+            
             await CompleteBackupStrategy.largeFileSemaphore.WaitAsync();
+            while (_isPaused[nameBackup])
+            {
+                await Task.Delay(500);
+            }
             try
             {
                 await Task.Run(() =>
@@ -132,8 +137,12 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
         }
 
-        public async Task ProcessSmallFileAsync(string source, string target, String nameBackup, string file, CancellationToken token)
+        public async Task ProcessSmallFileAsync(string source, string target, String nameBackup, string file, CancellationToken token, Dictionary<string, bool> _isPaused = null)
         {
+            while (_isPaused[nameBackup])
+            {
+                await Task.Delay(500);
+            }
             await Task.Run(() =>
             {
                 token.ThrowIfCancellationRequested();
@@ -196,13 +205,13 @@ namespace EasySave.ControllerLib.BackupStrategy
                         if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
                         {
                             // Traitement des grands fichiers avec sémaphore
-                            var task = ProcessLargeFileAsync(source, target, nameBackup, file, token);
+                            var task = ProcessLargeFileAsync(source, target, nameBackup, file, token,_isPaused);
                             tasks.Add(task);
                         }
                         else
                         {
                             // Traitement des petits fichiers immédiatement sans attendre
-                            var task = ProcessSmallFileAsync(source, target, nameBackup, file, token);
+                            var task = ProcessSmallFileAsync(source, target, nameBackup, file, token, _isPaused);
                             tasks.Add(task);
                         }
 
