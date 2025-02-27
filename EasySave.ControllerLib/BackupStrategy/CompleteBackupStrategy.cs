@@ -26,17 +26,26 @@ namespace EasySave.ControllerLib.BackupStrategy
         }
 
 
-
+        /// <summary>
+        /// Executes the backup process.
+        /// It first ensures the target directory exists, then processes all directories and files.
+        /// Files are grouped and copied in parallel, with limitations based on network utilization.
+        /// </summary>
+        /// <param name="source">The source directory for backup.</param>
+        /// <param name="target">The destination directory for backup.</param>
+        /// <param name="nameBackup">The name of the backup process.</param>
+        /// <param name="_isPaused">A dictionary tracking whether the backup process is paused.</param>
+        /// <param name="_cancellationTokens">A dictionary of cancellation tokens to allow stopping the process.</param>
         public override async Task ExecuteBackup(string source, string target, String nameBackup, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null)
         {
+            // Ensure the target directory exists
             DirectoryExist(target);
 
             var state = BackupStateJournal.ComputeState("CompleteBackup", source, target);
             double networkLoad ;
-            int maxParallelTasks; // Limite le nombre de tâches parallèles selon la charge réseau
+            int maxParallelTasks; // Limits the number of parallel tasks depending on network load
 
-            //backupView.DisplayProgress();
-
+            // Create all subdirectories in the target directory
             foreach (var directory in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {
                 var targetDirectory = directory.Replace(source, target);
@@ -48,7 +57,9 @@ namespace EasySave.ControllerLib.BackupStrategy
             foreach (var group in groups)
             {
                  networkLoad = GetNetworkUtilization();
-                maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limite le nombre de tâches parallèles selon la charge réseau
+                // Adjust the number of parallel tasks based on network usage
+                maxParallelTasks = networkLoad > 90 ? 1 : networkLoad > 70 ? 2 : networkLoad > 50 ? 3 : 5; // Limits the number of parallel tasks depending on network load
+
                 int n = 0;
                 List<Task> tasks = new List<Task>();
                 foreach (var file in group)
@@ -63,13 +74,13 @@ namespace EasySave.ControllerLib.BackupStrategy
                     {
                         await Task.Delay(500);
                     }
-                    await Task.WhenAll(tasks.Take(maxParallelTasks)); //prob
+
+                    // Wait for the current batch of parallel tasks to complete
+                    await Task.WhenAll(tasks.Take(maxParallelTasks));
+                    // Remove completed tasks from the list
                     tasks = tasks.Skip(maxParallelTasks).ToList();
                 }while (tasks.Count > 0);   
             }
         }
-
-
     }
-
 }

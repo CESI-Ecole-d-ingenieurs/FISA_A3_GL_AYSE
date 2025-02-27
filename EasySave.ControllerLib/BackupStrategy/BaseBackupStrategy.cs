@@ -95,10 +95,14 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
 
         }
+
+        // This method compare the extension of a file with a given extension
         public static bool CheckFileExtension(string fileName, string extension)
         {
             return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);
         }
+
+        // This method verify if a business software defined by the user is running in the system
         public bool IsBusinessSoftwareRunning()
         {
             if (!File.Exists("config.txt"))
@@ -112,11 +116,13 @@ namespace EasySave.ControllerLib.BackupStrategy
             return businessSoftwareList.Any(software => Process.GetProcesses()
                                                                 .Any(p => p.ProcessName.ToLower().Contains(software)));
         }
+
+        // This method manage the process of a large backup (with many files or a lot of data)
         public async Task ProcessLargeFileAsync(string source, string target, String nameBackup, string file, CancellationToken token, Dictionary<string, bool> _isPaused = null)
         {
             
             await CompleteBackupStrategy.largeFileSemaphore.WaitAsync();
-            while (_isPaused[nameBackup])
+            while (_isPaused[nameBackup]) // Verify the pause
             {
                 await Task.Delay(500);
             }
@@ -124,9 +130,9 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 await Task.Run(() =>
                 {
-                    token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested(); // Verify the stop
                     BackupStateJournal.UpdateProgress(nameBackup);
-                    Thread.Sleep(500); // Considérez changer ceci en Task.Delay si cela n'affecte pas d'autres parties
+                    Thread.Sleep(500);
                 }, token);
 
                 BackupFile(file, source, target);
@@ -137,22 +143,24 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
         }
 
+        // This method manage the process of a small backup
         public async Task ProcessSmallFileAsync(string source, string target, String nameBackup, string file, CancellationToken token, Dictionary<string, bool> _isPaused = null)
         {
-            while (_isPaused[nameBackup])
+            while (_isPaused[nameBackup]) // Verify the pause
             {
                 await Task.Delay(500);
             }
             await Task.Run(() =>
             {
-                token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested(); // Verify the Stop
                 BackupStateJournal.UpdateProgress(nameBackup);
-                Thread.Sleep(500); // De même, changez en Task.Delay si possible
+                Thread.Sleep(500);
             }, token);
 
             BackupFile(file, source, target);
         }
 
+        // This method groups the extensions based on the prior extensions defined by the user
         public List<IGrouping<String,String>> MakeGroupsPrior(string[] files)
         {
             var extensionPriority = File.Exists("extensions.txt") ?
@@ -166,21 +174,22 @@ namespace EasySave.ControllerLib.BackupStrategy
                 return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
             }).ThenBy(f => f).ToList();
 
-            // Groupe les fichiers par priorité d'extension
             var groups = sortedFiles.GroupBy(f => Path.GetExtension(f)).ToList();
             return groups;
         }
+
+        // This method process the backups for one file
         public async Task BackupOneFile(BackupState state, string source, string file, string target, String nameBackup, List<Task> tasks = null, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null)
         {
             CancellationToken token = _cancellationTokens[nameBackup].Token;
-            if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
+            if (_cancellationTokens[nameBackup].Token.IsCancellationRequested) // Verify the stop
             {
                 state.State = "STOPPED";
                 BackupStateJournal.UpdateState(state);
                 return;
             }
 
-            while (_isPaused[nameBackup])
+            while (_isPaused[nameBackup]) // Verify the pause
             {
                 await Task.Delay(500);
             }
@@ -189,12 +198,11 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 try
                 {
-                    token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
+                    token.ThrowIfCancellationRequested(); // Verify the stop
 
                     if (IsBusinessSoftwareRunning())
                     { 
                         Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                        //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
                         state.State = "Blocked BY BUSINESS SOFTWARE";
                         BackupStateJournal.UpdateState(state);
                         run = true;
@@ -204,13 +212,13 @@ namespace EasySave.ControllerLib.BackupStrategy
                         FileInfo fileInfo = new FileInfo(file);
                         if ((fileInfo.Length / 1024.0) > GlobalVariables.maximumSize)
                         {
-                            // Traitement des grands fichiers avec sémaphore
+                            // Processing the large file with a semaphore
                             var task = ProcessLargeFileAsync(source, target, nameBackup, file, token,_isPaused);
                             tasks.Add(task);
                         }
                         else
                         {
-                            // Traitement des petits fichiers immédiatement sans attendre
+                            // Processing the large file without a semaphore
                             var task = ProcessSmallFileAsync(source, target, nameBackup, file, token, _isPaused);
                             tasks.Add(task);
                         }
@@ -220,40 +228,37 @@ namespace EasySave.ControllerLib.BackupStrategy
                 catch (OperationCanceledException)
                 {
                     Console.WriteLine("Operation was canceled by user.");
-                    // Logique optionnelle pour gérer l'annulation ici
-                    // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
                 }
             } while (run);
         }
 
-
+        // This method retrieves and calculates the network usage
         public static double GetNetworkUtilization()
         {
             try
             {
                 const string categoryName = "Network Interface";
-                const string counterName = "Bytes Total/sec"; // Ce compteur mesure le total des bytes envoyés et reçus par seconde.
-                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; //  le nom de votre interface réseau.
+                const string counterName = "Bytes Total/sec"; // This counter measures the total bytes sent and received per second.
+                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; // The name of your network interface.
 
                 PerformanceCounter performanceCounter = new PerformanceCounter(categoryName, counterName, instanceName);
-                float bytesPerSec = performanceCounter.NextValue(); // Première lecture souvent à 0
-                System.Threading.Thread.Sleep(1000); // Attendre une seconde
-                bytesPerSec = performanceCounter.NextValue(); // Deuxième lecture pour obtenir la valeur actuelle
+                float bytesPerSec = performanceCounter.NextValue(); // First reading is often 0
+                System.Threading.Thread.Sleep(1000); // Wait for one second
+                bytesPerSec = performanceCounter.NextValue(); // Second reading to get the current value
 
-                // Convertir en pourcentage d'utilisation (exemple fictif)
-                // Supposons que vous ayez une bande passante maximale de 100 Mbps
-                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convertir en bytes par seconde
+                // Convert to percentage of utilization (fictional example)
+                // Assume you have a maximum bandwidth of 100 Mbps
+                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convert to bytes per second
                 double networkUtilization = (bytesPerSec / maxBandwidth) * 100;
 
                 return networkUtilization;
             }
             catch (Exception ex)
             {
-                // Gérer l'exception ou retourner une valeur par défaut
-                Console.WriteLine("Erreur lors de l'obtention de la charge réseau: " + ex.Message);
-                return 0.0; // Retourner 0 ou toute autre valeur appropriée en cas d'erreur
+                // Handle the exception or return a default value
+                Console.WriteLine("Error while retrieving network load: " + ex.Message);
+                return 0.0; // Return 0 or any other appropriate value in case of an error
             }
         }
-
     }
 }

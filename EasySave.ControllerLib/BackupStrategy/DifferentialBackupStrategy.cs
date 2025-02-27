@@ -21,6 +21,16 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
 
         }
+
+        /// <summary>
+        /// Executes the differential backup process.
+        /// It checks for modified files since the last backup and copies only those files.
+        /// </summary>
+        /// <param name="source">The source directory for backup.</param>
+        /// <param name="target">The destination directory for backup.</param>
+        /// <param name="nameBackup">The name of the backup process.</param>
+        /// <param name="_isPaused">A dictionary tracking whether the backup process is paused.</param>
+        /// <param name="_cancellationTokens">A dictionary of cancellation tokens to allow stopping the process.</param>
         public override async Task ExecuteBackup(string source, string target, String nameBackup, Dictionary<string, bool> _isPaused = null, Dictionary<string, CancellationTokenSource> _cancellationTokens = null)
             {
             DirectoryExist(target);
@@ -36,10 +46,6 @@ namespace EasySave.ControllerLib.BackupStrategy
             }
 
             var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
-
-
-
-
             var groups = MakeGroupsPrior(files);
             foreach (var group in groups)
             {
@@ -58,65 +64,6 @@ namespace EasySave.ControllerLib.BackupStrategy
                     {
                         BackupOneFile(state, source, file, target, nameBackup, tasks, _isPaused, _cancellationTokens);
                     }
-                    //var targetFile = file.Replace(source, target);
-
-                    //DateTime lastBackupTime = await DateOfLastBackup(Logger.Logger.GetLogFileName(), file, targetFile);
-                    //var fileInfo = new FileInfo(file);
-
-                    //if (fileInfo.LastWriteTimeUtc > lastBackupTime)
-                    //{
-                    //    {
-                    //        CancellationToken token = _cancellationTokens[nameBackup].Token;
-                    //        if (_cancellationTokens[nameBackup].Token.IsCancellationRequested)
-                    //        {
-                    //            state.State = "STOPPED";
-                    //            BackupStateJournal.UpdateState(state);
-                    //            return;
-                    //        }
-
-                    //        while (_isPaused[nameBackup])
-                    //        {
-                    //            await Task.Delay(500);
-                    //        }
-                    //        bool run = false;
-                    //        do
-                    //        {
-                    //            try
-                    //            {
-
-                    //                token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
-
-                    //                if (IsBusinessSoftwareRunning())
-                    //                {
-                    //                    Console.WriteLine("Sauvegarde annulée : Un logiciel métier est en cours d'exécution.");
-                    //                    //File.AppendAllText(GlobalVariables.LogFilePath, $"[{DateTime.Now}] Tentative de lancement d'une sauvegarde bloquée car un logiciel métier est actif.\n");
-                    //                    state.State = "Blocked BY BUSINESS SOFTWARE";
-                    //                    BackupStateJournal.UpdateState(state);
-                    //                    run = true;
-                    //                }
-                    //                else
-                    //                {
-                    //                    await Task.Run(() =>
-                    //                    {
-                    //                        token.ThrowIfCancellationRequested(); // Vérifie à nouveau avant d'exécuter des opérations longues
-                    //                        BackupStateJournal.UpdateProgress(nameBackup); // Real-time update
-                    //                        Thread.Sleep(500); // Slow down the process for better visualization
-                    //                    }, token); // Passez le token ici aussi pour permettre l'annulation pendant l'exécution de Task.Run
-
-                    //                    BackupFile(file, source, target);
-                    //                    run = false;
-                    //                }
-
-                    //             }
-                    //    catch (OperationCanceledException)
-                    //    {
-                    //            Console.WriteLine("Operation was canceled by user.");
-                    //            // Logique optionnelle pour gérer l'annulation ici
-                    //            // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
-                    //        }
-                    //    } while (run);
-                    //    }
-                    //    }
                 }
                 do
                 {
@@ -132,17 +79,15 @@ namespace EasySave.ControllerLib.BackupStrategy
         {
             DateTime lastBackupTime = DateTime.MinValue;
 
-            // Vérifie si le fichier log n'existe pas ou est vide
+            // Check if the log file does not exist or is empty
             if (!File.Exists(logFile) || new FileInfo(logFile).Length == 0)
             {
-                //Console.WriteLine(" Aucun log trouvé, la sauvegarde différentielle copiera tous les fichiers.");
-                return DateTime.MinValue; // Force la copie de tous les fichiers
+                return DateTime.MinValue; // Force copying all files
             }
 
             string jsonLog = File.ReadAllText(logFile);
             if (string.IsNullOrWhiteSpace(jsonLog))
             {
-                //Console.WriteLine(" Fichier log vide, la sauvegarde différentielle copiera tous les fichiers.");
                 return DateTime.MinValue;
             }
 
@@ -155,6 +100,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                     string logSource = (string)log["FileSource"];
                     string logDestination = (string)log["FileTarget"];
 
+                    // Find the last backup time of the given file
                     if (logSource == source && logDestination == target)
                     {
                         DateTime logTime = DateTime.Parse((string)log["Date"], System.Globalization.CultureInfo.InvariantCulture);

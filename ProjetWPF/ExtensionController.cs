@@ -11,8 +11,10 @@ using System.Windows;
 
 namespace ProjetWPF
 {
+    /// Controller class responsible for handling changes in file extensions to be encrypted.
     public class ExtensionController
     {
+        /// Updates the global list of encrypted file extensions based on user input.
         public void ExtensionsChange()
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;

@@ -31,7 +31,7 @@ namespace EasySave.ControllerLib
             while (!exit)
             {
                 Console.Clear();
-                await view.DisplayActions(model.Actions, selectionIndex);// Display available menu actions
+                await view.DisplayActions(model.Actions, selectionIndex); // Display available menu actions
                 ConsoleKeyInfo _key = Console.ReadKey();
                 // Handle user key input for navigation
                 switch (_key.Key)
@@ -50,6 +50,8 @@ namespace EasySave.ControllerLib
                 }
             }
         }
+
+        /// This method handle the choice of the user for the log file format
         public async Task ChoisirFroamtLog()
         {
             bool exit = false;
@@ -94,7 +96,6 @@ namespace EasySave.ControllerLib
 
                         string content = File.ReadAllText(GlobalVariables.LogFilePath); // Retrieve log content
                         view.DisplayInputPrompt(content); // Display logs to the user
-                                                          // Console.WriteLine(content);
                     }
                     catch (Exception ex)
                     {
@@ -122,8 +123,6 @@ namespace EasySave.ControllerLib
         /// Handles the backup execution process by displaying available backups and executing the selected one.
         private async Task HandleBackupExecution(IBackupView backupView, EasySave.ModelLib.IObserver consoleView)
         {
-
-            //IBackupView backupView = new IBackupView();
             BackupController backupController = new BackupController(backupView);
             view.DisplayInputPrompt(await Translation.Instance.Translate("Choisissez le type du fichier log que vous voulez créér"));
             await ChoisirFroamtLog();
@@ -133,6 +132,8 @@ namespace EasySave.ControllerLib
             GlobalVariables.CryptedFileExt = CryptedFileFormat();
             await backupController.ExecuteBackupAsync(indexes, consoleView); // Execute the selected backup
         }
+
+        // This method ask and get the file extensions that the user wants to crypt
         private string[] CryptedFileFormat()
         {
             Console.WriteLine("Entrez les extensions de fichiers à sauvegarder (séparées par une virgule):");
@@ -140,6 +141,8 @@ namespace EasySave.ControllerLib
             string[] extensions = input.Split(',');
             return extensions;
         }
+
+        // This method handle the choice of the user for the log file format
         public async Task<bool> HandleLogFormat(int index)
         {
             switch (index)
@@ -154,15 +157,12 @@ namespace EasySave.ControllerLib
                     return false;
             }
         }
+
+        // This method add an extension to the logs files based on the user's choice
         private async Task AddBackupExtension(String ext)
         {
             GlobalVariables.LogFilePath = Path.ChangeExtension(GlobalVariables.LogFilePath, ext);
             GlobalVariables.PathTempsReel = Path.ChangeExtension(GlobalVariables.PathTempsReel, ext);
-            //GlobalVariables.PathTempsReel= GlobalVariables.PathTempsReel+ext;
         }
-
-
-
-
     }
 }

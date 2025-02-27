@@ -35,5 +35,4 @@ namespace EasySave.ControllerLib.BackupFactory
             return new DifferentialBackupStrategy(backupview);
         }
     }
-
 }

@@ -11,8 +11,11 @@ using System.Windows;
 
 namespace ProjetWPF
 {
+    /// Class responsible for managing the display of available languages in the UI.
+    /// Implements the ILanguageView interface.
     public class LanguagesView : ILanguageView
     {
+        /// Displays a list of available languages in the ComboBox UI element.
         public void DisplayLanguages(List<string> languages, int selectionIndex)
         {
             var mainWindow = (MainWindow)Application.Current.MainWindow;

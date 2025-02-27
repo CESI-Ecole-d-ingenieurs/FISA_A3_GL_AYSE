@@ -89,7 +89,7 @@ namespace EasySave.ModelLib
             lock (lockObj)
             {
                 List<BackupState> states = LoadState();
-                BackupState state = states.Find(e => e.Name == name); //statenull? statesvide
+                BackupState state = states.Find(e => e.Name == name);
 
                 if (state != null && state.RemainingFiles > 0)
                 {
@@ -107,9 +107,6 @@ namespace EasySave.ModelLib
 
                     SaveState(states);
                     NotifyObservers(state);
-
-                    // Vérifier en console si l'observer est bien notifié
-                    //Console.WriteLine($"Mise à jour de {state.Name}: {state.Progress}%");
                 }
             }
         }
@@ -121,12 +118,11 @@ namespace EasySave.ModelLib
             if (!File.Exists(stateFilePath)) return new List<BackupState>();
 
             string existingData = File.ReadAllText(stateFilePath);
-            //return string.IsNullOrEmpty(existingData) ? new List<BackupState>() : JsonSerializer.Deserialize<List<BackupState>>(existingData) ?? new List<BackupState>();
             if (string.IsNullOrEmpty(existingData)) return new List<BackupState>();
 
             if (CheckFileExtension(stateFilePath, ".xml"))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(List<BackupState>), new XmlRootAttribute("Root")); // Remplacez "Root" par le nom de l'élément racine approprié dans votre XML
+                XmlSerializer serializer = new XmlSerializer(typeof(List<BackupState>), new XmlRootAttribute("Root")); // Replace "Root" by the name of the root element in your XML file
 
                 using (StreamReader reader = new StreamReader(stateFilePath))
                 {
@@ -145,21 +141,9 @@ namespace EasySave.ModelLib
         /// Saves the backup states to the JSON file.
         private static void SaveState(List<BackupState> states)
         {
-            // string jsonData = JsonSerializer.Serialize(states, new JsonSerializerOptions { WriteIndented = true });
-            //string jsonData = JsonConvert.SerializeObject(states, Newtonsoft.Json.Formatting.Indented);
-
-            //if (CheckFileExtension(stateFilePath, ".xml"))
-            //{
-            //    var xmlDoc = JsonConvert.DeserializeXNode($"{{'Root':{jsonData}}}", "Root");
-            //    xmlDoc.Save(stateFilePath);
-            //}
-            //else
-            //{
-            //    File.WriteAllText(stateFilePath, jsonData);
-            //}
             if (CheckFileExtension(stateFilePath, ".xml"))
             {
-                // Utiliser XmlSerializer pour sérialiser directement en XML
+                // Use XmlSerializer to serialize in XML directly
                 var serializer = new XmlSerializer(typeof(List<BackupState>), new XmlRootAttribute("Root"));
                 using (var writer = new StreamWriter(stateFilePath))
                 {
@@ -168,7 +152,7 @@ namespace EasySave.ModelLib
             }
             else
             {
-                // Sérialisation en JSON
+                // Serialization en JSON
                 string jsonData = JsonConvert.SerializeObject(states, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(stateFilePath, jsonData);
             }
@@ -182,11 +166,11 @@ namespace EasySave.ModelLib
                 return LoadState();
             }
         }
+
+        /// This method is used to compare the extension of a file with a given extension.
         public static bool CheckFileExtension(string fileName, string extension)
         {
             return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase);
         }
-
-       
     }
 }

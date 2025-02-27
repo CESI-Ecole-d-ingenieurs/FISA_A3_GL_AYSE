@@ -58,24 +58,12 @@ namespace EasySave.ControllerLib
             {
                 case "Français":
                     Translation.Instance.Set_strategy(new French());
-                    //Console.WriteLine(await traduction.Traduire(texte));
-                    //await menu_actions.MenuActions();
                     return true;
-                //Console.ReadKey();
-                //break;
 
                 case "English":
                     Translation.Instance.Set_strategy(new English());
-                    //Console.WriteLine(await traduction.Traduire(texte));
-                    //await menu_actions.MenuActions();
                     return true;
-                //Console.ReadKey();
-                //break;
 
-                //case "Quitter / Quit":
-                //    exit = true;
-                //    break;
-                //break;
                 default:
                     return false;
             }
