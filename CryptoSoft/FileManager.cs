@@ -12,17 +12,19 @@ namespace CryptoSoft
     public class FileManager
     {
 
-        private string FilePath { get; set; }
-        private string Key { get; set; }
+        private string FilePath { get; set; } // Path to the file to be encrypted
+        private string Key { get; set; } // Encryption key
 
         public FileManager(string filePath, string key)
         {
             FilePath = filePath;
             Key = key;
         }
+
         /// <summary>
-        /// check if the file exists
+        /// Checks if the file exists before attempting encryption.
         /// </summary>
+        /// <returns>True if the file exists, otherwise false.</returns>
         private bool CheckFile()
         {
             if (File.Exists(FilePath))
@@ -34,8 +36,9 @@ namespace CryptoSoft
         }
 
         /// <summary>
-        /// Encrypts the file with xor encryption
+        /// Encrypts or decrypts the file using XOR encryption.
         /// </summary>
+        /// <returns>Time taken in milliseconds, or -1 if an error occurs.</returns>
         public int TransformFile()
         {
             try
@@ -57,20 +60,21 @@ namespace CryptoSoft
         }
 
         /// <summary>
-        /// Convert a string in byte array
+        /// Converts a string into a byte array.
         /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
+        /// <param name="text">The string to convert.</param>
+        /// <returns>Byte array representation of the string.</returns>
         private static byte[] ConvertToByte(string text)
         {
             return Encoding.UTF8.GetBytes(text);
         }
 
         /// <summary>
+        /// Applies XOR encryption to a byte array using a given key.
         /// </summary>
-        /// <param name="fileBytes">Bytes of the file to convert</param>
-        /// <param name="keyBytes">Key to use</param>
-        /// <returns>Bytes of the encrypted file</returns>
+        /// <param name="fileBytes">Bytes of the file to encrypt or decrypt.</param>
+        /// <param name="keyBytes">Encryption key in bytes.</param>
+        /// <returns>Encrypted or decrypted byte array.</returns>
         private static byte[] XorMethod(IReadOnlyList<byte> fileBytes, IReadOnlyList<byte> keyBytes)
         {
             var result = new byte[fileBytes.Count];
