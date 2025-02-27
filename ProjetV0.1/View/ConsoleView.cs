@@ -24,14 +24,14 @@ namespace ProjetV0._1.View
             string[] lines = Text.Split('\n');
             Dictionary<string, string> backupLines = new Dictionary<string, string>();
 
-            // Vérifier si le nom contient "CompleteBackup" ou "DifferentialBackup" et le filtrer
+            // Verify if the name of the backup contains "CompleteBackup" or "DifferentialBackup" and filtered it.
             string backupName = state.Name;
             if (backupName.Contains("CompleteBackup") || backupName.Contains("DifferentialBackup"))
             {
-                return; // Ne pas afficher cette entrée
+                return;
             }
 
-            // Récupérer les sauvegardes existantes
+            // Get the existing backups
             foreach (string line in lines)
             {
                 if (!string.IsNullOrWhiteSpace(line))
@@ -45,20 +45,17 @@ namespace ProjetV0._1.View
                 }
             }
 
-            // Générer la nouvelle barre de progression
+            // Generates the new progress bar
             int progressBarWidth = 20;
             int progressBlocks = (int)(state.Progress / 100.0 * progressBarWidth);
             string progressBar = $"[{new string('█', progressBlocks)}{new string('-', progressBarWidth - progressBlocks)}]{state.Progress}%";
 
-            // Remplacer ou ajouter la ligne pour la sauvegarde en cours
+            // Replace or add the line for the ongoing backup
             backupLines[backupName] = $"[{backupName}] {progressBar}";
 
-            // Reconstruire le texte avec les mises à jour
+            // Rebuild the text with all the modifications
             Text = string.Join("\n", backupLines.Values);
             Console.Write(Text);
-
-
-
         }
     }
 }

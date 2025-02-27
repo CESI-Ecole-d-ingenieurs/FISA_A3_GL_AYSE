@@ -14,7 +14,7 @@ namespace EasySave.ControllerLib
     public class Translation
     {
         private static Translation _instance;
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new object(); // Initialize a 
         public ITranslateStrategy _strategy = new English(); // Default translation strategy set to English
 
         /// Provides a single instance of the Translation class

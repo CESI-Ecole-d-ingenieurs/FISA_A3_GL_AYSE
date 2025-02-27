@@ -126,7 +126,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                 {
                     token.ThrowIfCancellationRequested();
                     BackupStateJournal.UpdateProgress(nameBackup);
-                    Thread.Sleep(500); // Considérez changer ceci en Task.Delay si cela n'affecte pas d'autres parties
+                    Thread.Sleep(500); // Consider changing this to Task.Delay if it doesn't affect other parts
                 }, token);
 
                 BackupFile(file, source, target);
@@ -147,7 +147,7 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 token.ThrowIfCancellationRequested();
                 BackupStateJournal.UpdateProgress(nameBackup);
-                Thread.Sleep(500); // De même, changez en Task.Delay si possible
+                Thread.Sleep(500); // Similarly, change to Task.Delay if possible
             }, token);
 
             BackupFile(file, source, target);
@@ -163,10 +163,10 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 var ext = Path.GetExtension(f);
                 int index = extensionPriority.IndexOf(ext);
-                return index >= 0 ? index : int.MaxValue; // Les fichiers non prioritaires passent à la fin
+                return index >= 0 ? index : int.MaxValue; // Non-priority files go to the end
             }).ThenBy(f => f).ToList();
 
-            // Groupe les fichiers par priorité d'extension
+            // Group files by extension priority
             var groups = sortedFiles.GroupBy(f => Path.GetExtension(f)).ToList();
             return groups;
         }
@@ -189,7 +189,7 @@ namespace EasySave.ControllerLib.BackupStrategy
             {
                 try
                 {
-                    token.ThrowIfCancellationRequested(); // Vérifie si une annulation a été demandée avant de commencer la boucle
+                    token.ThrowIfCancellationRequested(); // Checks whether a cancellation has been requested before starting the loop
 
                     if (IsBusinessSoftwareRunning())
                     { 
@@ -212,6 +212,7 @@ namespace EasySave.ControllerLib.BackupStrategy
                         {
                             // Traitement des petits fichiers immédiatement sans attendre
                             var task = ProcessSmallFileAsync(source, target, nameBackup, file, token, _isPaused);
+
                             tasks.Add(task);
                         }
 
@@ -220,8 +221,8 @@ namespace EasySave.ControllerLib.BackupStrategy
                 catch (OperationCanceledException)
                 {
                     Console.WriteLine("Operation was canceled by user.");
-                    // Logique optionnelle pour gérer l'annulation ici
-                    // Par exemple, nettoyer les ressources, informer les utilisateurs, etc.
+                    // Optional logic for handling cancellation here
+                    // For example, clean up resources, inform users, etc.
                 }
             } while (run);
         }
@@ -232,26 +233,26 @@ namespace EasySave.ControllerLib.BackupStrategy
             try
             {
                 const string categoryName = "Network Interface";
-                const string counterName = "Bytes Total/sec"; // Ce compteur mesure le total des bytes envoyés et reçus par seconde.
-                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; //  le nom de votre interface réseau.
+                const string counterName = "Bytes Total/sec"; // This counter measures the total number of bytes sent and received per second.
+                const string instanceName = "Intel[R] Wi-Fi 6 AX201 160MHz"; // the name of your network interface.
 
                 PerformanceCounter performanceCounter = new PerformanceCounter(categoryName, counterName, instanceName);
-                float bytesPerSec = performanceCounter.NextValue(); // Première lecture souvent à 0
-                System.Threading.Thread.Sleep(1000); // Attendre une seconde
-                bytesPerSec = performanceCounter.NextValue(); // Deuxième lecture pour obtenir la valeur actuelle
+                float bytesPerSec = performanceCounter.NextValue(); // First reading often at 0
+                System.Threading.Thread.Sleep(1000); // Wait a second
+                bytesPerSec = performanceCounter.NextValue(); // Second reading to obtain the current value
 
-                // Convertir en pourcentage d'utilisation (exemple fictif)
-                // Supposons que vous ayez une bande passante maximale de 100 Mbps
-                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convertir en bytes par seconde
+                // Convert to percentage of use (fictitious example)
+                // Suppose you have a maximum bandwidth of 100 Mbps
+                double maxBandwidth = 100 * 1024 * 1024 / 8; // Convert to bytes per second
                 double networkUtilization = (bytesPerSec / maxBandwidth) * 100;
 
                 return networkUtilization;
             }
             catch (Exception ex)
             {
-                // Gérer l'exception ou retourner une valeur par défaut
+                // Handle the exception or return a default value
                 Console.WriteLine("Erreur lors de l'obtention de la charge réseau: " + ex.Message);
-                return 0.0; // Retourner 0 ou toute autre valeur appropriée en cas d'erreur
+                return 0.0; // Return 0 or any other appropriate value in case of error
             }
         }
 

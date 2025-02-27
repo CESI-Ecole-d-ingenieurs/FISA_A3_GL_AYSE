@@ -10,11 +10,6 @@ using EasySave.IviewLib;
 using EasySave.ControllerLib;
 namespace ProjetV0._1.View
 {
-    //public interface IBackupView
-    //{
-    //    public void DisplayProgress();
-    //    public  Task<BackupModel> UserAsk();
-    //}
     internal class BackupView: IBackupView
     {
         /// Displays the progress of the backup process.
@@ -22,14 +17,6 @@ namespace ProjetV0._1.View
         public void DisplayProgress()
         {
             var states = BackupStateJournal.GetState();
-            //Console.Clear();
-            //Console.WriteLine("Mise à jour de la progression..."); // Check
-
-            //Console.WriteLine("Progression des sauvegardes :");
-            //foreach (var state in states)
-            //{
-            //    Console.WriteLine($"{state.Name} : {state.Progress}% - {state.State}");
-            //}
         }
 
         /// Asks the user for backup details (name, source, destination, and type).
@@ -101,7 +88,7 @@ namespace ProjetV0._1.View
                         break;
                 }
             }
-            BackupModel _backup = new BackupModel(name, source, destination, type);
+            BackupModel _backup = new BackupModel(name, source, destination, type); // Create a new BackupModel with all the user's informations
             return _backup;
         } 
 

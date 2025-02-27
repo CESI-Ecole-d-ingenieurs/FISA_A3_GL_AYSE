@@ -10,12 +10,6 @@ using EasySave.ControllerLib;
 using EasySave.IviewLib;
 namespace ProjetV0._1.View
 {
-    //public interface IMenuView
-    //{
-    //    public  Task DisplayActions(List<string> actions, int selectedIndex);
-    //    public void DisplayInputPrompt(string message);
-    //    public void ClearScreen();
-    //}
     internal class MenuView: IMenuView
     {
         /// Displays the available actions in the menu and highlights the selected one.
@@ -26,13 +20,13 @@ namespace ProjetV0._1.View
             {
                 if (i == selectedIndex)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"> " + await Translation.Instance.Translate(actions[i]));
+                    Console.ForegroundColor = ConsoleColor.Green; // Highlight the selected action.
+                    Console.WriteLine($"> " + await Translation.Instance.Translate(actions[i])); // Display the selected action with a cursor.
                     Console.ResetColor();
                 }
                 else
                 {
-                    Console.WriteLine("  " + await Translation.Instance.Translate(actions[i]));
+                    Console.WriteLine("  " + await Translation.Instance.Translate(actions[i])); // Display the other actions without a cursor.
                 }
             }
         }
