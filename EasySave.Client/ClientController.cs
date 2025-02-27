@@ -8,9 +8,11 @@ using System.Windows.Controls;
 
 namespace BackupMonitorClient
 {
+    /// Manages the client-side communication with the backup server.
+    /// Handles connection, sending commands, and receiving status updates.
     public class ClientController
     {
-        private Socket _clientSocket;
+        private Socket _clientSocket; // Client socket for communication
 
         /// This method create a socket for the client
         /// and connect the client to the server.
@@ -28,8 +30,8 @@ namespace BackupMonitorClient
 
                 try
                 {
-                    IPAddress ipAddress = IPAddress.Loopback;
-                    IPEndPoint serverEndpoint = new IPEndPoint(ipAddress, 1200);
+                    IPAddress ipAddress = IPAddress.Loopback; // Localhost address
+                    IPEndPoint serverEndpoint = new IPEndPoint(ipAddress, 1200); // Server port 1200
                     _clientSocket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp); // creation of the socket for the client
                     _clientSocket.Connect(serverEndpoint); // connection to the server
 
@@ -38,6 +40,7 @@ namespace BackupMonitorClient
                         infos.Content = "Connecté au serveur.";
                     });
 
+                    // Start listening for messages from the server
                     _ = ListenToServerAsync();
                 }
                 catch (Exception e)
