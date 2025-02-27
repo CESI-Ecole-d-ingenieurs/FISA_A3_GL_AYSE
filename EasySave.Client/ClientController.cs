@@ -12,7 +12,9 @@ namespace BackupMonitorClient
     /// Handles connection, sending commands, and receiving status updates.
     public class ClientController
     {
+
         private Socket _clientSocket; // Client socket for communication
+
 
         /// This method create a socket for the client
         /// and connect the client to the server.
@@ -37,6 +39,7 @@ namespace BackupMonitorClient
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+
                         infos.Content = "Connecté au serveur.";
                     });
 
@@ -47,7 +50,9 @@ namespace BackupMonitorClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+
                         mainWindow.Informations.Content = "Erreur : " + e.Message;
+
                     });
                 }
             });
@@ -81,6 +86,7 @@ namespace BackupMonitorClient
                                 switch (command)
                                 {
                                     case "PAUSE":
+
                                         mainWindow.Informations.Content = "Sauvegarde mise en pause par le serveur.";
                                         break;
                                     case "RESUME":
@@ -88,12 +94,15 @@ namespace BackupMonitorClient
                                         break;
                                     case "STOP":
                                         mainWindow.Informations.Content = "Sauvegarde arrêtée par le serveur.";
+
                                         break;
                                 }
                             }
                             else if (message.StartsWith("[") && message.Contains("]"))
                             {
+
                                 // Update the progress
+
                                 mainWindow.State_t.Text = string.Join("\n", message.Split('\n').Distinct());
                             }
                         });
@@ -103,7 +112,9 @@ namespace BackupMonitorClient
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
+
                         mainWindow.Informations.Content = "Déconnecté du serveur.";
+
                     });
                 }
                 finally
@@ -155,7 +166,9 @@ namespace BackupMonitorClient
                     {
                         if (mainWindow != null)
                         {
+
                             mainWindow.Informations.Content = "Erreur de déconnexion : " + e.Message;
+
                         }
                     });
                 }
@@ -165,7 +178,9 @@ namespace BackupMonitorClient
             {
                 if (mainWindow != null)
                 {
+
                     mainWindow.Close(); // Close the interface of the client
+
                 }
             });
         }

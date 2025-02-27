@@ -11,7 +11,7 @@ namespace BackupMonitorClient
         public MainWindow()
         {
             InitializeComponent();
-            clientController = new ClientController(this);
+            clientController = new ClientController();
         }
 
         // This method is called by clicking on the button "connect to the server"

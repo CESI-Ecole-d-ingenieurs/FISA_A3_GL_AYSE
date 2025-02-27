@@ -13,6 +13,7 @@ namespace BackupServer
     /// Manages a TCP server that listens for client connections and controls backups remotely.
     public class ServerController
     {
+
         private readonly MainWindow _mainWindow; // Reference to the main application window
         private Socket _serverSocket; // Server socket for listening to client connections
         private Socket _clientSocket; // Client socket for communication
@@ -27,6 +28,7 @@ namespace BackupServer
         }
 
         /// Starts the server asynchronously and listens for incoming client connections.
+
         public async Task StartServerAsync()
         {
             _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -54,6 +56,7 @@ namespace BackupServer
         /// Asynchronously listens for client commands and processes them.
         private async Task ListenToClientAsync()
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             await Task.Run(() =>
             {
                 try
@@ -70,17 +73,17 @@ namespace BackupServer
                         switch (message.ToUpper())
                         {
                             case "PAUSE":
-                                _mainWindow.PauseSelectedBackups(null, null);
+                                mainWindow.PauseSelectedBackups(null, null);
                                 UpdateUI("⏸ Sauvegarde en pause...");
                                 SendToClient("CONFIRM:PAUSE");
                                 break;
                             case "RESUME":
-                                _mainWindow.ResumeSelectedBackups(null, null);
+                                mainWindow.ResumeSelectedBackups(null, null);
                                 UpdateUI("▶️ Reprise de la sauvegarde...");
                                 SendToClient("CONFIRM:RESUME");
                                 break;
                             case "STOP":
-                                _mainWindow.StopSelectedBackups(null, null);
+                                mainWindow.StopSelectedBackups(null, null);
                                 UpdateUI("⏹ Sauvegarde arrêtée.");
                                 SendToClient("CONFIRM:STOP");
                                 break;
@@ -111,10 +114,13 @@ namespace BackupServer
         /// Updates the server status message in the UI and sends it to the client.
         private void UpdateUI(string message)
         {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
             Application.Current.Dispatcher.Invoke(() =>
             {
+
                 _mainWindow.ServerStatus.Content = message; // Update UI label with status message
                 SendToClient(message); // Send the message to the connected client
+
             });
         }
 

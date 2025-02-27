@@ -55,7 +55,7 @@ namespace ProjetWPF
             LoadBusinessSoftware();
             MonitorBusinessSoftware();
             LoadExtensions();
-            serverController = new ServerController(this);
+            serverController = new ServerController();
             _ = StartServerAsync();
         }
 
